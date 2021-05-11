@@ -38,7 +38,8 @@ public final class ScsbConstants {
     public static final String RECALL_FOR_CANCELLED_ITEM = "Recall for Cancelled Request is not Allowed. Please Refile the existing Request.";
     public static final String IMS_LOCATION_DOES_NOT_EXIST_ITEM = "IMS Location does not exist for the item in database.";
     public static final String GENERIC_PATRON_NOT_FOUND_ERROR = "Could not get generic patron for item.";
-    public static final String CIRCULATION_FREEZE_UNAVAILABLE_ITEM = "Item is not available for request as the owning institution is on a circulation freeze.";
+    public static final String CIRCULATION_FREEZE_UNAVAILABLE_ITEM = "{0} - Item barcode is not available for request. {1}";
+    public static final String OWNING_INSTITUTION_CIRCULATION_FREEZE = "The owning institution is on a circulation freeze.";
 
     public static final String CHAPTER_TITLE_IS_REQUIRED = "Chapter title is required for the request type EDD.";
 

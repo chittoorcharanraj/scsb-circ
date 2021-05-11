@@ -31,6 +31,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -102,6 +103,7 @@ public class ItemValidatorService {
     public ResponseEntity itemValidation(ItemRequestInformation itemRequestInformation) {
         List<ItemEntity> itemEntityList = getItemEntities(itemRequestInformation.getItemBarcodes());
         Map<String, String> frozenInstitutionPropertyMap = propertyUtil.getPropertyByKeyForAllInstitutions(ScsbCommonConstants.KEY_ILS_ENABLE_CIRCULATION_FREEZE);
+        Map<String, String> frozenInstitutionMessagesPropertyMap = propertyUtil.getPropertyByKeyForAllInstitutions(ScsbCommonConstants.KEY_ILS_CIRCULATION_FREEZE_MESSAGE);
         if (itemRequestInformation.getItemBarcodes().size() == 1) {
             if (itemEntityList != null && !itemEntityList.isEmpty()) {
                 for (ItemEntity itemEntity1 : itemEntityList) {
@@ -109,7 +111,8 @@ public class ItemValidatorService {
                         return new ResponseEntity<>(ScsbConstants.INITIAL_LOAD_ITEM_EXISTS, getHttpHeaders(), HttpStatus.BAD_REQUEST);
                     }
                     if (Boolean.parseBoolean(frozenInstitutionPropertyMap.get(itemEntity1.getInstitutionEntity().getInstitutionCode()))) {
-                        return new ResponseEntity<>(ScsbConstants.CIRCULATION_FREEZE_UNAVAILABLE_ITEM, getHttpHeaders(), HttpStatus.BAD_REQUEST);
+                        String message = frozenInstitutionMessagesPropertyMap.get(itemEntity1.getInstitutionEntity().getInstitutionCode());
+                        return new ResponseEntity<>(MessageFormat.format(ScsbConstants.CIRCULATION_FREEZE_UNAVAILABLE_ITEM, itemEntity1.getBarcode(), StringUtils.isNotBlank(message) ? message : ScsbConstants.OWNING_INSTITUTION_CIRCULATION_FREEZE), getHttpHeaders(), HttpStatus.BAD_REQUEST);
                     }
                     String availabilityStatus = getItemStatus(itemEntity1.getItemAvailabilityStatusId());
                     if (availabilityStatus.equalsIgnoreCase(ScsbCommonConstants.NOT_AVAILABLE) && (itemRequestInformation.getRequestType().equalsIgnoreCase(ScsbCommonConstants.RETRIEVAL)
@@ -177,7 +180,7 @@ public class ItemValidatorService {
                     bibliographicIds.add(bibliographicEntityDetails.getId());
                 }
             }
-            return multipleRequestItemValidation(itemEntityList, bibliographicIds, itemRequestInformation, frozenInstitutionPropertyMap);
+            return multipleRequestItemValidation(itemEntityList, bibliographicIds, itemRequestInformation, frozenInstitutionPropertyMap, frozenInstitutionMessagesPropertyMap);
         }
         return new ResponseEntity<>(ScsbCommonConstants.VALID_REQUEST, getHttpHeaders(), HttpStatus.OK);
     }
@@ -226,7 +229,7 @@ public class ItemValidatorService {
         return imsLocationCode;
     }
 
-    private ResponseEntity multipleRequestItemValidation(List<ItemEntity> itemEntityList, Set<Integer> bibliographicIds, ItemRequestInformation itemRequestInformation, Map<String, String> frozenInstitutionPropertyMap) {
+    private ResponseEntity multipleRequestItemValidation(List<ItemEntity> itemEntityList, Set<Integer> bibliographicIds, ItemRequestInformation itemRequestInformation, Map<String, String> frozenInstitutionPropertyMap, Map<String, String> frozenInstitutionMessagesPropertyMap) {
         String status = "";
         List<BibliographicEntity> bibliographicList;
 
@@ -235,7 +238,8 @@ public class ItemValidatorService {
                 return new ResponseEntity<>(ScsbConstants.INITIAL_LOAD_ITEM_EXISTS, getHttpHeaders(), HttpStatus.BAD_REQUEST);
             }
             if (Boolean.parseBoolean(frozenInstitutionPropertyMap.get(itemEntity.getInstitutionEntity().getInstitutionCode()))) {
-                return new ResponseEntity<>(ScsbConstants.CIRCULATION_FREEZE_UNAVAILABLE_ITEM, getHttpHeaders(), HttpStatus.BAD_REQUEST);
+                String message = frozenInstitutionMessagesPropertyMap.get(itemEntity.getInstitutionEntity().getInstitutionCode());
+                return new ResponseEntity<>(MessageFormat.format(ScsbConstants.CIRCULATION_FREEZE_UNAVAILABLE_ITEM, itemEntity.getBarcode(), StringUtils.isNotBlank(message) ? message : ScsbConstants.OWNING_INSTITUTION_CIRCULATION_FREEZE), getHttpHeaders(), HttpStatus.BAD_REQUEST);
             }
             if (itemEntity.getItemAvailabilityStatusId() == 2 && (itemRequestInformation.getRequestType().equalsIgnoreCase(ScsbCommonConstants.RETRIEVAL)
                     || itemRequestInformation.getRequestType().equalsIgnoreCase(ScsbCommonConstants.REQUEST_TYPE_EDD))) {
