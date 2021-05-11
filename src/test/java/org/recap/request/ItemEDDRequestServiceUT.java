@@ -305,7 +305,7 @@ public class ItemEDDRequestServiceUT extends BaseTestCaseUT {
         itemRequestInfo.setPatronBarcode("4356234");
         itemRequestInfo.setBibId("1");
         itemRequestInfo.setDeliveryLocation("PB");
-        itemRequestInfo.setEmailAddress("hemalatha.s@htcindia.com");
+        itemRequestInfo.setEmailAddress("test@email.com");
         itemRequestInfo.setRequestType("Recall");
         itemRequestInfo.setRequestNotes("Test");
         itemRequestInfo.setImsLocationCode(getImsLocationEntity().getImsLocationCode());

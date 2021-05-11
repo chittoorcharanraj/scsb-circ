@@ -280,7 +280,7 @@ public class DeAccessionService {
 
     private Map<Integer, String> mappingInstitution() {
         Map<Integer, String> institutionList = new HashMap<>();
-        List<InstitutionEntity> institutionEntities = institutionDetailsRepository.getCodes();
+        List<InstitutionEntity> institutionEntities = commonUtil.findAllInstitutionsExceptSupportInstitution();
         institutionEntities.stream().forEach(inst -> institutionList.put(inst.getId(), inst.getInstitutionCode()));
         return institutionList;
     }

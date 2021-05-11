@@ -50,12 +50,12 @@ public class RequestDataLoadController {
     @PostMapping(value = "/startRequestInitialLoad")
     public String startAccessionReconciliation() throws Exception{
         logger.info("Request Initial DataLoad Starting.....");
-        List<String> allInstitutionCodeExceptHTC = institutionDetailsRepository.findAllInstitutionCodeExceptHTC();
-        for (String institution : allInstitutionCodeExceptHTC) {
+        List<String> allInstitutionCodesExceptSupportInstitution = commonUtil.findAllInstitutionCodesExceptSupportInstitution();
+        for (String institution : allInstitutionCodesExceptSupportInstitution) {
             camelContext.addRoutes(new RequestInitialLoadRouteBuilder(camelContext, applicationContext, commonUtil,
                     institution, requestInitialAccessionS3Dir, requestInitialLoadFilepath, requestInitialAccessionErrorFileS3Dir));
         }
-        for (String institution : allInstitutionCodeExceptHTC) {
+        for (String institution : allInstitutionCodesExceptSupportInstitution) {
             camelContext.getRouteController().startRoute(ScsbConstants.REQUEST_INITIAL_LOAD_FTP_ROUTE+institution);
         }
         logger.info("After Request Initial DataLoad process : {}", camelContext.getRoutes().size());

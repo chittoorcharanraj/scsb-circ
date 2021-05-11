@@ -25,7 +25,7 @@ public class TtitemEDDResponseUT extends BaseTestCaseUT {
         ttitemEDDResponse.setRequestorFirstName("test");
         ttitemEDDResponse.setRequestorLastName("test");
         ttitemEDDResponse.setRequestorMiddleName("test");
-        ttitemEDDResponse.setRequestorEmail("hemalatha.s@htcindia.com");
+        ttitemEDDResponse.setRequestorEmail("test@email.com");
         ttitemEDDResponse.setRequestorOther("test");
         ttitemEDDResponse.setBiblioTitle("test");
         ttitemEDDResponse.setBiblioLocation("Discovery");

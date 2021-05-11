@@ -6,6 +6,7 @@ import org.recap.ScsbCommonConstants;
 import org.recap.controller.ItemController;
 import org.recap.model.jpa.ItemRequestInformation;
 import org.recap.repository.jpa.InstitutionDetailsRepository;
+import org.recap.util.CommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,9 @@ public class RequestParamaterValidatorService {
     @Autowired
     InstitutionDetailsRepository institutionDetailsRepository;
 
+    @Autowired
+    CommonUtil commonUtil;
+
     /**
      * Validate item request parameters response entity.
      *
@@ -62,7 +66,7 @@ public class RequestParamaterValidatorService {
             errorCount++;
         }
         if (StringUtils.isEmpty(itemRequestInformation.getRequestingInstitution()) || !institutionDetailsRepository.existsByInstitutionCode(itemRequestInformation.getRequestingInstitution())) {
-            errorMessageMap.put(errorCount, MessageFormat.format(ScsbConstants.INVALID_REQUEST_INSTITUTION, String.join(",", institutionDetailsRepository.findAllInstitutionCodeExceptHTC())));
+            errorMessageMap.put(errorCount, MessageFormat.format(ScsbConstants.INVALID_REQUEST_INSTITUTION, String.join(",", commonUtil.findAllInstitutionCodesExceptSupportInstitution())));
             errorCount++;
         }
         if (!validateEmailAddress(itemRequestInformation.getEmailAddress())) {

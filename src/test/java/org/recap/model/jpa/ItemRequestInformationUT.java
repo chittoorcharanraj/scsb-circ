@@ -31,7 +31,7 @@ public class ItemRequestInformationUT extends BaseTestCaseUT {
         itemRequestInformation.setChapterTitle("test");
         itemRequestInformation.setVolume("5");
         itemRequestInformation.setIssue("test");
-        itemRequestInformation.setEmailAddress("hemalatha.s@htcindia.com");
+        itemRequestInformation.setEmailAddress("test@email.com");
         itemRequestInformation.setStartPage("10");
         itemRequestInformation.setEndPage("100");
         itemRequestInformation.canEqual(itemRequestInformation1);

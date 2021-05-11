@@ -99,7 +99,7 @@ public class RequestDataLoadServiceUT extends BaseTestCaseUT {
         requestDataLoadCSVRecord.setLastUpdatedDate("05/12/2017 00:00:27.124");
         requestDataLoadCSVRecord.setPatronId("0000000");
         requestDataLoadCSVRecord.setStopCode("AD");
-        requestDataLoadCSVRecord.setEmail("hemalatha.s@htcindia.com");
+        requestDataLoadCSVRecord.setEmail("test@email.com");
         return requestDataLoadCSVRecord;
     }
 

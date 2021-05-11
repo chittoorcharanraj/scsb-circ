@@ -534,7 +534,7 @@ public class GFALasServiceUT extends BaseTestCaseUT{
         gfaPwdTtItemResponse.setRequestorFirstName("test");
         gfaPwdTtItemResponse.setRequestorLastName("test");
         gfaPwdTtItemResponse.setRequestorMiddleName("test");
-        gfaPwdTtItemResponse.setRequestorEmail("hemalatha.s@htcindia.com");
+        gfaPwdTtItemResponse.setRequestorEmail("test@email.com");
         gfaPwdTtItemResponse.setRequestorOther("test");
         gfaPwdTtItemResponse.setPriority("first");
         gfaPwdTtItemResponse.setNotes("test");
@@ -587,7 +587,7 @@ public class GFALasServiceUT extends BaseTestCaseUT{
         ttitemEDDResponse.setRequestorFirstName("test");
         ttitemEDDResponse.setRequestorLastName("test");
         ttitemEDDResponse.setRequestorMiddleName("test");
-        ttitemEDDResponse.setRequestorEmail("hemalatha.s@htcindia.com");
+        ttitemEDDResponse.setRequestorEmail("test@email.com");
         ttitemEDDResponse.setRequestorOther("test");
         ttitemEDDResponse.setBiblioTitle("test");
         ttitemEDDResponse.setBiblioLocation("Discovery");
@@ -732,7 +732,7 @@ public class GFALasServiceUT extends BaseTestCaseUT{
         itemRequestInformation.setChapterTitle("test");
         itemRequestInformation.setVolume("5");
         itemRequestInformation.setIssue("test");
-        itemRequestInformation.setEmailAddress("hemalatha.s@htcindia.com");
+        itemRequestInformation.setEmailAddress("test@email.com");
         itemRequestInformation.setStartPage("10");
         itemRequestInformation.setEndPage("100");
         itemRequestInformation.setImsLocationCode("PA");

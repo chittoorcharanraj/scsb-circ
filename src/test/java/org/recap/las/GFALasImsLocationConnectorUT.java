@@ -471,7 +471,7 @@ public class GFALasImsLocationConnectorUT extends BaseTestCaseUT {
         ttitemEDDResponse.setRequestorFirstName("test");
         ttitemEDDResponse.setRequestorLastName("test");
         ttitemEDDResponse.setRequestorMiddleName("test");
-        ttitemEDDResponse.setRequestorEmail("hemalatha.s@htcindia.com");
+        ttitemEDDResponse.setRequestorEmail("test@email.com");
         ttitemEDDResponse.setRequestorOther("test");
         ttitemEDDResponse.setBiblioTitle("test");
         ttitemEDDResponse.setBiblioLocation("Discovery");
@@ -538,7 +538,7 @@ public class GFALasImsLocationConnectorUT extends BaseTestCaseUT {
         gfaPwdTtItemResponse.setRequestorFirstName("test");
         gfaPwdTtItemResponse.setRequestorLastName("test");
         gfaPwdTtItemResponse.setRequestorMiddleName("test");
-        gfaPwdTtItemResponse.setRequestorEmail("hemalatha.s@htcindia.com");
+        gfaPwdTtItemResponse.setRequestorEmail("test@email.com");
         gfaPwdTtItemResponse.setRequestorOther("test");
         gfaPwdTtItemResponse.setPriority("first");
         gfaPwdTtItemResponse.setNotes("test");

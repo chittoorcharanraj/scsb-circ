@@ -38,7 +38,7 @@ public class RequestParamaterValidatorServiceUT{
     @Test
     public void testForValidatingInvalidRequestingInstitution(){
         ItemRequestInformation itemRequestInformation = getItemRequestInformation();
-        itemRequestInformation.setEmailAddress("hemalatha.s@htcindia.com");
+        itemRequestInformation.setEmailAddress("test@email.com");
         Mockito.when(institutionDetailsRepository.existsByInstitutionCode(itemRequestInformation.getRequestingInstitution())).thenReturn(true);
         ResponseEntity responseEntity = requestParamaterValidatorService.validateItemRequestParameters(itemRequestInformation);
         assertNotNull(responseEntity);
@@ -74,7 +74,7 @@ public class RequestParamaterValidatorServiceUT{
         itemRequestInformation.setPatronBarcode("45678915");
         itemRequestInformation.setRequestType(ScsbCommonConstants.REQUEST_TYPE_BORROW_DIRECT);
         itemRequestInformation.setRequestingInstitution("PUL");
-        itemRequestInformation.setEmailAddress("hemalatha.shtcindia.com");
+        itemRequestInformation.setEmailAddress("test@email.com");
         Mockito.when(institutionDetailsRepository.existsByInstitutionCode(itemRequestInformation.getRequestingInstitution())).thenReturn(true);
         ResponseEntity responseEntity = requestParamaterValidatorService.validateItemRequestParameters(itemRequestInformation);
         assertNotNull(responseEntity);
@@ -91,7 +91,7 @@ public class RequestParamaterValidatorServiceUT{
         itemRequestInformation.setPatronBarcode("45678915");
         itemRequestInformation.setRequestType(null);
         itemRequestInformation.setRequestingInstitution("PUL");
-        itemRequestInformation.setEmailAddress("hemalatha.s@htcindia.com");
+        itemRequestInformation.setEmailAddress("test@email.com");
         Mockito.when(institutionDetailsRepository.existsByInstitutionCode(itemRequestInformation.getRequestingInstitution())).thenReturn(true);
         ResponseEntity responseEntity = requestParamaterValidatorService.validateItemRequestParameters(itemRequestInformation);
         assertNotNull(responseEntity);
@@ -109,7 +109,7 @@ public class RequestParamaterValidatorServiceUT{
         itemRequestInformation.setRequestType(ScsbConstants.EDD_REQUEST);
         itemRequestInformation.setDeliveryLocation("AC");
         itemRequestInformation.setRequestingInstitution("PUL");
-        itemRequestInformation.setEmailAddress("hemalatha.s@htcindia.com");
+        itemRequestInformation.setEmailAddress("test@email.com");
         itemRequestInformation.setStartPage("0");
         itemRequestInformation.setEndPage("0");
         Mockito.when(institutionDetailsRepository.existsByInstitutionCode(itemRequestInformation.getRequestingInstitution())).thenReturn(true);

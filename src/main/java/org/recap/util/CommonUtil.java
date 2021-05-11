@@ -60,6 +60,9 @@ public class CommonUtil {
     @Autowired
     private PropertyUtil propertyUtil;
 
+    @Value("${scsb.support.institution}")
+    private String supportInstitution;
+
     /**
      * This method builds Holdings Entity from holdings content
      * @param bibliographicEntity
@@ -251,11 +254,19 @@ public class CommonUtil {
     }
 
     /**
-     * Get All Institution Codes Except HTC
+     * Get All Institution Codes Except Support Institution
      * @return institutionCodes
      */
-    public List<String> findAllInstitutionCodesExceptHTC(){
-        return institutionDetailsRepository.findAllInstitutionCodeExceptHTC();
+    public List<String> findAllInstitutionCodesExceptSupportInstitution() {
+        return institutionDetailsRepository.findAllInstitutionCodesExceptSupportInstitution(supportInstitution);
+    }
+
+    /**
+     * Get All Institution Codes Except Support Institution
+     * @return institutionCodes
+     */
+    public List<InstitutionEntity> findAllInstitutionsExceptSupportInstitution() {
+        return institutionDetailsRepository.findAllInstitutionsExceptSupportInstitution(supportInstitution);
     }
 
     /**
