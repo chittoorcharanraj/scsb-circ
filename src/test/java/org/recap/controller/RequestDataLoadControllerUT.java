@@ -55,7 +55,7 @@ public class RequestDataLoadControllerUT extends BaseTestCaseUT {
         institutionCodeList.add(cul);
         institutionCodeList.add(nypl);
         ILSConfigProperties ilsConfigProperties = new ILSConfigProperties();
-        Mockito.when(institutionDetailsRepository.findAllInstitutionCodeExceptHTC()).thenReturn(institutionCodeList);
+        Mockito.when(commonUtil.findAllInstitutionCodesExceptSupportInstitution()).thenReturn(institutionCodeList);
         for (String institution : institutionCodeList) {
            // Mockito.when(propertyUtil.getILSConfigProperties(institution)).thenReturn(ilsConfigProperties);
         }

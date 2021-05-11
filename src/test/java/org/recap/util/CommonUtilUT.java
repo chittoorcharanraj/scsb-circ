@@ -10,6 +10,7 @@ import org.recap.BaseTestCaseUT;
 import org.recap.ScsbCommonConstants;
 import org.recap.model.jpa.*;
 import org.recap.repository.jpa.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.*;
@@ -40,6 +41,9 @@ public class CommonUtilUT extends BaseTestCaseUT {
 
     @Mock
     ItemChangeLogDetailsRepository itemChangeLogDetailsRepository;
+
+    @Value("${scsb.support.institution}")
+    private String supportInstitution;
 
     @Before
     public void setup() {
@@ -127,10 +131,18 @@ public class CommonUtilUT extends BaseTestCaseUT {
     }
 
     @Test
-    public void findAllInstitutionCodesExceptHTC() {
+    public void findAllInstitutionCodesExceptSupportInstitution() {
         InstitutionEntity institutionEntity = getInstitutionEntity();
-        Mockito.when(institutionDetailsRepository.findAllInstitutionCodeExceptHTC()).thenReturn(Arrays.asList(institutionEntity.getInstitutionName()));
-        List<String> result = commonUtil.findAllInstitutionCodesExceptHTC();
+        Mockito.when(institutionDetailsRepository.findAllInstitutionCodesExceptSupportInstitution(supportInstitution)).thenReturn(Arrays.asList(institutionEntity.getInstitutionName()));
+        List<String> result = commonUtil.findAllInstitutionCodesExceptSupportInstitution();
+        assertNotNull(result);
+    }
+
+    @Test
+    public void findAllInstitutionsExceptSupportInstitution() {
+        InstitutionEntity institutionEntity = getInstitutionEntity();
+        Mockito.when(institutionDetailsRepository.findAllInstitutionsExceptSupportInstitution(supportInstitution)).thenReturn(Collections.singletonList(institutionEntity));
+        List<InstitutionEntity> result = commonUtil.findAllInstitutionsExceptSupportInstitution();
         assertNotNull(result);
     }
 
@@ -146,7 +158,7 @@ public class CommonUtilUT extends BaseTestCaseUT {
     public void isImsItemStatusAvailable() {
         String imsLocationCode = "HD";
         String imsItemStatus = "RECAP";
-        String imsAvailableCodes = "HD,HTC,UN,RECAP";
+        String imsAvailableCodes = "HD,UN,RECAP";
         Mockito.when(propertyUtil.getPropertyByImsLocationAndKey(imsLocationCode, "las.available.item.status.codes")).thenReturn(imsAvailableCodes);
         boolean result = commonUtil.checkIfImsItemStatusIsAvailableOrNotAvailable(imsLocationCode, imsItemStatus, true);
         assertNotNull(result);
@@ -157,7 +169,7 @@ public class CommonUtilUT extends BaseTestCaseUT {
     public void isImsItemStatusNotAvailable() {
         String imsLocationCode = "HD";
         String imsItemStatus = "RECAP";
-        String imsNotAvailableCodes = "HD,HTC,UN,RECAP";
+        String imsNotAvailableCodes = "HD,UN,RECAP";
         Mockito.when(propertyUtil.getPropertyByImsLocationAndKey(imsLocationCode, "las.not.available.item.status.codes")).thenReturn(imsNotAvailableCodes);
         boolean result = commonUtil.checkIfImsItemStatusIsAvailableOrNotAvailable(imsLocationCode, imsItemStatus, false);
         assertNotNull(result);

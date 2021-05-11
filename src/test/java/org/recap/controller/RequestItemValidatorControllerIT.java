@@ -46,7 +46,7 @@ public class RequestItemValidatorControllerIT extends BaseTestCase {
         itemRequestInformation.setRequestType(ScsbCommonConstants.REQUEST_TYPE_RETRIEVAL);
         itemRequestInformation.setDeliveryLocation("PB");
         itemRequestInformation.setItemOwningInstitution("PUL");
-        itemRequestInformation.setEmailAddress("hemalatha.s@htcindia.com");
+        itemRequestInformation.setEmailAddress("test@email.com");
         itemRequestInformation.setRequestingInstitution("PUL");
         itemRequestInformation.setItemBarcodes(Arrays.asList(bibliographicEntity.getItemEntities().get(0).getBarcode()));
         ResponseEntity responseEntity = requestItemValidatorController.validateItemRequestInformations(itemRequestInformation);
@@ -60,7 +60,7 @@ public class RequestItemValidatorControllerIT extends BaseTestCase {
         itemRequestInformation.setPatronBarcode("4567gfdr8915");
         itemRequestInformation.setRequestType(ScsbCommonConstants.REQUEST_TYPE_RETRIEVAL);
         itemRequestInformation.setDeliveryLocation("PB");
-        itemRequestInformation.setEmailAddress("hemalatha.s@htcindia.com");
+        itemRequestInformation.setEmailAddress("test@email.com");
         itemRequestInformation.setItemOwningInstitution("PUL");
         itemRequestInformation.setRequestingInstitution("PUL");
         itemRequestInformation.setItemBarcodes(Arrays.asList(bibliographicEntity.getItemEntities().get(0).getBarcode()));
@@ -75,7 +75,7 @@ public class RequestItemValidatorControllerIT extends BaseTestCase {
         itemRequestInformation.setPatronBarcode("4567gfdr8915");
         itemRequestInformation.setRequestType(ScsbCommonConstants.REQUEST_TYPE_RETRIEVAL);
         itemRequestInformation.setDeliveryLocation("PB");
-        itemRequestInformation.setEmailAddress("hemalatha.s@htcindia.com");
+        itemRequestInformation.setEmailAddress("test@email.com");
         itemRequestInformation.setItemOwningInstitution("PUL");
         itemRequestInformation.setRequestingInstitution("PUL");
         itemRequestInformation.setItemBarcodes(Arrays.asList(bibliographicEntity.getItemEntities().get(0).getBarcode()));

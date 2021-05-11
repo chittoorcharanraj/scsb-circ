@@ -412,7 +412,7 @@ public class ItemRequestDBServiceUT{
         itemRequestInformation.setUsername("john");
         itemRequestInformation.setDeliveryLocation("PB");
         itemRequestInformation.setPatronBarcode("426598712");
-        itemRequestInformation.setEmailAddress("hemalatha.s@htcindia.com");
+        itemRequestInformation.setEmailAddress("test@email.com");
         itemRequestInformation.setRequestNotes("test");
 
         return itemRequestInformation;

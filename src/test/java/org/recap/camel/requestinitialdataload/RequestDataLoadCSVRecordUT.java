@@ -22,7 +22,7 @@ public class RequestDataLoadCSVRecordUT extends BaseTestCaseUT {
         requestDataLoadCSVRecord.setLastUpdatedDate(new Date().toString());
         requestDataLoadCSVRecord.setPatronId("0000000");
         requestDataLoadCSVRecord.setStopCode("AD");
-        requestDataLoadCSVRecord.setEmail("hemalatha.s@htcindia.com");
+        requestDataLoadCSVRecord.setEmail("test@email.com");
         RequestDataLoadErrorCSVRecord requestDataLoadErrorCSVRecord = new RequestDataLoadErrorCSVRecord();
         requestDataLoadErrorCSVRecord.setBarcodes("3324545545344575");
         assertNotNull(requestDataLoadCSVRecord.getBarcode());

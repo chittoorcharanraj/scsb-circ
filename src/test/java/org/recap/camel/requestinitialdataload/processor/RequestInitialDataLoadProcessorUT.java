@@ -67,7 +67,7 @@ public class RequestInitialDataLoadProcessorUT {
         requestDataLoadCSVRecord.setLastUpdatedDate(new Date().toString());
         requestDataLoadCSVRecord.setPatronId("0000000");
         requestDataLoadCSVRecord.setStopCode("AD");
-        requestDataLoadCSVRecord.setEmail("hemalatha.s@htcindia.com");
+        requestDataLoadCSVRecord.setEmail("test@email.com");
         requestDataLoadCSVRecord1.setBarcode("332456456456745");
         requestDataLoadCSVRecord1.setCustomerCode("PB");
         requestDataLoadCSVRecord1.setDeliveryMethod("Test");
@@ -75,7 +75,7 @@ public class RequestInitialDataLoadProcessorUT {
         requestDataLoadCSVRecord1.setLastUpdatedDate(new Date().toString());
         requestDataLoadCSVRecord1.setPatronId("0000000");
         requestDataLoadCSVRecord1.setStopCode("AD");
-        requestDataLoadCSVRecord1.setEmail("hemalatha.s@htcindia.com");
+        requestDataLoadCSVRecord1.setEmail("test@email.com");
         List<RequestDataLoadCSVRecord> requestDataLoadCSVRecordList = new ArrayList<>();
         requestDataLoadCSVRecordList.add(requestDataLoadCSVRecord);
         requestDataLoadCSVRecordList.add(requestDataLoadCSVRecord1);
@@ -135,7 +135,7 @@ public class RequestInitialDataLoadProcessorUT {
         requestDataLoadCSVRecord.setLastUpdatedDate(new Date().toString());
         requestDataLoadCSVRecord.setPatronId("0000000");
         requestDataLoadCSVRecord.setStopCode("AD");
-        requestDataLoadCSVRecord.setEmail("hemalatha.s@htcindia.com");
+        requestDataLoadCSVRecord.setEmail("test@email.com");
         return requestDataLoadCSVRecord;
 
     }

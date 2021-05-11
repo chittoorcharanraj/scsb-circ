@@ -130,7 +130,7 @@ public class RequestItemRouteBuilder {
                 }
             });
 
-            for (String institutionCode : commonUtil.findAllInstitutionCodesExceptHTC()) {
+            for (String institutionCode : commonUtil.findAllInstitutionCodesExceptSupportInstitution()) {
                 String retrievalInstitutionTopic = propertyUtil.getPropertyByInstitutionAndKey(institutionCode, "ils.topic.retrieval.request");
                 String eddInstitutionTopic = propertyUtil.getPropertyByInstitutionAndKey(institutionCode, "ils.topic.edd.request");
                 String recallInstitutionTopic = propertyUtil.getPropertyByInstitutionAndKey(institutionCode, "ils.topic.recall.request");
