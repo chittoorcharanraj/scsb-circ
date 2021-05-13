@@ -2,9 +2,9 @@ package org.recap.ils.model.response;
 
 import org.junit.Test;
 import org.recap.BaseTestCaseUT;
-import org.recap.ils.model.nypl.CheckinData;
-import org.recap.ils.model.nypl.DebugInfo;
-import org.recap.ils.model.nypl.response.CheckinResponse;
+import org.recap.ils.model.rest.CheckinData;
+import org.recap.ils.model.rest.DebugInfo;
+import org.recap.ils.model.rest.response.CheckinResponse;
 
 import java.util.Arrays;
 

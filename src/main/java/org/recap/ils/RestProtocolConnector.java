@@ -5,9 +5,9 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
-import org.recap.ils.model.nypl.*;
-import org.recap.ils.model.nypl.request.*;
-import org.recap.ils.model.nypl.response.*;
+import org.recap.ils.model.rest.*;
+import org.recap.ils.model.rest.request.*;
+import org.recap.ils.model.rest.response.*;
 import org.recap.ils.model.response.*;
 import org.recap.ils.service.RestApiResponseUtil;
 import org.recap.ils.service.RestOauthTokenApiService;
@@ -44,9 +44,9 @@ public class RestProtocolConnector extends AbstractProtocolConnector {
 
 
     /**
-     * Gets nypl data api url.
+     * Gets rest data api url.
      *
-     * @return the nypl data api url
+     * @return the rest data api url
      */
     public String getRestDataApiUrl() {
         return ilsConfigProperties.getIlsRestDataApi();
@@ -104,9 +104,9 @@ public class RestProtocolConnector extends AbstractProtocolConnector {
     }
 
     /**
-     * Gets nypl api response util.
+     * Gets rest api response util.
      *
-     * @return the nypl api response util
+     * @return the rest api response util
      */
     public RestApiResponseUtil getRestApiResponseUtil() {
         return restApiResponseUtil;
@@ -114,18 +114,18 @@ public class RestProtocolConnector extends AbstractProtocolConnector {
 
 
     /**
-     * Gets nypl oauth token api service.
+     * Gets rest oauth token api service.
      *
-     * @return the nypl oauth token api service
+     * @return the rest oauth token api service
      */
     public RestOauthTokenApiService getRestOauthTokenApiService() {
         return restOauthTokenApiService;
     }
 
     /**
-     * Gets nypl job response polling processor.
+     * Gets rest job response polling processor.
      *
-     * @return the nypl job response polling processor
+     * @return the rest job response polling processor
      */
     public RestProtocolJobResponsePollingProcessor getRestProtocolJobResponsePollingProcessor() {
         return restProtocolJobResponsePollingProcessor;
@@ -377,10 +377,10 @@ public class RestProtocolConnector extends AbstractProtocolConnector {
             CreateHoldData createHoldData = createHoldResponse != null ? createHoldResponse.getData() : null;
             if (null != createHoldData) {
                 String responseTrackingId = createHoldData.getTrackingId();
-                NYPLHoldResponse nyplHoldResponse = queryHoldResponseByTrackingId(responseTrackingId);
-                NYPLHoldData nyplHoldData = nyplHoldResponse != null ? nyplHoldResponse.getData() : null;
-                if (null != nyplHoldData) {
-                    String jobId = nyplHoldData.getJobId();
+                RestHoldResponse restHoldResponse = queryHoldResponseByTrackingId(responseTrackingId);
+                RestHoldData restHoldData = restHoldResponse != null ? restHoldResponse.getData() : null;
+                if (null != restHoldData) {
+                    String jobId = restHoldData.getJobId();
                     itemHoldResponse.setJobId(jobId);
                     log.info("Initiated recap hold request on {}", this.institutionCode);
                     log.info("{} Hold request job id -> {} " , this.institutionCode, jobId);
@@ -497,16 +497,16 @@ public class RestProtocolConnector extends AbstractProtocolConnector {
      * @return
      * @throws Exception
      */
-    private NYPLHoldResponse queryHoldResponseByTrackingId(String trackingId) throws Exception {
+    private RestHoldResponse queryHoldResponseByTrackingId(String trackingId) throws Exception {
         String apiUrl = getRestDataApiUrl() + "/hold-requests/" + trackingId;
         HttpHeaders headers = getHttpHeaders();
         HttpEntity requestEntity = getHttpEntity(headers);
-        ResponseEntity<NYPLHoldResponse> jobResponseEntity = restTemplate.exchange(apiUrl, HttpMethod.GET, requestEntity, NYPLHoldResponse.class);
+        ResponseEntity<RestHoldResponse> jobResponseEntity = restTemplate.exchange(apiUrl, HttpMethod.GET, requestEntity, RestHoldResponse.class);
         return jobResponseEntity.getBody();
     }
 
     /**
-     * Build Http headers to access NYPL API.
+     * Build Http headers to access REST API.
      *
      * @return
      * @throws Exception
@@ -521,7 +521,7 @@ public class RestProtocolConnector extends AbstractProtocolConnector {
     }
 
     /**
-     * This method initiates the hold request on NYPL end to get the tracking id and use it in recap hold request subsequently.
+     * This method initiates the hold request on REST API end to get the tracking id and use it in recap hold request subsequently.
      *
      * @param itemIdentifier
      * @param patronIdentifier
@@ -532,30 +532,30 @@ public class RestProtocolConnector extends AbstractProtocolConnector {
      */
     private String initiateHoldRequest(String itemIdentifier, String patronIdentifier, String itemInstitutionId, String deliveryLocation) throws Exception {
         String trackingId = null;
-        String nyplHoldApiUrl = getRestDataApiUrl() + ScsbConstants.REST_HOLD_REQUEST_URL;
-        String nyplSource = restApiResponseUtil.getRestApiSourceForInstitution(this.institutionCode, itemInstitutionId);
-        NyplHoldRequest nyplHoldRequest = new NyplHoldRequest();
-        nyplHoldRequest.setRecord(restApiResponseUtil.getNormalizedItemIdForRestProtocolApi(itemIdentifier));
-        nyplHoldRequest.setPatron(getPatronIdByPatronBarcode(patronIdentifier));
-        nyplHoldRequest.setNyplSource(nyplSource);
-        nyplHoldRequest.setRecordType(ScsbConstants.REST_RECORD_TYPE);
-        nyplHoldRequest.setPickupLocation("");
-        nyplHoldRequest.setDeliveryLocation(deliveryLocation);
-        nyplHoldRequest.setNumberOfCopies(1);
-        nyplHoldRequest.setNeededBy(restApiResponseUtil.getExpirationDateForRest());
+        String restHoldApiUrl = getRestDataApiUrl() + ScsbConstants.REST_HOLD_REQUEST_URL;
+        String restSource = restApiResponseUtil.getRestApiSourceForInstitution(this.institutionCode, itemInstitutionId);
+        RestHoldRequest restHoldRequest = new RestHoldRequest();
+        restHoldRequest.setRecord(restApiResponseUtil.getNormalizedItemIdForRestProtocolApi(itemIdentifier));
+        restHoldRequest.setPatron(getPatronIdByPatronBarcode(patronIdentifier));
+        restHoldRequest.setNyplSource(restSource);
+        restHoldRequest.setRecordType(ScsbConstants.REST_RECORD_TYPE);
+        restHoldRequest.setPickupLocation("");
+        restHoldRequest.setDeliveryLocation(deliveryLocation);
+        restHoldRequest.setNumberOfCopies(1);
+        restHoldRequest.setNeededBy(restApiResponseUtil.getExpirationDateForRest());
 
-        HttpEntity<NyplHoldRequest> requestEntity = new HttpEntity<>(nyplHoldRequest, getHttpHeaders());
-        ResponseEntity<NYPLHoldResponse> responseEntity = restTemplate.exchange(nyplHoldApiUrl, HttpMethod.POST, requestEntity, NYPLHoldResponse.class);
-        NYPLHoldResponse nyplHoldResponse = responseEntity.getBody();
-        NYPLHoldData nyplHoldData = nyplHoldResponse != null ? nyplHoldResponse.getData() : null;
-        if (null != nyplHoldData) {
-            trackingId = String.valueOf(nyplHoldData.getId());
+        HttpEntity<RestHoldRequest> requestEntity = new HttpEntity<>(restHoldRequest, getHttpHeaders());
+        ResponseEntity<RestHoldResponse> responseEntity = restTemplate.exchange(restHoldApiUrl, HttpMethod.POST, requestEntity, RestHoldResponse.class);
+        RestHoldResponse restHoldResponse = responseEntity.getBody();
+        RestHoldData restHoldData = restHoldResponse != null ? restHoldResponse.getData() : null;
+        if (null != restHoldData) {
+            trackingId = String.valueOf(restHoldData.getId());
         }
         return trackingId;
     }
 
     /**
-     * Gets patron id by the given patron barcode from NYPL.
+     * Gets patron id by the given patron barcode from REST Protocol.
      *
      * @param patronBarcode
      * @return
@@ -563,11 +563,11 @@ public class RestProtocolConnector extends AbstractProtocolConnector {
      */
     private String getPatronIdByPatronBarcode(String patronBarcode) throws Exception {
         String patronId = null;
-        NyplPatronResponse nyplPatronResponse = queryForPatronResponse(patronBarcode);
-        List<NyplPatronData> nyplPatronDatas = nyplPatronResponse.getData();
-        if (CollectionUtils.isNotEmpty(nyplPatronDatas)) {
-            NyplPatronData nyplPatronData = nyplPatronDatas.get(0);
-            patronId = nyplPatronData.getId();
+        RestPatronResponse restPatronResponse = queryForPatronResponse(patronBarcode);
+        List<RestPatronData> restPatronDatas = restPatronResponse.getData();
+        if (CollectionUtils.isNotEmpty(restPatronDatas)) {
+            RestPatronData restPatronData = restPatronDatas.get(0);
+            patronId = restPatronData.getId();
         }
         return patronId;
     }
@@ -579,11 +579,11 @@ public class RestProtocolConnector extends AbstractProtocolConnector {
      * @return
      * @throws Exception
      */
-    private NyplPatronResponse queryForPatronResponse(String patronIdentifier) throws Exception {
+    private RestPatronResponse queryForPatronResponse(String patronIdentifier) throws Exception {
         String apiUrl = getRestDataApiUrl() + ScsbConstants.REST_PATRON_BY_BARCODE_URL + patronIdentifier;
         log.info("{} patron response url : {}" , this.institutionCode, apiUrl);
         HttpEntity requestEntity = new HttpEntity<>(getHttpHeaders());
-        ResponseEntity<NyplPatronResponse> jobResponseEntity = restTemplate.exchange(apiUrl, HttpMethod.GET, requestEntity, NyplPatronResponse.class);
+        ResponseEntity<RestPatronResponse> jobResponseEntity = restTemplate.exchange(apiUrl, HttpMethod.GET, requestEntity, RestPatronResponse.class);
         return jobResponseEntity.getBody();
     }
 
@@ -621,7 +621,7 @@ public class RestProtocolConnector extends AbstractProtocolConnector {
             String apiUrl = getRestDataApiUrl() + RecapConstants.NYPL_RECAP_RECALL_REQUEST_URL;
 
             RecallRequest recallRequest = new RecallRequest();
-            recallRequest.setOwningInstitutionId(nyplApiResponseUtil.getItemOwningInstitutionByItemBarcode(itemIdentifier));
+            recallRequest.setOwningInstitutionId(restApiResponseUtil.getItemOwningInstitutionByItemBarcode(itemIdentifier));
             recallRequest.setItemBarcode(itemIdentifier);
 
             HttpEntity<RecallRequest> requestEntity = new HttpEntity(recallRequest, getHttpHeaders());

@@ -150,7 +150,7 @@ public class ItemRequestServiceUtilUT {
     }
 
     @Test
-    public void getPatronIdBorrowingInstitutionNYPL(){
+    public void getPatronIdBorrowingInstitutionRest(){
         String requestingInstitution ="PUL";
         String owningInstitution = "NYPL";
         String requestType = "EDD";

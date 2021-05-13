@@ -2,8 +2,8 @@ package org.recap.ils.model.response;
 
 import org.junit.Test;
 import org.recap.BaseTestCaseUT;
-import org.recap.ils.model.nypl.DebugInfo;
-import org.recap.ils.model.nypl.response.RefileResponse;
+import org.recap.ils.model.rest.DebugInfo;
+import org.recap.ils.model.rest.response.RefileResponse;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,7 @@
 package org.recap.ils.model.request;
 
 import org.junit.Test;
-import org.recap.ils.model.nypl.request.CheckoutRequest;
+import org.recap.ils.model.rest.request.CheckoutRequest;
 
 import java.util.Date;
 

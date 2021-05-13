@@ -7,12 +7,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCaseUT;
 import org.recap.ScsbConstants;
-import org.recap.ils.model.nypl.*;
-import org.recap.ils.model.nypl.request.CancelHoldRequest;
-import org.recap.ils.model.nypl.request.CheckinRequest;
-import org.recap.ils.model.nypl.request.CheckoutRequest;
-import org.recap.ils.model.nypl.request.CreateHoldRequest;
-import org.recap.ils.model.nypl.response.*;
+import org.recap.ils.model.rest.*;
+import org.recap.ils.model.rest.request.CancelHoldRequest;
+import org.recap.ils.model.rest.request.CheckinRequest;
+import org.recap.ils.model.rest.request.CheckoutRequest;
+import org.recap.ils.model.rest.request.CreateHoldRequest;
+import org.recap.ils.model.rest.response.*;
 import org.recap.ils.model.response.ItemCheckinResponse;
 import org.recap.ils.model.response.ItemCheckoutResponse;
 import org.recap.ils.model.response.ItemHoldResponse;
@@ -350,9 +350,9 @@ public class RestProtocolConnectorUT extends BaseTestCaseUT {
         String author = "test";
         String callNumber = "25578";
         CreateHoldResponse createHoldResponse = getCreateHoldResponse();
-        NYPLHoldResponse nyplHoldResponse = getNyplHoldResponse();
+        RestHoldResponse restHoldResponse = getRestHoldResponse();
         ResponseEntity<CreateHoldResponse> responseEntity = new ResponseEntity<>(createHoldResponse, HttpStatus.OK);
-        ResponseEntity<NYPLHoldResponse> responseEntity1 = new ResponseEntity<>(nyplHoldResponse, HttpStatus.OK);
+        ResponseEntity<RestHoldResponse> responseEntity1 = new ResponseEntity<>(restHoldResponse, HttpStatus.OK);
         doReturn(responseEntity).when(restTemplate).exchange(
                 ArgumentMatchers.anyString(),
                 Mockito.eq(HttpMethod.POST),
@@ -361,8 +361,8 @@ public class RestProtocolConnectorUT extends BaseTestCaseUT {
         doReturn(responseEntity1).when(restTemplate).exchange(
                 ArgumentMatchers.anyString(),
                 Mockito.eq(HttpMethod.GET),
-                ArgumentMatchers.<HttpEntity<NyplHoldRequest>>any(),
-                ArgumentMatchers.<Class<NYPLHoldResponse>>any());
+                ArgumentMatchers.<HttpEntity<RestHoldRequest>>any(),
+                ArgumentMatchers.<Class<RestHoldResponse>>any());
         when(ilsConfigProperties.getIlsRestDataApi()).thenReturn("https:8080//scsb/rest");
         when(restApiResponseUtil.buildItemHoldResponse(any())).thenReturn(new ItemHoldResponse());
         when(restProtocolJobResponsePollingProcessor.pollRestApiRequestItemJobResponse(any(), any())).thenReturn(getJobResponse());
@@ -385,9 +385,9 @@ public class RestProtocolConnectorUT extends BaseTestCaseUT {
         String callNumber = "25578";
         Integer requestId = 2;
         CreateHoldResponse createHoldResponse = getCreateHoldResponse();
-        NYPLHoldResponse nyplHoldResponse = getNyplHoldResponse();
+        RestHoldResponse restHoldResponse = getRestHoldResponse();
         ResponseEntity<CreateHoldResponse> responseEntity = new ResponseEntity<>(createHoldResponse, HttpStatus.OK);
-        ResponseEntity<NYPLHoldResponse> responseEntity1 = new ResponseEntity<>(nyplHoldResponse, HttpStatus.OK);
+        ResponseEntity<RestHoldResponse> responseEntity1 = new ResponseEntity<>(restHoldResponse, HttpStatus.OK);
         doReturn(responseEntity).when(restTemplate).exchange(
                 ArgumentMatchers.anyString(),
                 Mockito.eq(HttpMethod.POST),
@@ -396,8 +396,8 @@ public class RestProtocolConnectorUT extends BaseTestCaseUT {
         doReturn(responseEntity1).when(restTemplate).exchange(
                 ArgumentMatchers.anyString(),
                 Mockito.eq(HttpMethod.GET),
-                ArgumentMatchers.<HttpEntity<NyplHoldRequest>>any(),
-                ArgumentMatchers.<Class<NYPLHoldResponse>>any());
+                ArgumentMatchers.<HttpEntity<RestHoldRequest>>any(),
+                ArgumentMatchers.<Class<RestHoldResponse>>any());
         when(ilsConfigProperties.getIlsRestDataApi()).thenReturn("https:8080//scsb/rest");
         when(restApiResponseUtil.buildItemHoldResponse(any())).thenReturn(new ItemHoldResponse());
         when(restProtocolJobResponsePollingProcessor.pollRestApiRequestItemJobResponse(any(), any())).thenReturn(new JobResponse());
@@ -462,31 +462,31 @@ public class RestProtocolConnectorUT extends BaseTestCaseUT {
         String title = "test";
         String author = "test";
         String callNumber = "25578";
-        NYPLHoldResponse nyplHoldResponse = new NYPLHoldResponse();
-        NYPLHoldData nyplHoldData = new NYPLHoldData();
-        nyplHoldData.setId(1);
-        nyplHoldResponse.setCount(1);
-        nyplHoldResponse.setData(nyplHoldData);
-        NyplPatronResponse nyplPatronResponse = new NyplPatronResponse();
-        NyplPatronData nyplPatronData = new NyplPatronData();
-        nyplPatronData.setId("1");
-        nyplPatronResponse.setCount(1);
-        nyplPatronResponse.setData(Arrays.asList(nyplPatronData));
-        ResponseEntity<NyplPatronResponse> jobResponseEntity = new ResponseEntity<>(nyplPatronResponse, HttpStatus.OK);
-        ResponseEntity<NYPLHoldResponse> nyplHoldResponseEntity = new ResponseEntity<>(nyplHoldResponse, HttpStatus.OK);
+        RestHoldResponse restHoldResponse = new RestHoldResponse();
+        RestHoldData restHoldData = new RestHoldData();
+        restHoldData.setId(1);
+        restHoldResponse.setCount(1);
+        restHoldResponse.setData(restHoldData);
+        RestPatronResponse restPatronResponse = new RestPatronResponse();
+        RestPatronData restPatronData = new RestPatronData();
+        restPatronData.setId("1");
+        restPatronResponse.setCount(1);
+        restPatronResponse.setData(Arrays.asList(restPatronData));
+        ResponseEntity<RestPatronResponse> jobResponseEntity = new ResponseEntity<>(restPatronResponse, HttpStatus.OK);
+        ResponseEntity<RestHoldResponse> restHoldResponseEntity = new ResponseEntity<>(restHoldResponse, HttpStatus.OK);
         when(restProtocolConnector.getRestDataApiUrl()).thenReturn("localhost");
-        when(restApiResponseUtil.getRestApiSourceForInstitution(any(), any())).thenReturn("initiateNyplHoldRequest");
+        when(restApiResponseUtil.getRestApiSourceForInstitution(any(), any())).thenReturn("initiateRestHoldRequest");
         when(restApiResponseUtil.getNormalizedItemIdForRestProtocolApi(itemIdentifier)).thenReturn("records");
         doReturn(jobResponseEntity).when(restTemplate).exchange(
                 ArgumentMatchers.anyString(),
                 Mockito.eq(HttpMethod.GET),
                 ArgumentMatchers.any(),
-                ArgumentMatchers.<Class<NyplPatronResponse>>any());
-        doReturn(nyplHoldResponseEntity).when(restTemplate).exchange(
+                ArgumentMatchers.<Class<RestPatronResponse>>any());
+        doReturn(restHoldResponseEntity).when(restTemplate).exchange(
                 ArgumentMatchers.anyString(),
                 Mockito.eq(HttpMethod.POST),
-                ArgumentMatchers.<HttpEntity<NyplHoldRequest>>any(),
-                ArgumentMatchers.<Class<NYPLHoldResponse>>any());
+                ArgumentMatchers.<HttpEntity<RestHoldRequest>>any(),
+                ArgumentMatchers.<Class<RestHoldResponse>>any());
         restProtocolConnector.placeHold(itemIdentifier, requestId, patronIdentifier, callInstitutionId, itemInstitutionId, expirationDate, bibId, deliveryLocation, "", title, author, callNumber);
     }
 
@@ -676,17 +676,17 @@ public class RestProtocolConnectorUT extends BaseTestCaseUT {
         assertNull(responseItem);
     }
 
-    private NyplHoldRequest getNyplHoldRequest(String deliveryLocation) {
-        NyplHoldRequest nyplHoldRequest = new NyplHoldRequest();
-        nyplHoldRequest.setRecord("records");
-        nyplHoldRequest.setPatron("1");
-        nyplHoldRequest.setNyplSource("initiateNyplHoldRequest");
-        nyplHoldRequest.setRecordType(ScsbConstants.REST_RECORD_TYPE);
-        nyplHoldRequest.setPickupLocation("");
-        nyplHoldRequest.setDeliveryLocation(deliveryLocation);
-        nyplHoldRequest.setNumberOfCopies(1);
-        nyplHoldRequest.setNeededBy(new Date().toString());
-        return nyplHoldRequest;
+    private RestHoldRequest getRestHoldRequest(String deliveryLocation) {
+        RestHoldRequest restHoldRequest = new RestHoldRequest();
+        restHoldRequest.setRecord("records");
+        restHoldRequest.setPatron("1");
+        restHoldRequest.setNyplSource("initiateRestHoldRequest");
+        restHoldRequest.setRecordType(ScsbConstants.REST_RECORD_TYPE);
+        restHoldRequest.setPickupLocation("");
+        restHoldRequest.setDeliveryLocation(deliveryLocation);
+        restHoldRequest.setNumberOfCopies(1);
+        restHoldRequest.setNeededBy(new Date().toString());
+        return restHoldRequest;
     }
 
     public HttpHeaders getHttpHeader() {
@@ -759,27 +759,27 @@ public class RestProtocolConnectorUT extends BaseTestCaseUT {
         return createHoldResponse;
     }
 
-    private NYPLHoldResponse getNyplHoldResponse() {
-        NYPLHoldResponse nyplHoldResponse = new NYPLHoldResponse();
-        NYPLHoldData nyplHoldData = new NYPLHoldData();
-        nyplHoldData.setId(1);
-        nyplHoldData.setPatron("45632892514");
-        nyplHoldData.setJobId("1231");
-        nyplHoldData.setProcessed(true);
-        nyplHoldData.setSuccess(true);
-        nyplHoldData.setUpdatedDate("2017-03-30");
-        nyplHoldData.setCreatedDate("2017-03-30");
-        nyplHoldData.setRecordType("test");
-        nyplHoldData.setRecord("test");
-        nyplHoldData.setNyplSource("test");
-        nyplHoldData.setPickupLocation("test");
-        nyplHoldData.setNeededBy("test");
-        nyplHoldData.setNumberOfCopies(1);
-        nyplHoldResponse.setStatusCode(1);
-        nyplHoldResponse.setDebugInfo(Arrays.asList(new DebugInfo()));
-        nyplHoldResponse.setCount(1);
-        nyplHoldResponse.setData(nyplHoldData);
-        return nyplHoldResponse;
+    private RestHoldResponse getRestHoldResponse() {
+        RestHoldResponse restHoldResponse = new RestHoldResponse();
+        RestHoldData restHoldData = new RestHoldData();
+        restHoldData.setId(1);
+        restHoldData.setPatron("45632892514");
+        restHoldData.setJobId("1231");
+        restHoldData.setProcessed(true);
+        restHoldData.setSuccess(true);
+        restHoldData.setUpdatedDate("2017-03-30");
+        restHoldData.setCreatedDate("2017-03-30");
+        restHoldData.setRecordType("test");
+        restHoldData.setRecord("test");
+        restHoldData.setNyplSource("test");
+        restHoldData.setPickupLocation("test");
+        restHoldData.setNeededBy("test");
+        restHoldData.setNumberOfCopies(1);
+        restHoldResponse.setStatusCode(1);
+        restHoldResponse.setDebugInfo(Arrays.asList(new DebugInfo()));
+        restHoldResponse.setCount(1);
+        restHoldResponse.setData(restHoldData);
+        return restHoldResponse;
     }
 
     private CancelHoldResponse getCancelHoldResponse() {
@@ -801,17 +801,17 @@ public class RestProtocolConnectorUT extends BaseTestCaseUT {
         return cancelHoldResponse;
     }
 
-    private NyplHoldRequest getNyplHoldRequest() {
-        NyplHoldRequest nyplHoldRequest = new NyplHoldRequest();
-        nyplHoldRequest.setRecord("scsb");
-        nyplHoldRequest.setPatron("1");
-        nyplHoldRequest.setNyplSource("scsb");
-        nyplHoldRequest.setRecordType(ScsbConstants.REST_RECORD_TYPE);
-        nyplHoldRequest.setPickupLocation("");
-        nyplHoldRequest.setDeliveryLocation("");
-        nyplHoldRequest.setNumberOfCopies(1);
-        nyplHoldRequest.setNeededBy(new Date().toString());
-        return nyplHoldRequest;
+    private RestHoldRequest getNyplHoldRequest() {
+        RestHoldRequest restHoldRequest = new RestHoldRequest();
+        restHoldRequest.setRecord("scsb");
+        restHoldRequest.setPatron("1");
+        restHoldRequest.setNyplSource("scsb");
+        restHoldRequest.setRecordType(ScsbConstants.REST_RECORD_TYPE);
+        restHoldRequest.setPickupLocation("");
+        restHoldRequest.setDeliveryLocation("");
+        restHoldRequest.setNumberOfCopies(1);
+        restHoldRequest.setNeededBy(new Date().toString());
+        return restHoldRequest;
     }
 
     private JobResponse getJobResponse() {

@@ -6,8 +6,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCaseUT;
 import org.recap.ScsbConstants;
-import org.recap.ils.model.nypl.*;
-import org.recap.ils.model.nypl.response.*;
+import org.recap.ils.model.rest.*;
+import org.recap.ils.model.rest.response.*;
 import org.recap.ils.model.response.*;
 import org.recap.model.jpa.InstitutionEntity;
 import org.recap.model.jpa.ItemEntity;
@@ -49,7 +49,7 @@ public class RestApiResponseUtilUT extends BaseTestCaseUT {
     }
 
     @Test
-    public void getNormalizedItemIdForNypl() throws Exception {
+    public void getNormalizedItemIdForRest() throws Exception {
         ItemEntity itemEntity = getItemEntity();
         Mockito.when(itemDetailsRepository.findByBarcode("123456")).thenReturn(Arrays.asList(itemEntity));
         Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(itemEntity.getInstitutionEntity().getInstitutionCode(), "ils.normalize.owning.inst.item.id")).thenReturn(Boolean.TRUE.toString());

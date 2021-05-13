@@ -3,8 +3,8 @@ package org.recap.processor;
 import org.recap.ScsbCommonConstants;
 import org.recap.callable.RestJobResponsePollingCallable;
 import org.recap.ils.RestProtocolConnector;
-import org.recap.ils.model.nypl.JobData;
-import org.recap.ils.model.nypl.response.JobResponse;
+import org.recap.ils.model.rest.JobData;
+import org.recap.ils.model.rest.response.JobResponse;
 import org.recap.ils.service.RestApiResponseUtil;
 import org.recap.model.ILSConfigProperties;
 import org.recap.util.PropertyUtil;
@@ -33,7 +33,7 @@ public class RestProtocolJobResponsePollingProcessor {
     RestProtocolConnector restProtocolConnector;
 
     /**
-     * The Nypl api response util.
+     * The Rest api response util.
      */
     @Autowired
     RestApiResponseUtil restApiResponseUtil;
@@ -42,7 +42,7 @@ public class RestProtocolJobResponsePollingProcessor {
     PropertyUtil propertyUtil;
 
     /**
-     * Poll nypl request item job response job response.
+     * Poll rest request item job response job response.
      *
      * @param jobId the job id
      * @return the job response
@@ -70,29 +70,29 @@ public class RestProtocolJobResponsePollingProcessor {
             executor.shutdown();
             return jobResponse;
         } catch (InterruptedException e) {
-            logger.error("Nypl job response interrupted for job id -> {} " , jobId);
+            logger.error("{} job response interrupted for job id -> {} ", institution, jobId);
             logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
             Thread.currentThread().interrupt();
             executor.shutdownNow();
-            jobResponse.setStatusMessage("Nypl job response interrupted : " + e.getMessage());
+            jobResponse.setStatusMessage(institution + " job response interrupted : " + e.getMessage());
             return jobResponse;
         } catch (ExecutionException e) {
-            logger.error("Nypl job response execution failed for job id -> {} " , jobId);
+            logger.error("{} job response execution failed for job id -> {} ", institution, jobId);
             logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
             executor.shutdownNow();
-            jobResponse.setStatusMessage("Nypl job response execution failed : " + e.getMessage());
+            jobResponse.setStatusMessage(institution + " job response execution failed : " + e.getMessage());
             return jobResponse;
         } catch (TimeoutException e) {
-            logger.error("Nypl job response polling timed out for job id -> {} " , jobId);
+            logger.error("{} job response polling timed out for job id -> {} ",institution, jobId);
             logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
             executor.shutdownNow();
-            jobResponse.setStatusMessage("Nypl job response polling timed out : " + e.getMessage());
+            jobResponse.setStatusMessage(institution + " job response polling timed out : " + e.getMessage());
             return jobResponse;
         } catch (Exception e) {
-            logger.error("Nypl job response polling failed for job id -> {} " , jobId);
+            logger.error("{} job response polling failed for job id -> {} ", institution, jobId);
             logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
             executor.shutdownNow();
-            jobResponse.setStatusMessage("Nypl job response polling failed : " + e.getMessage());
+            jobResponse.setStatusMessage(institution + " job response polling failed : " + e.getMessage());
             return jobResponse;
         }
     }

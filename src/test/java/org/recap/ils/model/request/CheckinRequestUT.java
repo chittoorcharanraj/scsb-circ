@@ -1,7 +1,7 @@
 package org.recap.ils.model.request;
 
 import org.junit.Test;
-import org.recap.ils.model.nypl.request.CheckinRequest;
+import org.recap.ils.model.rest.request.CheckinRequest;
 
 import static org.junit.Assert.assertNotNull;
 

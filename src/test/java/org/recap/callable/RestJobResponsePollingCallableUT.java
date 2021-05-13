@@ -6,8 +6,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCaseUT;
 import org.recap.ils.RestProtocolConnector;
-import org.recap.ils.model.nypl.JobData;
-import org.recap.ils.model.nypl.response.JobResponse;
+import org.recap.ils.model.rest.JobData;
+import org.recap.ils.model.rest.response.JobResponse;
 
 import static org.junit.Assert.assertNotNull;
 

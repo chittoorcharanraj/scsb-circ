@@ -1,8 +1,8 @@
 package org.recap.callable;
 
 import org.recap.ils.RestProtocolConnector;
-import org.recap.ils.model.nypl.JobData;
-import org.recap.ils.model.nypl.response.JobResponse;
+import org.recap.ils.model.rest.JobData;
+import org.recap.ils.model.rest.response.JobResponse;
 
 import java.util.concurrent.Callable;
 

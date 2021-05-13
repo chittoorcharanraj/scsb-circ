@@ -183,9 +183,6 @@ public class RequestItemControllerUT extends BaseTestCaseUT {
     }
 
     private String getPickupLocationDB(ItemRequestInformation itemRequestInformation, String callInstitution) {
-        if (ScsbCommonConstants.NYPL.equalsIgnoreCase(callInstitution)) {
-            return itemRequestInformation.getDeliveryLocation();
-        }
         return (StringUtils.isBlank(itemRequestInformation.getPickupLocation())) ? getPickupLocation(callInstitution) : itemRequestInformation.getPickupLocation();
     }
 
@@ -428,7 +425,7 @@ public class RequestItemControllerUT extends BaseTestCaseUT {
     }
 
     @Test
-    public void getPickupLocationNYPL() {
+    public void getPickupLocationREST() {
         String institution = "NYPL";
         Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(any(), any())).thenReturn("lb");
         String pickUpLocation = mockedRequestItemController.getPickupLocation(institution);

@@ -5,22 +5,22 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.recap.ScsbConstants;
 import org.recap.ScsbCommonConstants;
-import org.recap.ils.model.nypl.CancelHoldData;
-import org.recap.ils.model.nypl.CheckinData;
-import org.recap.ils.model.nypl.CheckoutData;
-import org.recap.ils.model.nypl.CreateHoldData;
-import org.recap.ils.model.nypl.ItemData;
-import org.recap.ils.model.nypl.JobData;
-import org.recap.ils.model.nypl.Notice;
-import org.recap.ils.model.nypl.RecallData;
-import org.recap.ils.model.nypl.RefileData;
-import org.recap.ils.model.nypl.response.CancelHoldResponse;
-import org.recap.ils.model.nypl.response.CheckinResponse;
-import org.recap.ils.model.nypl.response.CheckoutResponse;
-import org.recap.ils.model.nypl.response.CreateHoldResponse;
-import org.recap.ils.model.nypl.response.ItemResponse;
-import org.recap.ils.model.nypl.response.RecallResponse;
-import org.recap.ils.model.nypl.response.RefileResponse;
+import org.recap.ils.model.rest.CancelHoldData;
+import org.recap.ils.model.rest.CheckinData;
+import org.recap.ils.model.rest.CheckoutData;
+import org.recap.ils.model.rest.CreateHoldData;
+import org.recap.ils.model.rest.ItemData;
+import org.recap.ils.model.rest.JobData;
+import org.recap.ils.model.rest.Notice;
+import org.recap.ils.model.rest.RecallData;
+import org.recap.ils.model.rest.RefileData;
+import org.recap.ils.model.rest.response.CancelHoldResponse;
+import org.recap.ils.model.rest.response.CheckinResponse;
+import org.recap.ils.model.rest.response.CheckoutResponse;
+import org.recap.ils.model.rest.response.CreateHoldResponse;
+import org.recap.ils.model.rest.response.ItemResponse;
+import org.recap.ils.model.rest.response.RecallResponse;
+import org.recap.ils.model.rest.response.RefileResponse;
 import org.recap.ils.model.response.ItemCheckinResponse;
 import org.recap.ils.model.response.ItemCheckoutResponse;
 import org.recap.ils.model.response.ItemHoldResponse;
@@ -235,7 +235,7 @@ public class RestApiResponseUtil {
     }
 
     /**
-     * Gets nypl source based on requesting institution and owning institution.
+     * Gets rest api source based on requesting institution and owning institution.
      *
      * @param reqInstitution the Requesting institution id
      * @param owningInstitution the Owning institution id
@@ -246,10 +246,10 @@ public class RestApiResponseUtil {
     }
 
     /**
-     * Gets normalized item id for nypl.
+     * Gets normalized item id for Rest.
      *
      * @param itemBarcode the item barcode
-     * @return the normalized item id for nypl
+     * @return the normalized item id for rest
      * @throws Exception the exception
      */
     public String getNormalizedItemIdForRestProtocolApi(String itemBarcode) throws Exception {
@@ -271,9 +271,9 @@ public class RestApiResponseUtil {
     }
 
     /**
-     * Gets expiration date for nypl.
+     * Gets expiration date for rest.
      *
-     * @return the expiration date for nypl
+     * @return the expiration date for rest
      * @throws Exception the exception
      */
     public String getExpirationDateForRest() throws Exception {

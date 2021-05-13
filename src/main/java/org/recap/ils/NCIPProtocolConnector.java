@@ -36,9 +36,9 @@ import org.recap.ncip.LookupUser;
 import org.recap.ncip.RecallItem;
 import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
-import org.recap.ils.model.nypl.BibLookupData;
-import org.recap.ils.model.nypl.ItemLookupData;
-import org.recap.ils.model.nypl.response.ItemLookupResponse;
+import org.recap.ils.model.rest.BibLookupData;
+import org.recap.ils.model.rest.ItemLookupData;
+import org.recap.ils.model.rest.response.ItemLookupResponse;
 import org.recap.ils.model.response.ItemLookUpInformationResponse;
 import org.recap.ils.model.response.ItemCheckinResponse;
 import org.recap.ils.model.response.ItemCheckoutResponse;
@@ -135,9 +135,9 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
 
 
     /**
-     * Gets nypl api response util.
+     * Gets rest api response util.
      *
-     * @return the nypl api response util
+     * @return the rest api response util
      */
     public RestApiResponseUtil getRestApiResponseUtil() {
         return restApiResponseUtil;

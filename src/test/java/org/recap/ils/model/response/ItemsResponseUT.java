@@ -2,9 +2,9 @@ package org.recap.ils.model.response;
 
 import org.junit.Test;
 import org.recap.BaseTestCaseUT;
-import org.recap.ils.model.nypl.DebugInfo;
-import org.recap.ils.model.nypl.ItemData;
-import org.recap.ils.model.nypl.response.ItemsResponse;
+import org.recap.ils.model.rest.DebugInfo;
+import org.recap.ils.model.rest.ItemData;
+import org.recap.ils.model.rest.response.ItemsResponse;
 
 import java.util.ArrayList;
 import java.util.List;

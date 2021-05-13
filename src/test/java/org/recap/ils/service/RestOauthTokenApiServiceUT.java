@@ -5,7 +5,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.recap.BaseTestCaseUT;
-import org.recap.ils.model.nypl.response.CancelHoldResponse;
+import org.recap.ils.model.rest.response.CancelHoldResponse;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

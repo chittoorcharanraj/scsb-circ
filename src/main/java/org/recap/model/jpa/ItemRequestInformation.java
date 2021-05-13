@@ -22,9 +22,9 @@ public class ItemRequestInformation implements Serializable {
     private String deliveryLocation = "";
     private String customerCode = "";
     private String requestNotes = "";
-    private String trackingId; // NYPL - trackingId
-    private String author; // NYPL - author
-    private String callNumber; // NYPL - callNumber
+    private String trackingId; // REST - trackingId
+    private String author; // REST - author
+    private String callNumber; // REST - callNumber
     private String translatedDeliveryLocation = "";
 
     /**

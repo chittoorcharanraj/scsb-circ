@@ -378,7 +378,7 @@ public class ItemRequestService {
                         } else { // Borrowed Inst not same as Recall Requesting Inst, Change Retrieval Order Status to Refiled.
                             requestItemEntity.setRequestStatusId(requestStatusEntity.getId());
                             requestItemDetailsRepository.save(requestItemEntity);
-                            // Checkout the item based on the institution Princeton,Columbia or NYPL for the Recall order
+                            // Checkout the item based on the institution for the Recall order
                             if(itemRequestInfo.getRequestType().equalsIgnoreCase(ScsbConstants.EDD_REQUEST)) {
                                 //Checkout for EDD patron
                                 itemRequestInfo.setPatronBarcode(itemRequestServiceUtil.getPatronIdBorrowingInstitution(itemRequestInfo.getRequestingInstitution() ,itemRequestInfo.getItemOwningInstitution(), ScsbCommonConstants.REQUEST_TYPE_EDD));
