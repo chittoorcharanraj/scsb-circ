@@ -1,7 +1,7 @@
 package org.recap.controller;
 
 import org.recap.ScsbConstants;
-import org.recap.ils.ILSProtocolConnectorFactory;
+import org.recap.ils.connector.factory.ILSProtocolConnectorFactory;
 import org.recap.model.jpa.ItemRequestInformation;
 import org.recap.request.ItemValidatorService;
 import org.recap.request.RequestParamaterValidatorService;

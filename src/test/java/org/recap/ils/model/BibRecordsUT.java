@@ -1,6 +1,7 @@
 package org.recap.ils.model;
 
 import org.junit.Test;
+import org.recap.ils.model.marc.BibRecord;
 import org.recap.ils.model.response.BibRecords;
 
 import java.util.Arrays;

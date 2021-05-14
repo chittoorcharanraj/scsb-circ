@@ -1,6 +1,7 @@
 package org.recap.ils.model.rest;
 
 import org.junit.Test;
+import org.recap.ils.protocol.rest.model.RestHoldRequest;
 
 import static org.junit.Assert.assertNotNull;
 

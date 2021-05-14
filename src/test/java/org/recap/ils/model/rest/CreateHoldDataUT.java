@@ -2,6 +2,8 @@ package org.recap.ils.model.rest;
 
 import org.junit.Test;
 import org.recap.BaseTestCaseUT;
+import org.recap.ils.protocol.rest.model.CreateHoldData;
+import org.recap.ils.protocol.rest.model.Description;
 
 import static org.junit.Assert.assertNotNull;
 

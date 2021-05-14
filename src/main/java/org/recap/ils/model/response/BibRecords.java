@@ -1,6 +1,6 @@
 package org.recap.ils.model.response;
 
-import org.recap.ils.model.BibRecord;
+import org.recap.ils.model.marc.BibRecord;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;

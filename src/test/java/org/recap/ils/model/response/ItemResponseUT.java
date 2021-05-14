@@ -1,9 +1,9 @@
 package org.recap.ils.model.response;
 
 import org.junit.Test;
-import org.recap.ils.model.rest.DebugInfo;
-import org.recap.ils.model.rest.ItemData;
-import org.recap.ils.model.rest.response.ItemResponse;
+import org.recap.ils.protocol.rest.model.DebugInfo;
+import org.recap.ils.protocol.rest.model.ItemData;
+import org.recap.ils.protocol.rest.model.response.ItemResponse;
 
 import java.util.Arrays;
 

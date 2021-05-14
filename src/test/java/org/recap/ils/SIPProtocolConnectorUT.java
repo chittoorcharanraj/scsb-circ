@@ -14,6 +14,7 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.recap.ScsbConstants;
+import org.recap.ils.connector.SIPProtocolConnector;
 import org.recap.model.ILSConfigProperties;
 import org.recap.model.jpa.ItemRequestInformation;
 

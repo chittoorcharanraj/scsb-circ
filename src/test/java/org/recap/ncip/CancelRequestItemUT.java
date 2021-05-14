@@ -8,6 +8,7 @@ import org.extensiblecatalog.ncip.v2.service.RequestId;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.recap.BaseTestCaseUT;
+import org.recap.ils.protocol.ncip.CancelRequestItem;
 
 import java.util.Arrays;
 import java.util.Collections;

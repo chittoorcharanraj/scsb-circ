@@ -2,6 +2,10 @@ package org.recap.ils.model.rest;
 
 import org.junit.Test;
 import org.recap.BaseTestCaseUT;
+import org.recap.ils.protocol.rest.model.Attributes;
+import org.recap.ils.protocol.rest.model.CheckOutItemResponse;
+import org.recap.ils.protocol.rest.model.NoticesData;
+import org.recap.ils.protocol.rest.model.Problem;
 
 import java.util.Date;
 

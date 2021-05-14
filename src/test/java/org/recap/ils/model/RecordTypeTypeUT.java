@@ -2,6 +2,7 @@ package org.recap.ils.model;
 
 import org.junit.Test;
 import org.recap.BaseTestCaseUT;
+import org.recap.ils.model.marc.RecordTypeType;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

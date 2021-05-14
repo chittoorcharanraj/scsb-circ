@@ -1,6 +1,10 @@
 package org.recap.ils.model;
 
 import org.junit.Test;
+import org.recap.ils.model.marc.Bib;
+import org.recap.ils.model.marc.BibRecord;
+import org.recap.ils.model.marc.Holding;
+import org.recap.ils.model.marc.Holdings;
 
 import java.util.Arrays;
 

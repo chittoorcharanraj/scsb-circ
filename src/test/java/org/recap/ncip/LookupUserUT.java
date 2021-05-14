@@ -23,6 +23,7 @@ import org.json.JSONObject;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.recap.BaseTestCaseUT;
+import org.recap.ils.protocol.ncip.LookupUser;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;

@@ -2,8 +2,8 @@ package org.recap.ils.model.response;
 
 import org.junit.Test;
 import org.recap.BaseTestCaseUT;
-import org.recap.ils.model.rest.DebugInfo;
-import org.recap.ils.model.rest.response.CancelHoldResponse;
+import org.recap.ils.protocol.rest.model.DebugInfo;
+import org.recap.ils.protocol.rest.model.response.CancelHoldResponse;
 
 import java.util.Arrays;
 

@@ -2,9 +2,9 @@ package org.recap.ils.model.response;
 
 import org.junit.Test;
 import org.recap.BaseTestCaseUT;
-import org.recap.ils.model.rest.DebugInfo;
-import org.recap.ils.model.rest.RestPatronData;
-import org.recap.ils.model.rest.response.RestPatronResponse;
+import org.recap.ils.protocol.rest.model.DebugInfo;
+import org.recap.ils.protocol.rest.model.RestPatronData;
+import org.recap.ils.protocol.rest.model.response.RestPatronResponse;
 
 import java.util.ArrayList;
 import java.util.List;

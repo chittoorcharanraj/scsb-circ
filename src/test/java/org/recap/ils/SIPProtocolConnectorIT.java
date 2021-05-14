@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.recap.BaseTestCaseUT;
 import org.recap.ScsbConstants;
+import org.recap.ils.connector.SIPProtocolConnector;
 import org.recap.model.ILSConfigProperties;
 import org.recap.model.jpa.ItemRequestInformation;
 

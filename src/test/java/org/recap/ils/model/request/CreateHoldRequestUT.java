@@ -1,8 +1,8 @@
 package org.recap.ils.model.request;
 
 import org.junit.Test;
-import org.recap.ils.model.rest.Description;
-import org.recap.ils.model.rest.request.CreateHoldRequest;
+import org.recap.ils.protocol.rest.model.Description;
+import org.recap.ils.protocol.rest.model.request.CreateHoldRequest;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;

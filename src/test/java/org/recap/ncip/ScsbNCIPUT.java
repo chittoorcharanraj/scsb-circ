@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.recap.BaseTestCaseUT;
+import org.recap.ils.protocol.ncip.ScsbNCIP;
 
 import java.util.Arrays;
 

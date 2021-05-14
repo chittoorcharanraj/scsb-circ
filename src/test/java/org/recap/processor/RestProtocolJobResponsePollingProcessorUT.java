@@ -6,10 +6,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCaseUT;
-import org.recap.ils.RestProtocolConnector;
-import org.recap.ils.model.rest.JobData;
-import org.recap.ils.model.rest.response.JobResponse;
-import org.recap.ils.service.RestApiResponseUtil;
+import org.recap.ils.connector.RestProtocolConnector;
+import org.recap.ils.protocol.rest.model.JobData;
+import org.recap.ils.protocol.rest.model.response.JobResponse;
+import org.recap.ils.protocol.rest.processor.RestProtocolJobResponsePollingProcessor;
+import org.recap.ils.protocol.rest.service.RestApiResponseUtil;
 import org.recap.util.PropertyUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 

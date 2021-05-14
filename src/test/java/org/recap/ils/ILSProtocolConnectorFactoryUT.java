@@ -5,12 +5,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCaseUT;
+import org.recap.ils.connector.AbstractProtocolConnector;
+import org.recap.ils.connector.factory.ILSProtocolConnectorFactory;
 import org.recap.model.ILSConfigProperties;
 import org.recap.util.PropertyUtil;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;

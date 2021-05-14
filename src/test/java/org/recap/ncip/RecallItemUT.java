@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import org.recap.BaseTestCaseUT;
+import org.recap.ils.protocol.ncip.RecallItem;
 
 import static org.junit.Assert.assertNotNull;
 

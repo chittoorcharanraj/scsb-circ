@@ -1,7 +1,7 @@
 package org.recap.ils.model.request;
 
 import org.junit.Test;
-import org.recap.ils.model.rest.request.CancelHoldRequest;
+import org.recap.ils.protocol.rest.model.request.CancelHoldRequest;
 
 import static org.junit.Assert.assertNotNull;
 

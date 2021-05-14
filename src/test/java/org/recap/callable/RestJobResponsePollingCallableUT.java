@@ -5,9 +5,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCaseUT;
-import org.recap.ils.RestProtocolConnector;
-import org.recap.ils.model.rest.JobData;
-import org.recap.ils.model.rest.response.JobResponse;
+import org.recap.ils.connector.RestProtocolConnector;
+import org.recap.ils.protocol.rest.callable.RestJobResponsePollingCallable;
+import org.recap.ils.protocol.rest.model.JobData;
+import org.recap.ils.protocol.rest.model.response.JobResponse;
 
 import static org.junit.Assert.assertNotNull;
 

@@ -4,7 +4,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.recap.ScsbConstants;
 import org.recap.ScsbCommonConstants;
-import org.recap.ils.ILSProtocolConnectorFactory;
+import org.recap.ils.connector.factory.ILSProtocolConnectorFactory;
 import org.recap.model.AbstractResponseItem;
 import org.recap.model.BulkRequestInformation;
 import org.recap.model.ItemRefileRequest;
