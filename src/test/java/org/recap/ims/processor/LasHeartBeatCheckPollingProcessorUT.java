@@ -1,4 +1,4 @@
-package org.recap.processor;
+package org.recap.ims.processor;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;

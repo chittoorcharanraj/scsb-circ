@@ -1,4 +1,4 @@
-package org.recap.request;
+package org.recap.ims.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;

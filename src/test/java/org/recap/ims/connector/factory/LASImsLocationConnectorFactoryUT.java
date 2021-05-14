@@ -1,4 +1,4 @@
-package org.recap.ims;
+package org.recap.ims.connector.factory;
 
 import org.junit.Test;
 import org.mockito.InjectMocks;

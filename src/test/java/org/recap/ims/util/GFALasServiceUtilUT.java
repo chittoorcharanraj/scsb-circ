@@ -1,4 +1,4 @@
-package org.recap.ims;
+package org.recap.ims.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;

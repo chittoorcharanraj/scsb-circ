@@ -1,4 +1,4 @@
-package org.recap.request;
+package org.recap.ims.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,6 +28,7 @@ import org.recap.model.gfa.Ttitem;
 import org.recap.model.jpa.*;
 import org.recap.ims.processor.LasItemStatusCheckPollingProcessor;
 import org.recap.repository.jpa.*;
+import org.recap.request.ItemRequestService;
 import org.recap.util.CommonUtil;
 import org.recap.util.ItemRequestServiceUtil;
 import org.recap.util.PropertyUtil;

@@ -1,4 +1,4 @@
-package org.recap.callable;
+package org.recap.ims.callable;
 
 import org.junit.Test;
 import org.mockito.InjectMocks;
