@@ -9,7 +9,7 @@ import org.recap.ils.model.response.*;
 import org.recap.ils.protocol.rest.model.*;
 import org.recap.ils.protocol.rest.model.request.*;
 import org.recap.ils.protocol.rest.model.response.*;
-import org.recap.ils.protocol.rest.service.RestApiResponseUtil;
+import org.recap.ils.protocol.rest.util.RestApiResponseUtil;
 import org.recap.ils.protocol.rest.service.RestOauthTokenApiService;
 import org.recap.model.AbstractResponseItem;
 import org.recap.model.ILSConfigProperties;

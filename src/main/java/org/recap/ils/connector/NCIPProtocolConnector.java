@@ -47,7 +47,7 @@ import org.recap.ils.model.response.ItemHoldResponse;
 import org.recap.ils.model.response.ItemInformationResponse;
 import org.recap.ils.model.response.ItemRecallResponse;
 import org.recap.ils.model.response.PatronInformationResponse;
-import org.recap.ils.protocol.rest.service.RestApiResponseUtil;
+import org.recap.ils.protocol.rest.util.RestApiResponseUtil;
 import org.recap.model.ILSConfigProperties;
 import org.recap.model.AbstractResponseItem;
 import org.recap.repository.jpa.ItemDetailsRepository;

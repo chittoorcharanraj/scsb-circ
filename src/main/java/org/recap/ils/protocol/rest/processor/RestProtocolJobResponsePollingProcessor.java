@@ -5,7 +5,7 @@ import org.recap.ils.protocol.rest.callable.RestJobResponsePollingCallable;
 import org.recap.ils.connector.RestProtocolConnector;
 import org.recap.ils.protocol.rest.model.JobData;
 import org.recap.ils.protocol.rest.model.response.JobResponse;
-import org.recap.ils.protocol.rest.service.RestApiResponseUtil;
+import org.recap.ils.protocol.rest.util.RestApiResponseUtil;
 import org.recap.model.ILSConfigProperties;
 import org.recap.util.PropertyUtil;
 import org.slf4j.Logger;
