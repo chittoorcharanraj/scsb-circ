@@ -3,10 +3,11 @@ package org.recap.controller;
 import org.junit.Test;
 import org.recap.BaseTestCase;
 import org.recap.ScsbCommonConstants;
+import org.recap.model.request.ItemRequestInformation;
 import org.recap.model.jpa.*;
 import org.recap.repository.jpa.BibliographicDetailsRepository;
 import org.recap.repository.jpa.ImsLocationDetailsRepository;
-import org.recap.request.ItemValidatorService;
+import org.recap.request.service.ItemValidatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 

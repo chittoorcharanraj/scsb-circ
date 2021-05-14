@@ -1,10 +1,10 @@
 package org.recap.controller;
 
 import org.recap.ScsbConstants;
-import org.recap.ils.ILSProtocolConnectorFactory;
-import org.recap.model.jpa.ItemRequestInformation;
-import org.recap.request.ItemValidatorService;
-import org.recap.request.RequestParamaterValidatorService;
+import org.recap.ils.connector.factory.ILSProtocolConnectorFactory;
+import org.recap.model.request.ItemRequestInformation;
+import org.recap.request.service.ItemValidatorService;
+import org.recap.request.service.RequestParamaterValidatorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

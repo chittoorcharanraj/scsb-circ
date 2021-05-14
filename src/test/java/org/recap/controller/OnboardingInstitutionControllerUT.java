@@ -2,15 +2,14 @@ package org.recap.controller;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.spi.RouteController;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCaseUT;
-import org.recap.request.ItemEDDRequestService;
-import org.recap.request.ItemRequestService;
+import org.recap.request.service.ItemEDDRequestService;
+import org.recap.request.service.ItemRequestService;
 import org.recap.util.PropertyUtil;
 import org.springframework.context.ApplicationContext;
 

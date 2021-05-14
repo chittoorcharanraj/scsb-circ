@@ -56,7 +56,7 @@ public class RequestDataLoadEmailServiceUT {
         requestDataLoadEmailService.processInput(exchange);
     }
     @Test
-    public void processInputNYPL(){
+    public void processInputRest(){
         ReflectionTestUtils.setField(requestDataLoadEmailService, "institutionCode","NYPL" );
         CamelContext ctx = new DefaultCamelContext();
         Exchange exchange = new DefaultExchange(ctx);

@@ -6,13 +6,14 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCaseUT;
 import org.recap.ScsbCommonConstants;
-import org.recap.ils.AbstractProtocolConnector;
-import org.recap.ils.ILSProtocolConnectorFactory;
+import org.recap.ils.connector.AbstractProtocolConnector;
+import org.recap.ils.connector.factory.ILSProtocolConnectorFactory;
+import org.recap.model.request.ItemRequestInformation;
 import org.recap.model.jpa.*;
 import org.recap.repository.jpa.BibliographicDetailsRepository;
 import org.recap.repository.jpa.ImsLocationDetailsRepository;
-import org.recap.request.ItemValidatorService;
-import org.recap.request.RequestParamaterValidatorService;
+import org.recap.request.service.ItemValidatorService;
+import org.recap.request.service.RequestParamaterValidatorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

@@ -6,17 +6,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCaseUT;
-import org.recap.ScsbCommonConstants;
-import org.recap.ils.AbstractProtocolConnector;
-import org.recap.ils.ILSProtocolConnectorFactory;
-import org.recap.ils.model.response.*;
+import org.recap.ils.connector.AbstractProtocolConnector;
+import org.recap.ils.connector.factory.ILSProtocolConnectorFactory;
 import org.recap.model.AbstractResponseItem;
 import org.recap.model.BulkRequestInformation;
 import org.recap.model.ItemRefileRequest;
-import org.recap.model.jpa.ItemRefileResponse;
-import org.recap.model.jpa.ItemRequestInformation;
-import org.recap.model.jpa.ReplaceRequest;
-import org.recap.request.ItemRequestService;
+import org.recap.model.response.*;
+import org.recap.model.request.ItemRequestInformation;
+import org.recap.model.request.ReplaceRequest;
+import org.recap.request.service.ItemRequestService;
 import org.recap.util.PropertyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -183,9 +181,6 @@ public class RequestItemControllerUT extends BaseTestCaseUT {
     }
 
     private String getPickupLocationDB(ItemRequestInformation itemRequestInformation, String callInstitution) {
-        if (ScsbCommonConstants.NYPL.equalsIgnoreCase(callInstitution)) {
-            return itemRequestInformation.getDeliveryLocation();
-        }
         return (StringUtils.isBlank(itemRequestInformation.getPickupLocation())) ? getPickupLocation(callInstitution) : itemRequestInformation.getPickupLocation();
     }
 
@@ -428,7 +423,7 @@ public class RequestItemControllerUT extends BaseTestCaseUT {
     }
 
     @Test
-    public void getPickupLocationNYPL() {
+    public void getPickupLocationREST() {
         String institution = "NYPL";
         Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(any(), any())).thenReturn("lb");
         String pickUpLocation = mockedRequestItemController.getPickupLocation(institution);

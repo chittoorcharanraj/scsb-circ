@@ -5,7 +5,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCaseUT;
-import org.recap.las.GFALasService;
+import org.recap.ims.service.GFALasService;
 import org.recap.model.gfa.ScsbLasItemStatusCheckModel;
 
 import java.util.ArrayList;
