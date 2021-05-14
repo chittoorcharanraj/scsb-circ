@@ -9,19 +9,18 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCaseUT;
-import org.recap.las.AbstractLASImsLocationConnector;
-import org.recap.las.LASImsLocationConnectorFactory;
-import org.recap.las.model.GFAItemStatusCheckRequest;
-import org.recap.las.model.GFALasStatusCheckRequest;
+import org.recap.ims.connector.AbstractLASImsLocationConnector;
+import org.recap.ims.connector.factory.LASImsLocationConnectorFactory;
+import org.recap.ims.model.GFAItemStatusCheckRequest;
+import org.recap.ims.processor.LasItemStatusCheckPollingProcessor;
 import org.recap.model.gfa.Dsitem;
 import org.recap.model.gfa.GFAItemStatusCheckResponse;
 import org.recap.model.gfa.Ttitem;
 import org.recap.repository.jpa.RequestItemDetailsRepository;
 import org.recap.repository.jpa.RequestItemStatusDetailsRepository;
-import org.recap.las.GFALasService;
+import org.recap.ims.service.GFALasService;
 import org.recap.util.ItemRequestServiceUtil;
 import org.recap.util.PropertyUtil;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.Arrays;
 

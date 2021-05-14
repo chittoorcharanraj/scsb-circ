@@ -6,7 +6,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.recap.ScsbCircApplication;
-import org.recap.las.model.*;
+import org.recap.ims.model.*;
 import org.recap.model.gfa.GFAItemStatusCheckResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;

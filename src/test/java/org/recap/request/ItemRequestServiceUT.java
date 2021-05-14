@@ -21,7 +21,7 @@ import org.recap.ils.model.response.ItemCreateBibResponse;
 import org.recap.ils.model.response.ItemHoldResponse;
 import org.recap.ils.model.response.ItemInformationResponse;
 import org.recap.ils.model.response.ItemRecallResponse;
-import org.recap.las.GFALasService;
+import org.recap.ims.service.GFALasService;
 import org.recap.model.ItemRefileRequest;
 import org.recap.model.jpa.BibliographicEntity;
 import org.recap.model.jpa.CollectionGroupEntity;

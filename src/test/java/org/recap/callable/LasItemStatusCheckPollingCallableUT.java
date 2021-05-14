@@ -6,14 +6,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.recap.las.AbstractLASImsLocationConnector;
-import org.recap.las.LASImsLocationConnectorFactory;
-import org.recap.las.model.GFAItemStatus;
-import org.recap.las.model.GFAItemStatusCheckRequest;
+import org.recap.ims.callable.LasItemStatusCheckPollingCallable;
+import org.recap.ims.connector.AbstractLASImsLocationConnector;
+import org.recap.ims.connector.factory.LASImsLocationConnectorFactory;
+import org.recap.ims.model.GFAItemStatus;
+import org.recap.ims.model.GFAItemStatusCheckRequest;
 import org.recap.model.gfa.Dsitem;
 import org.recap.model.gfa.GFAItemStatusCheckResponse;
 import org.recap.model.gfa.Ttitem;
-import org.recap.las.GFALasService;
 
 import java.util.Arrays;
 

@@ -2,7 +2,7 @@ package org.recap.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.recap.model.gfa.ScsbLasItemStatusCheckModel;
-import org.recap.las.GFALasService;
+import org.recap.ims.service.GFALasService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;

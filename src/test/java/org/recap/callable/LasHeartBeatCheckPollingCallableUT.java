@@ -5,13 +5,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCaseUT;
-import org.recap.las.AbstractLASImsLocationConnector;
-import org.recap.las.LASImsLocationConnectorFactory;
-import org.recap.las.model.GFALasStatusCheckRequest;
-import org.recap.las.model.GFALasStatusCheckResponse;
-import org.recap.las.model.GFALasStatusDsItem;
-import org.recap.las.model.GFALasStatusTtItem;
-import org.recap.las.GFALasService;
+import org.recap.ims.callable.LasHeartBeatCheckPollingCallable;
+import org.recap.ims.connector.AbstractLASImsLocationConnector;
+import org.recap.ims.connector.factory.LASImsLocationConnectorFactory;
+import org.recap.ims.model.GFALasStatusCheckRequest;
+import org.recap.ims.model.GFALasStatusCheckResponse;
+import org.recap.ims.model.GFALasStatusDsItem;
+import org.recap.ims.model.GFALasStatusTtItem;
+import org.recap.ims.service.GFALasService;
 
 import java.util.Arrays;
 

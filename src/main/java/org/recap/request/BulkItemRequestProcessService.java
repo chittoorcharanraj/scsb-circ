@@ -7,7 +7,7 @@ import org.recap.ScsbCommonConstants;
 import org.recap.controller.RequestItemController;
 import org.recap.ils.model.response.ItemCheckoutResponse;
 import org.recap.ils.model.response.ItemInformationResponse;
-import org.recap.las.GFALasService;
+import org.recap.ims.service.GFALasService;
 import org.recap.model.jpa.BulkRequestItem;
 import org.recap.model.jpa.BulkRequestItemEntity;
 import org.recap.model.jpa.ItemEntity;
