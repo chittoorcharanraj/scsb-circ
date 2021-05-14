@@ -4,6 +4,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
+import org.recap.model.request.BulkRequestItem;
+import org.recap.model.request.ItemRequestInformation;
 import org.recap.ims.model.TtitemEDDResponse;
 import org.recap.model.jpa.*;
 import org.recap.repository.jpa.BulkRequestItemDetailsRepository;

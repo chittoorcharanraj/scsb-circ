@@ -11,7 +11,7 @@ import org.recap.model.jpa.DeliveryCodeTranslationEntity;
 import org.recap.model.jpa.ImsLocationEntity;
 import org.recap.model.jpa.InstitutionEntity;
 import org.recap.model.jpa.ItemEntity;
-import org.recap.model.jpa.ItemRequestInformation;
+import org.recap.model.request.ItemRequestInformation;
 import org.recap.model.jpa.ItemStatusEntity;
 import org.recap.model.jpa.OwnerCodeEntity;
 import org.recap.model.jpa.RequestItemEntity;

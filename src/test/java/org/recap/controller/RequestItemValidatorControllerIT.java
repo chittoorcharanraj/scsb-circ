@@ -3,6 +3,7 @@ package org.recap.controller;
 import org.junit.Test;
 import org.recap.BaseTestCase;
 import org.recap.ScsbCommonConstants;
+import org.recap.model.request.ItemRequestInformation;
 import org.recap.model.jpa.*;
 import org.recap.repository.jpa.BibliographicDetailsRepository;
 import org.recap.repository.jpa.ImsLocationDetailsRepository;

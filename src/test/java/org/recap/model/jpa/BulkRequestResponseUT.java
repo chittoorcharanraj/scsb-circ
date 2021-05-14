@@ -1,6 +1,7 @@
 package org.recap.model.jpa;
 
 import org.junit.Test;
+import org.recap.model.response.BulkRequestResponse;
 
 public class BulkRequestResponseUT {
 

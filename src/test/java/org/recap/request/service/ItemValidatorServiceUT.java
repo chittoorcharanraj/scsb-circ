@@ -14,7 +14,7 @@ import org.recap.model.jpa.HoldingsEntity;
 import org.recap.model.jpa.ImsLocationEntity;
 import org.recap.model.jpa.InstitutionEntity;
 import org.recap.model.jpa.ItemEntity;
-import org.recap.model.jpa.ItemRequestInformation;
+import org.recap.model.request.ItemRequestInformation;
 import org.recap.model.jpa.ItemStatusEntity;
 import org.recap.model.jpa.OwnerCodeEntity;
 import org.recap.model.jpa.RequestItemEntity;
@@ -23,7 +23,6 @@ import org.recap.repository.jpa.ImsLocationDetailsRepository;
 import org.recap.repository.jpa.ItemStatusDetailsRepository;
 import org.recap.repository.jpa.OwnerCodeDetailsRepository;
 import org.recap.repository.jpa.RequestItemDetailsRepository;
-import org.recap.request.service.ItemValidatorService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 

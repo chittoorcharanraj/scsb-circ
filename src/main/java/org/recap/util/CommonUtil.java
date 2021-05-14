@@ -4,6 +4,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
+import org.recap.model.request.ItemRequestInformation;
 import org.recap.model.jpa.*;
 import org.recap.repository.jpa.CollectionGroupDetailsRepository;
 import org.recap.repository.jpa.ImsLocationDetailsRepository;

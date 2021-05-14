@@ -10,10 +10,10 @@ import com.pkrete.jsip2.variables.HoldMode;
 import lombok.extern.slf4j.Slf4j;
 import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
-import org.recap.ils.model.response.*;
 import org.recap.model.AbstractResponseItem;
 import org.recap.model.ILSConfigProperties;
-import org.recap.model.jpa.ItemRequestInformation;
+import org.recap.model.request.ItemRequestInformation;
+import org.recap.model.response.*;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;

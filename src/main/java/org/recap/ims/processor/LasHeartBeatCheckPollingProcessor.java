@@ -10,7 +10,7 @@ import org.recap.ScsbConstants;
 import org.recap.ims.callable.LasHeartBeatCheckPollingCallable;
 import org.recap.ims.connector.factory.LASImsLocationConnectorFactory;
 import org.recap.ims.model.GFALasStatusCheckResponse;
-import org.recap.model.jpa.ItemRequestInformation;
+import org.recap.model.request.ItemRequestInformation;
 import org.recap.util.PropertyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;

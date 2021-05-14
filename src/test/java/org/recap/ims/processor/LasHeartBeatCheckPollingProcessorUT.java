@@ -20,7 +20,7 @@ import org.recap.ims.model.GFALasStatusCheckRequest;
 import org.recap.ims.model.GFALasStatusCheckResponse;
 import org.recap.ims.model.GFALasStatusDsItem;
 import org.recap.ims.model.GFALasStatusTtItem;
-import org.recap.model.jpa.ItemRequestInformation;
+import org.recap.model.request.ItemRequestInformation;
 import org.recap.request.util.ItemRequestServiceUtil;
 import org.recap.util.PropertyUtil;
 

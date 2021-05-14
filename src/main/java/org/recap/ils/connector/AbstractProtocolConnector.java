@@ -2,7 +2,7 @@ package org.recap.ils.connector;
 
 import org.recap.model.AbstractResponseItem;
 import org.recap.model.ILSConfigProperties;
-import org.recap.model.jpa.ItemRequestInformation;
+import org.recap.model.request.ItemRequestInformation;
 
 public abstract class AbstractProtocolConnector {
 

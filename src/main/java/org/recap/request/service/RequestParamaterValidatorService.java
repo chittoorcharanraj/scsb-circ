@@ -4,7 +4,7 @@ package org.recap.request.service;
 import org.recap.ScsbConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.controller.ItemController;
-import org.recap.model.jpa.ItemRequestInformation;
+import org.recap.model.request.ItemRequestInformation;
 import org.recap.repository.jpa.InstitutionDetailsRepository;
 import org.recap.util.CommonUtil;
 import org.slf4j.Logger;

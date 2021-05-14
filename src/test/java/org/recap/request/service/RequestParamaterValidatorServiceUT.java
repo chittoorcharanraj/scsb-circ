@@ -9,9 +9,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
 import org.recap.controller.ItemController;
-import org.recap.model.jpa.ItemRequestInformation;
+import org.recap.model.request.ItemRequestInformation;
 import org.recap.repository.jpa.InstitutionDetailsRepository;
-import org.recap.request.service.RequestParamaterValidatorService;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;

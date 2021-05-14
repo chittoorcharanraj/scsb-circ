@@ -8,10 +8,10 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.recap.BaseTestCaseUT;
 import org.recap.ScsbCommonConstants;
+import org.recap.model.request.ItemRequestInformation;
 import org.recap.model.jpa.*;
 import org.recap.repository.jpa.*;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.*;
 

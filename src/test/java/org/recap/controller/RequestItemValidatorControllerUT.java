@@ -8,6 +8,7 @@ import org.recap.BaseTestCaseUT;
 import org.recap.ScsbCommonConstants;
 import org.recap.ils.connector.AbstractProtocolConnector;
 import org.recap.ils.connector.factory.ILSProtocolConnectorFactory;
+import org.recap.model.request.ItemRequestInformation;
 import org.recap.model.jpa.*;
 import org.recap.repository.jpa.BibliographicDetailsRepository;
 import org.recap.repository.jpa.ImsLocationDetailsRepository;

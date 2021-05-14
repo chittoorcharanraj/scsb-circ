@@ -4,7 +4,7 @@ import org.apache.camel.ProducerTemplate;
 import org.apache.commons.collections.CollectionUtils;
 import org.recap.ScsbConstants;
 import org.recap.ScsbCommonConstants;
-import org.recap.model.jpa.BulkRequestItem;
+import org.recap.model.request.BulkRequestItem;
 import org.recap.model.jpa.BulkRequestItemEntity;
 import org.recap.model.jpa.ItemEntity;
 import org.recap.repository.jpa.BulkRequestItemDetailsRepository;

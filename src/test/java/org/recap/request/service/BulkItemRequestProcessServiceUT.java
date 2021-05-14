@@ -8,14 +8,13 @@ import org.mockito.Mockito;
 import org.recap.BaseTestCaseUT;
 import org.recap.ScsbConstants;
 import org.recap.controller.RequestItemController;
-import org.recap.ils.model.response.ItemCheckoutResponse;
-import org.recap.ils.model.response.ItemInformationResponse;
+import org.recap.model.request.ItemRequestInformation;
+import org.recap.model.response.ItemCheckoutResponse;
+import org.recap.model.response.ItemInformationResponse;
 import org.recap.ims.service.GFALasService;
 import org.recap.model.jpa.*;
 import org.recap.repository.jpa.BulkRequestItemDetailsRepository;
 import org.recap.repository.jpa.ItemDetailsRepository;
-import org.recap.request.service.BulkItemRequestProcessService;
-import org.recap.request.service.ItemRequestDBService;
 import org.recap.util.CommonUtil;
 import org.recap.request.util.ItemRequestServiceUtil;
 
