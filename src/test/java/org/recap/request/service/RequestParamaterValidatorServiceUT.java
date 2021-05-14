@@ -1,4 +1,4 @@
-package org.recap.request;
+package org.recap.request.service;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,6 +11,7 @@ import org.recap.ScsbConstants;
 import org.recap.controller.ItemController;
 import org.recap.model.jpa.ItemRequestInformation;
 import org.recap.repository.jpa.InstitutionDetailsRepository;
+import org.recap.request.service.RequestParamaterValidatorService;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;

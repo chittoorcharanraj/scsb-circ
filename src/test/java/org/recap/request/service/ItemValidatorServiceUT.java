@@ -1,4 +1,4 @@
-package org.recap.request;
+package org.recap.request.service;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -23,6 +23,7 @@ import org.recap.repository.jpa.ImsLocationDetailsRepository;
 import org.recap.repository.jpa.ItemStatusDetailsRepository;
 import org.recap.repository.jpa.OwnerCodeDetailsRepository;
 import org.recap.repository.jpa.RequestItemDetailsRepository;
+import org.recap.request.service.ItemValidatorService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 

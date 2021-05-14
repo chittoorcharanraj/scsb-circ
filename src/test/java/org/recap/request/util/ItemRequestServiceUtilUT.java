@@ -1,4 +1,4 @@
-package org.recap.util;
+package org.recap.request.util;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +11,8 @@ import org.recap.ims.model.TtitemEDDResponse;
 import org.recap.model.jpa.*;
 import org.recap.repository.jpa.BulkRequestItemDetailsRepository;
 import org.recap.repository.jpa.GenericPatronDetailsRepository;
-import org.recap.request.EmailService;
+import org.recap.request.service.EmailService;
+import org.recap.request.util.ItemRequestServiceUtil;
 import org.recap.service.RestHeaderService;
 import org.springframework.test.util.ReflectionTestUtils;
 

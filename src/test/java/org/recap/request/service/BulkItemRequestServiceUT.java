@@ -1,4 +1,4 @@
-package org.recap.request;
+package org.recap.request.service;
 
 import org.apache.camel.ProducerTemplate;
 import org.junit.Before;
@@ -12,7 +12,8 @@ import org.recap.ScsbConstants;
 import org.recap.model.jpa.*;
 import org.recap.repository.jpa.BulkRequestItemDetailsRepository;
 import org.recap.repository.jpa.ItemDetailsRepository;
-import org.recap.util.ItemRequestServiceUtil;
+import org.recap.request.service.BulkItemRequestService;
+import org.recap.request.util.ItemRequestServiceUtil;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 

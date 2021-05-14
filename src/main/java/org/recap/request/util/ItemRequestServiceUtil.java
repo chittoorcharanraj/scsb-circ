@@ -1,4 +1,4 @@
-package org.recap.util;
+package org.recap.request.util;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.text.StringEscapeUtils;
@@ -8,8 +8,9 @@ import org.recap.ims.model.TtitemEDDResponse;
 import org.recap.model.jpa.*;
 import org.recap.repository.jpa.BulkRequestItemDetailsRepository;
 import org.recap.repository.jpa.GenericPatronDetailsRepository;
-import org.recap.request.EmailService;
+import org.recap.request.service.EmailService;
 import org.recap.service.RestHeaderService;
+import org.recap.util.PropertyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package org.recap.request;
+package org.recap.request.service;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,6 +29,7 @@ import org.recap.repository.jpa.OwnerCodeDetailsRepository;
 import org.recap.repository.jpa.RequestItemDetailsRepository;
 import org.recap.repository.jpa.RequestItemStatusDetailsRepository;
 import org.recap.repository.jpa.RequestTypeDetailsRepository;
+import org.recap.request.service.ItemRequestDBService;
 import org.recap.util.CommonUtil;
 import org.recap.util.SecurityUtil;
 import org.springframework.test.util.ReflectionTestUtils;

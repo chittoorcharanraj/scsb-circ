@@ -1,4 +1,4 @@
-package org.recap.request;
+package org.recap.request.service;
 
 import org.apache.camel.Exchange;
 import org.junit.Test;
@@ -19,7 +19,7 @@ import org.recap.model.jpa.*;
 import org.recap.repository.jpa.GenericPatronDetailsRepository;
 import org.recap.repository.jpa.ItemDetailsRepository;
 import org.recap.repository.jpa.RequestTypeDetailsRepository;
-import org.recap.util.ItemRequestServiceUtil;
+import org.recap.request.util.ItemRequestServiceUtil;
 import org.recap.util.PropertyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

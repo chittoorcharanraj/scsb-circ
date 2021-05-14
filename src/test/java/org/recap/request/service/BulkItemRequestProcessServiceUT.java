@@ -1,4 +1,4 @@
-package org.recap.request;
+package org.recap.request.service;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,8 +14,10 @@ import org.recap.ims.service.GFALasService;
 import org.recap.model.jpa.*;
 import org.recap.repository.jpa.BulkRequestItemDetailsRepository;
 import org.recap.repository.jpa.ItemDetailsRepository;
+import org.recap.request.service.BulkItemRequestProcessService;
+import org.recap.request.service.ItemRequestDBService;
 import org.recap.util.CommonUtil;
-import org.recap.util.ItemRequestServiceUtil;
+import org.recap.request.util.ItemRequestServiceUtil;
 
 import java.util.Arrays;
 import java.util.Date;

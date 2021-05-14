@@ -1,4 +1,4 @@
-package org.recap.request;
+package org.recap.request.service;
 
 import org.apache.camel.ProducerTemplate;
 import org.junit.Test;
@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.recap.ScsbConstants;
 import org.recap.ScsbCommonConstants;
+import org.recap.request.service.EmailService;
 import org.recap.util.PropertyUtil;
 
 import static org.junit.Assert.assertTrue;

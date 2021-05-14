@@ -20,9 +20,8 @@ import org.recap.ims.model.GFALasStatusCheckRequest;
 import org.recap.ims.model.GFALasStatusCheckResponse;
 import org.recap.ims.model.GFALasStatusDsItem;
 import org.recap.ims.model.GFALasStatusTtItem;
-import org.recap.ims.processor.LasHeartBeatCheckPollingProcessor;
 import org.recap.model.jpa.ItemRequestInformation;
-import org.recap.util.ItemRequestServiceUtil;
+import org.recap.request.util.ItemRequestServiceUtil;
 import org.recap.util.PropertyUtil;
 
 import java.util.Arrays;

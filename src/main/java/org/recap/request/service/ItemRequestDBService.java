@@ -1,4 +1,4 @@
-package org.recap.request;
+package org.recap.request.service;
 
 import org.apache.commons.lang3.StringUtils;
 import org.recap.ScsbConstants;

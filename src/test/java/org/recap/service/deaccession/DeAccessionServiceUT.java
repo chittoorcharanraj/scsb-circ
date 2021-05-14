@@ -24,7 +24,7 @@ import org.recap.model.jpa.*;
 import org.recap.repository.jpa.*;
 import org.recap.service.RestHeaderService;
 import org.recap.util.CommonUtil;
-import org.recap.util.ItemRequestServiceUtil;
+import org.recap.request.util.ItemRequestServiceUtil;
 import org.recap.util.PropertyUtil;
 import org.springframework.test.util.ReflectionTestUtils;
 

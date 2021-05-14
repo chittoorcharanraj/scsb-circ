@@ -1,4 +1,4 @@
-package org.recap.request;
+package org.recap.request.service;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
@@ -47,7 +47,7 @@ import org.recap.repository.jpa.RequestItemDetailsRepository;
 import org.recap.repository.jpa.RequestItemStatusDetailsRepository;
 import org.recap.service.RestHeaderService;
 import org.recap.util.CommonUtil;
-import org.recap.util.ItemRequestServiceUtil;
+import org.recap.request.util.ItemRequestServiceUtil;
 import org.recap.util.PropertyUtil;
 import org.recap.util.SecurityUtil;
 import org.slf4j.Logger;

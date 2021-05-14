@@ -1,4 +1,4 @@
-package org.recap.request;
+package org.recap.request.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,7 +21,7 @@ import org.recap.model.jpa.*;
 import org.recap.repository.jpa.*;
 import org.recap.service.RestHeaderService;
 import org.recap.util.CommonUtil;
-import org.recap.util.ItemRequestServiceUtil;
+import org.recap.request.util.ItemRequestServiceUtil;
 import org.recap.util.PropertyUtil;
 import org.recap.util.SecurityUtil;
 import org.slf4j.Logger;

@@ -12,14 +12,13 @@ import org.recap.BaseTestCaseUT;
 import org.recap.ims.connector.AbstractLASImsLocationConnector;
 import org.recap.ims.connector.factory.LASImsLocationConnectorFactory;
 import org.recap.ims.model.GFAItemStatusCheckRequest;
-import org.recap.ims.processor.LasItemStatusCheckPollingProcessor;
 import org.recap.model.gfa.Dsitem;
 import org.recap.model.gfa.GFAItemStatusCheckResponse;
 import org.recap.model.gfa.Ttitem;
 import org.recap.repository.jpa.RequestItemDetailsRepository;
 import org.recap.repository.jpa.RequestItemStatusDetailsRepository;
 import org.recap.ims.service.GFALasService;
-import org.recap.util.ItemRequestServiceUtil;
+import org.recap.request.util.ItemRequestServiceUtil;
 import org.recap.util.PropertyUtil;
 
 import java.util.Arrays;

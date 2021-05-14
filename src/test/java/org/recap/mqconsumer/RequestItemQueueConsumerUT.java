@@ -15,10 +15,10 @@ import org.recap.ScsbCommonConstants;
 import org.recap.ils.model.response.ItemInformationResponse;
 import org.recap.model.jpa.ItemRequestInformation;
 import org.recap.model.jpa.RequestInformation;
-import org.recap.request.BulkItemRequestProcessService;
-import org.recap.request.BulkItemRequestService;
-import org.recap.request.ItemEDDRequestService;
-import org.recap.request.ItemRequestService;
+import org.recap.request.service.BulkItemRequestProcessService;
+import org.recap.request.service.BulkItemRequestService;
+import org.recap.request.service.ItemEDDRequestService;
+import org.recap.request.service.ItemRequestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

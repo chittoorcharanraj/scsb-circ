@@ -1,4 +1,4 @@
-package org.recap.request;
+package org.recap.request.service;
 
 import org.apache.camel.ProducerTemplate;
 import org.recap.ScsbConstants;

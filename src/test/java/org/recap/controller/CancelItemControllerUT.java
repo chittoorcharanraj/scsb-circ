@@ -13,10 +13,10 @@ import org.recap.model.CancelRequestResponse;
 import org.recap.model.jpa.*;
 import org.recap.repository.jpa.RequestItemDetailsRepository;
 import org.recap.repository.jpa.RequestItemStatusDetailsRepository;
-import org.recap.request.EmailService;
-import org.recap.request.ItemRequestService;
+import org.recap.request.service.EmailService;
+import org.recap.request.service.ItemRequestService;
 import org.recap.util.CommonUtil;
-import org.recap.util.ItemRequestServiceUtil;
+import org.recap.request.util.ItemRequestServiceUtil;
 import org.recap.util.PropertyUtil;
 
 import java.util.Arrays;

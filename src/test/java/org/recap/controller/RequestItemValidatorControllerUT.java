@@ -11,8 +11,8 @@ import org.recap.ils.connector.factory.ILSProtocolConnectorFactory;
 import org.recap.model.jpa.*;
 import org.recap.repository.jpa.BibliographicDetailsRepository;
 import org.recap.repository.jpa.ImsLocationDetailsRepository;
-import org.recap.request.ItemValidatorService;
-import org.recap.request.RequestParamaterValidatorService;
+import org.recap.request.service.ItemValidatorService;
+import org.recap.request.service.RequestParamaterValidatorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

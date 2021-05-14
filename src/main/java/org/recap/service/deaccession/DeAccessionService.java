@@ -56,7 +56,7 @@ import org.recap.repository.jpa.DeliveryCodeDetailsRepository;
 import org.recap.repository.jpa.DeliveryCodeTranslationDetailsRepository;
 import org.recap.service.RestHeaderService;
 import org.recap.util.CommonUtil;
-import org.recap.util.ItemRequestServiceUtil;
+import org.recap.request.util.ItemRequestServiceUtil;
 import org.recap.util.PropertyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
