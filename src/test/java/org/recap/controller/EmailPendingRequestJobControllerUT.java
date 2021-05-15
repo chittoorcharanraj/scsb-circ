@@ -8,6 +8,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.recap.PropertyKeyConstants;
+import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
 import org.recap.service.ActiveMqQueuesInfo;
 import org.recap.util.CommonUtil;
@@ -45,7 +47,7 @@ public class EmailPendingRequestJobControllerUT {
     public void sendEmailForPendingRequest() throws Exception{
         Mockito.when(commonUtil.findAllImsLocationCodeExceptUN()).thenReturn(Arrays.asList("HD"));
         Mockito.when(activemqQueuesInfo.getActivemqQueuesInfo("las" + "HD" + ScsbConstants.OUTGOING_QUEUE_SUFFIX)).thenReturn(20);
-        Mockito.when(propertyUtil.getPropertyByImsLocationAndKey("HD", "las.email.assist.to")).thenReturn("test@gmail.com");
+        Mockito.when(propertyUtil.getPropertyByImsLocationAndKey("HD", PropertyKeyConstants.IMS.IMS_EMAIL_ASSIST_TO)).thenReturn("test@gmail.com");
         String result = emailPendingRequestJobController.sendEmailForPendingRequest();
         assertNotNull(result);
         assertEquals("Success",result);

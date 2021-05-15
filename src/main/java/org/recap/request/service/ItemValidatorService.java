@@ -2,6 +2,7 @@ package org.recap.request.service;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.recap.PropertyKeyConstants;
 import org.recap.ScsbConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.controller.ItemController;
@@ -102,8 +103,8 @@ public class ItemValidatorService {
      */
     public ResponseEntity itemValidation(ItemRequestInformation itemRequestInformation) {
         List<ItemEntity> itemEntityList = getItemEntities(itemRequestInformation.getItemBarcodes());
-        Map<String, String> frozenInstitutionPropertyMap = propertyUtil.getPropertyByKeyForAllInstitutions(ScsbCommonConstants.KEY_ILS_ENABLE_CIRCULATION_FREEZE);
-        Map<String, String> frozenInstitutionMessagesPropertyMap = propertyUtil.getPropertyByKeyForAllInstitutions(ScsbCommonConstants.KEY_ILS_CIRCULATION_FREEZE_MESSAGE);
+        Map<String, String> frozenInstitutionPropertyMap = propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_ENABLE_CIRCULATION_FREEZE);
+        Map<String, String> frozenInstitutionMessagesPropertyMap = propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_CIRCULATION_FREEZE_MESSAGE);
         if (itemRequestInformation.getItemBarcodes().size() == 1) {
             if (itemEntityList != null && !itemEntityList.isEmpty()) {
                 for (ItemEntity itemEntity1 : itemEntityList) {

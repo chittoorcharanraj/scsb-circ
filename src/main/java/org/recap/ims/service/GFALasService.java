@@ -7,6 +7,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
 import org.recap.model.response.ItemInformationResponse;
@@ -116,7 +117,7 @@ public class GFALasService {
      * @return the boolean
      */
     public boolean isUseQueueLasCall(String imsLocationCode) {
-        return Boolean.parseBoolean(this.propertyUtil.getPropertyByImsLocationAndKey(imsLocationCode, "las.use.queue"));
+        return Boolean.parseBoolean(this.propertyUtil.getPropertyByImsLocationAndKey(imsLocationCode, PropertyKeyConstants.IMS.IMS_USE_QUEUE));
     }
 
     /**

@@ -5,6 +5,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
 import org.recap.ims.callable.LasHeartBeatCheckPollingCallable;
@@ -42,7 +43,7 @@ public class LasHeartBeatCheckPollingProcessor {
         if (StringUtils.isNotBlank(itemRequestInformation.getImsLocationCode())) {
             GFALasStatusCheckResponse gfaLasStatusCheckResponse = null;
             ExecutorService executor = Executors.newSingleThreadExecutor();
-            Integer pollingTimeInterval = Integer.parseInt(propertyUtil.getPropertyByImsLocationAndKey(itemRequestInformation.getImsLocationCode(), "las.polling.time.interval"));
+            Integer pollingTimeInterval = Integer.parseInt(propertyUtil.getPropertyByImsLocationAndKey(itemRequestInformation.getImsLocationCode(), PropertyKeyConstants.IMS.IMS_POLLING_TIME_INTERVAL));
             try {
                 log.info("Polling Started on LAS Heart Beat Check for IMS Location : {}", itemRequestInformation.getImsLocationCode());
                 Future<GFALasStatusCheckResponse> future = executor.submit(new LasHeartBeatCheckPollingCallable(pollingTimeInterval, lasImsLocationConnectorFactory, itemRequestInformation.getImsLocationCode()));

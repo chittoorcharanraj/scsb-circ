@@ -2,13 +2,19 @@ package org.recap.ims.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.recap.ScsbCircApplication;
 import org.recap.ims.model.*;
+import org.recap.model.IMSConfigProperties;
 import org.recap.model.gfa.GFAItemStatusCheckResponse;
-import org.springframework.beans.factory.annotation.Value;
+import org.recap.model.jpa.ImsLocationEntity;
+import org.recap.repository.jpa.ImsLocationDetailsRepository;
+import org.recap.util.PropertyUtil;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -35,21 +41,28 @@ import static org.junit.Assert.assertNotNull;
 @Ignore
 public class GFALasServiceIT {
 
-    @Value("${gfa.item.status}")
-    private String gfaItemStatusUrl;
+    @Mock
+    private ImsLocationDetailsRepository imsLocationDetailsRepository;
 
-    @Value("${gfa.las.status}")
-    private String gfaLasStatusUrl;
+    @Mock
+    private PropertyUtil propertyUtil;
 
-    @Value("${gfa.item.retrieval.order}")
-    private String gfaRetrieveItemUrl;
+    private IMSConfigProperties imsConfigProperties;
 
-    @Value("${gfa.item.edd.retrieval.order}")
-    private String gfaEddRetrieveItemUrl;
+    @Before
+    public void setup() {
+        MockitoAnnotations.initMocks(this);
+        List<ImsLocationEntity> imsLocationEntities = imsLocationDetailsRepository.findAll();
+        if (!imsLocationEntities.isEmpty()) {
+            imsConfigProperties = propertyUtil.getIMSConfigProperties(imsLocationEntities.get(0).getImsLocationCode());
+        } else {
+            imsConfigProperties = new IMSConfigProperties();
+        }
+    }
 
     @Test
     public void testItemStatusCheck() throws Exception {
-        log.info("GFA Item Status API Url: {}", gfaItemStatusUrl);
+        log.info("GFA Item Status API Url: {}", imsConfigProperties.getImsItemStatusEndpoint());
         GFAItemStatusCheckRequest itemStatusCheckRequest = new GFAItemStatusCheckRequest();
         List<GFAItemStatus> itemStatus = new ArrayList<>();
         GFAItemStatus gfaItemStatus = new GFAItemStatus();
@@ -64,7 +77,7 @@ public class GFALasServiceIT {
         try {
             RestTemplate restTemplate = new RestTemplate();
             HttpEntity requestEntity = new HttpEntity<>(new HttpHeaders());
-            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(gfaItemStatusUrl).queryParam("filter", filterParamValue);
+            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(imsConfigProperties.getImsItemStatusEndpoint()).queryParam("filter", filterParamValue);
             ResponseEntity<GFAItemStatusCheckResponse> responseEntity = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, GFAItemStatusCheckResponse.class);
             GFAItemStatusCheckResponse gfaItemStatusCheckResponse = responseEntity.getBody();
             String response = objectMapper.writeValueAsString(gfaItemStatusCheckResponse);
@@ -78,7 +91,7 @@ public class GFALasServiceIT {
 
     @Test
     public void testLasStatusCheck() throws Exception {
-        log.info("GFA LAS Status API Url: {}", gfaLasStatusUrl);
+        log.info("GFA LAS Status API Url: {}", imsConfigProperties.getImsServerStatusEndpoint());
         GFALasStatusCheckRequest lasStatusCheckRequest = new GFALasStatusCheckRequest();
         GFALasStatus lasStatus = new GFALasStatus();
         lasStatus.setImsLocationCode("RECAP");
@@ -91,7 +104,7 @@ public class GFALasServiceIT {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity requestEntity = new HttpEntity<>(new HttpHeaders());
         try {
-            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(gfaLasStatusUrl).queryParam("filter", filterParamValue);
+            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(imsConfigProperties.getImsServerStatusEndpoint()).queryParam("filter", filterParamValue);
             ResponseEntity<GFALasStatusCheckResponse> responseEntity = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, GFALasStatusCheckResponse.class);
             GFALasStatusCheckResponse gfaLasStatusCheckResponse = responseEntity.getBody();
             String response = objectMapper.writeValueAsString(gfaLasStatusCheckResponse);
@@ -103,7 +116,7 @@ public class GFALasServiceIT {
 
     @Test
     public void testRetrieveItem() throws Exception {
-        log.info("GFA Retrieve Item API Url: {}", gfaRetrieveItemUrl);
+        log.info("GFA Retrieve Item API Url: {}", imsConfigProperties.getImsItemRetrievalOrderEndpoint());
         GFARetrieveItemRequest gfaRetrieveItemRequest = new GFARetrieveItemRequest();
         RetrieveItemRequest retrieveItem = new RetrieveItemRequest();
         List<TtitemRequest> ttitem = new ArrayList<>();
@@ -124,7 +137,7 @@ public class GFALasServiceIT {
         try {
             RestTemplate restTemplate = new RestTemplate();
             HttpEntity requestEntity = new HttpEntity<>(gfaRetrieveItemRequest);
-            ResponseEntity<GFARetrieveItemResponse> responseEntity = restTemplate.exchange(gfaRetrieveItemUrl, HttpMethod.POST, requestEntity, GFARetrieveItemResponse.class);
+            ResponseEntity<GFARetrieveItemResponse> responseEntity = restTemplate.exchange(imsConfigProperties.getImsItemRetrievalOrderEndpoint(), HttpMethod.POST, requestEntity, GFARetrieveItemResponse.class);
             GFARetrieveItemResponse gfaRetrieveItemResponse = responseEntity.getBody();
             String response = objectMapper.writeValueAsString(gfaRetrieveItemResponse);
             log.info("GFA Retrieve Item Response: {}", response);
@@ -135,7 +148,7 @@ public class GFALasServiceIT {
 
     @Test
     public void testEddRetrieveItem() throws Exception {
-        log.info("GFA EDD Retrieve Item API Url: {}", gfaEddRetrieveItemUrl);
+        log.info("GFA EDD Retrieve Item API Url: {}", imsConfigProperties.getImsItemEddOrderEndpoint());
         GFARetrieveEDDItemRequest gfaRetrieveEDDItemRequest = new GFARetrieveEDDItemRequest();
         RetrieveItemEDDRequest retrieveEDD = new RetrieveItemEDDRequest();
         List<TtitemEDDResponse> ttitem = new ArrayList<>();
@@ -166,7 +179,7 @@ public class GFALasServiceIT {
         try {
             RestTemplate restTemplate = new RestTemplate();
             HttpEntity requestEntity = new HttpEntity<>(gfaRetrieveEDDItemRequest);
-            ResponseEntity<GFAEddItemResponse> responseEntity = restTemplate.exchange(gfaEddRetrieveItemUrl, HttpMethod.POST, requestEntity, GFAEddItemResponse.class);
+            ResponseEntity<GFAEddItemResponse> responseEntity = restTemplate.exchange(imsConfigProperties.getImsItemEddOrderEndpoint(), HttpMethod.POST, requestEntity, GFAEddItemResponse.class);
             GFAEddItemResponse gfaEddItemResponse = responseEntity.getBody();
             String response = objectMapper.writeValueAsString(gfaEddItemResponse);
             log.info("GFA EDD Retrieve Item Response: {}", response);

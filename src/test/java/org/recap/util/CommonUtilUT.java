@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.recap.BaseTestCaseUT;
+import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.model.request.ItemRequestInformation;
 import org.recap.model.jpa.*;
@@ -159,7 +160,7 @@ public class CommonUtilUT extends BaseTestCaseUT {
         String imsLocationCode = "HD";
         String imsItemStatus = "RECAP";
         String imsAvailableCodes = "HD,UN,RECAP";
-        Mockito.when(propertyUtil.getPropertyByImsLocationAndKey(imsLocationCode, "las.available.item.status.codes")).thenReturn(imsAvailableCodes);
+        Mockito.when(propertyUtil.getPropertyByImsLocationAndKey(imsLocationCode, PropertyKeyConstants.IMS.IMS_AVAILABLE_ITEM_STATUS_CODES)).thenReturn(imsAvailableCodes);
         boolean result = commonUtil.checkIfImsItemStatusIsAvailableOrNotAvailable(imsLocationCode, imsItemStatus, true);
         assertNotNull(result);
         assertTrue(result);
@@ -170,7 +171,7 @@ public class CommonUtilUT extends BaseTestCaseUT {
         String imsLocationCode = "HD";
         String imsItemStatus = "RECAP";
         String imsNotAvailableCodes = "HD,UN,RECAP";
-        Mockito.when(propertyUtil.getPropertyByImsLocationAndKey(imsLocationCode, "las.not.available.item.status.codes")).thenReturn(imsNotAvailableCodes);
+        Mockito.when(propertyUtil.getPropertyByImsLocationAndKey(imsLocationCode, PropertyKeyConstants.IMS.IMS_NOT_AVAILABLE_ITEM_STATUS_CODES)).thenReturn(imsNotAvailableCodes);
         boolean result = commonUtil.checkIfImsItemStatusIsAvailableOrNotAvailable(imsLocationCode, imsItemStatus, false);
         assertNotNull(result);
         assertTrue(result);

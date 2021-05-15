@@ -2,6 +2,7 @@ package org.recap.ims.processor;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
+import org.recap.PropertyKeyConstants;
 import org.recap.ScsbConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.ims.callable.LasItemStatusCheckPollingCallable;
@@ -28,7 +29,7 @@ public class LasItemStatusCheckPollingProcessor {
     public GFAItemStatusCheckResponse pollLasItemStatusJobResponse(String barcode, String imsLocationCode, CamelContext camelContext) {
         GFAItemStatusCheckResponse gfaItemStatusCheckResponse = null;
         ExecutorService executor = Executors.newSingleThreadExecutor();
-        Integer pollingTimeInterval = Integer.parseInt(propertyUtil.getPropertyByImsLocationAndKey(imsLocationCode, "las.polling.time.interval"));
+        Integer pollingTimeInterval = Integer.parseInt(propertyUtil.getPropertyByImsLocationAndKey(imsLocationCode, PropertyKeyConstants.IMS.IMS_POLLING_TIME_INTERVAL));
         try {
             Future<GFAItemStatusCheckResponse> future = executor.submit(new LasItemStatusCheckPollingCallable(pollingTimeInterval, lasImsLocationConnectorFactory, barcode, imsLocationCode));
             gfaItemStatusCheckResponse = future.get();

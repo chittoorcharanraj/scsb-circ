@@ -8,6 +8,7 @@ import org.apache.camel.ProducerTemplate;
 import org.apache.camel.impl.engine.DefaultFluentProducerTemplate;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.recap.PropertyKeyConstants;
 import org.recap.ScsbConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.model.request.ItemRequestInformation;
@@ -1076,8 +1077,7 @@ public class ItemRequestService {
      * @return the boolean
      */
     public boolean isUseQueueLasCall(String imsLocationCode) {
-        logger.info("proprty value for las.use.queue >>>> " + propertyUtil.getPropertyByImsLocationAndKey(imsLocationCode, "las.use.queue"));
-        return Boolean.parseBoolean(this.propertyUtil.getPropertyByImsLocationAndKey(imsLocationCode, "las.use.queue"));
+        return Boolean.parseBoolean(this.propertyUtil.getPropertyByImsLocationAndKey(imsLocationCode, PropertyKeyConstants.IMS.IMS_USE_QUEUE));
     }
 
     public boolean executeLasitemCheck(ItemRequestInformation itemRequestInfo, ItemInformationResponse itemResponseInformation) {
