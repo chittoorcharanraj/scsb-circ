@@ -1,6 +1,8 @@
 package org.recap.request.service;
 
 import org.apache.camel.ProducerTemplate;
+import org.recap.PropertyKeyConstants;
+import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
 import org.recap.camel.EmailPayLoad;
 import org.recap.util.PropertyUtil;
@@ -71,7 +73,7 @@ public class EmailService {
      */
     private String emailIdTo(String institution, String imsLocationCode) {
         if (institution.equalsIgnoreCase(ScsbConstants.GFA)) {
-            return propertyUtil.getPropertyByImsLocationAndKey(imsLocationCode, "las.email.request.cancel.to");
+            return propertyUtil.getPropertyByImsLocationAndKey(imsLocationCode, PropertyKeyConstants.IMS.IMS_EMAIL_REQUEST_CANCEL_TO);
         } else {
             return propertyUtil.getPropertyByInstitutionAndKey(institution, "email.recall.request.to");
         }
@@ -79,7 +81,7 @@ public class EmailService {
 
     private String emailIdCC(String institution, String imsLocationCode) {
         if (institution.equalsIgnoreCase(ScsbConstants.GFA)) {
-            return propertyUtil.getPropertyByImsLocationAndKey(imsLocationCode, "las.email.request.recall.cc");
+            return propertyUtil.getPropertyByImsLocationAndKey(imsLocationCode, PropertyKeyConstants.IMS.IMS_EMAIL_REQUEST_RECALL_CC);
         } else {
             return propertyUtil.getPropertyByInstitutionAndKey(institution, "email.request.recall.cc");
         }

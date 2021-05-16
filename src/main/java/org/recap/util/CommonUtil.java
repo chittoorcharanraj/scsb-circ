@@ -2,6 +2,7 @@ package org.recap.util;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
 import org.recap.model.request.ItemRequestInformation;
@@ -285,7 +286,7 @@ public class CommonUtil {
      * @return boolean
      */
     public boolean checkIfImsItemStatusIsAvailableOrNotAvailable(String imsLocationCode, String imsItemStatus, boolean checkAvailable) {
-        String propertyKey = checkAvailable ? "las.available.item.status.codes" : "las.not.available.item.status.codes";
+        String propertyKey = checkAvailable ? PropertyKeyConstants.IMS.IMS_AVAILABLE_ITEM_STATUS_CODES : PropertyKeyConstants.IMS.IMS_NOT_AVAILABLE_ITEM_STATUS_CODES;
         String imsItemStatusCodes = propertyUtil.getPropertyByImsLocationAndKey(imsLocationCode, propertyKey);
         return StringUtils.startsWithAny(imsItemStatus, imsItemStatusCodes.split(","));
     }

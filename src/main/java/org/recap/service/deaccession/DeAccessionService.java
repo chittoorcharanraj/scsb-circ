@@ -3,6 +3,7 @@ package org.recap.service.deaccession;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jettison.json.JSONException;
+import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
 import org.recap.controller.RequestItemController;
@@ -213,7 +214,7 @@ public class DeAccessionService {
     }
 
     private String getRecapAssistanceEmailTo(String imsLocationCode) {
-        return this.propertyUtil.getPropertyByImsLocationAndKey(imsLocationCode, "las.email.assist.to");
+        return this.propertyUtil.getPropertyByImsLocationAndKey(imsLocationCode, PropertyKeyConstants.IMS.IMS_EMAIL_ASSIST_TO);
     }
 
     /**

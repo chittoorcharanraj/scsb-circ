@@ -80,9 +80,9 @@ public class GFALasImsLocationConnector extends AbstractLASImsLocationConnector 
 
             RestTemplate restTemplate = getRestTemplate();
             HttpEntity<HttpHeaders> requestEntity = new HttpEntity<>(new HttpHeaders());
-            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(this.imsConfigProperties.getLasServerStatusEndpoint()).queryParam(ScsbConstants.GFA_SERVICE_PARAM, filterParamValue);
-            ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setConnectTimeout(Integer.parseInt(this.imsConfigProperties.getLasServerResponseTimeoutMillis()));
-            ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setReadTimeout(Integer.parseInt(this.imsConfigProperties.getLasServerResponseTimeoutMillis()));
+            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(this.imsConfigProperties.getImsServerStatusEndpoint()).queryParam(ScsbConstants.GFA_SERVICE_PARAM, filterParamValue);
+            ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setConnectTimeout(Integer.parseInt(this.imsConfigProperties.getImsServerResponseTimeoutMillis()));
+            ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setReadTimeout(Integer.parseInt(this.imsConfigProperties.getImsServerResponseTimeoutMillis()));
             ResponseEntity<GFALasStatusCheckResponse> responseEntity = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, GFALasStatusCheckResponse.class);
             if (responseEntity.getBody() != null) {
                 gfaLasStatusCheckResponse = responseEntity.getBody();
@@ -113,9 +113,9 @@ public class GFALasImsLocationConnector extends AbstractLASImsLocationConnector 
 
             RestTemplate restTemplate = getRestTemplate();
             HttpEntity<HttpHeaders> requestEntity = new HttpEntity<>(new HttpHeaders());
-            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(this.imsConfigProperties.getLasItemStatusEndpoint()).queryParam(ScsbConstants.GFA_SERVICE_PARAM, filterParamValue);
-            ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setConnectTimeout(Integer.parseInt(this.imsConfigProperties.getLasServerResponseTimeoutMillis()));
-            ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setReadTimeout(Integer.parseInt(this.imsConfigProperties.getLasServerResponseTimeoutMillis()));
+            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(this.imsConfigProperties.getImsItemStatusEndpoint()).queryParam(ScsbConstants.GFA_SERVICE_PARAM, filterParamValue);
+            ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setConnectTimeout(Integer.parseInt(this.imsConfigProperties.getImsServerResponseTimeoutMillis()));
+            ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setReadTimeout(Integer.parseInt(this.imsConfigProperties.getImsServerResponseTimeoutMillis()));
             ResponseEntity<GFAItemStatusCheckResponse> responseEntity = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, GFAItemStatusCheckResponse.class);
             if (responseEntity.getBody() != null) {
                 gfaItemStatusCheckResponse = responseEntity.getBody();
@@ -141,7 +141,7 @@ public class GFALasImsLocationConnector extends AbstractLASImsLocationConnector 
         try {
             log.info("Las Item Retrieval Request at {} : {}", this.imsLocationCode, gfaRetrieveItemRequest);
             HttpEntity<GFARetrieveItemRequest> requestEntity = new HttpEntity<>(gfaRetrieveItemRequest, getHttpHeaders());
-            ResponseEntity<GFARetrieveItemResponse> responseEntity = getRestTemplate().exchange(this.imsConfigProperties.getLasItemRetrievalOrderEndpoint(), HttpMethod.POST, requestEntity, GFARetrieveItemResponse.class);
+            ResponseEntity<GFARetrieveItemResponse> responseEntity = getRestTemplate().exchange(this.imsConfigProperties.getImsItemRetrievalOrderEndpoint(), HttpMethod.POST, requestEntity, GFARetrieveItemResponse.class);
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
                 gfaRetrieveItemResponse = responseEntity.getBody();
                 gfaRetrieveItemResponse = gfaLasServiceUtil.getLASRetrieveResponse(gfaRetrieveItemResponse);
@@ -176,7 +176,7 @@ public class GFALasImsLocationConnector extends AbstractLASImsLocationConnector 
         try {
             log.info("Las Item EDD Request at {} : {}", this.imsLocationCode, gfaRetrieveEDDItemRequest);
             HttpEntity<GFARetrieveEDDItemRequest> requestEntity = new HttpEntity<>(gfaRetrieveEDDItemRequest, getHttpHeaders());
-            ResponseEntity<GFAEddItemResponse> responseEntity = getRestTemplate().exchange(this.imsConfigProperties.getLasItemEddOrderEndpoint(), HttpMethod.POST, requestEntity, GFAEddItemResponse.class);
+            ResponseEntity<GFAEddItemResponse> responseEntity = getRestTemplate().exchange(this.imsConfigProperties.getImsItemEddOrderEndpoint(), HttpMethod.POST, requestEntity, GFAEddItemResponse.class);
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
                 gfaEddItemResponse = responseEntity.getBody();
                 gfaEddItemResponse = gfaLasServiceUtil.getLASEddResponse(gfaEddItemResponse);
@@ -213,9 +213,9 @@ public class GFALasImsLocationConnector extends AbstractLASImsLocationConnector 
             HttpEntity<GFAPwdRequest> requestEntity = new HttpEntity<>(gfaPwdRequest, getHttpHeaders());
             log.info("GFA PWD Request at {} : {}", this.imsLocationCode, gfaLasServiceUtil.convertJsonToString(requestEntity.getBody()));
             RestTemplate restTemplate = getRestTemplate();
-            ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setConnectTimeout(Integer.parseInt(this.imsConfigProperties.getLasServerResponseTimeoutMillis()));
-            ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setReadTimeout(Integer.parseInt(this.imsConfigProperties.getLasServerResponseTimeoutMillis()));
-            ResponseEntity<GFAPwdResponse> responseEntity = restTemplate.exchange(this.imsConfigProperties.getLasPermanentWithdrawalDirectEndpoint(), HttpMethod.POST, requestEntity, GFAPwdResponse.class);
+            ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setConnectTimeout(Integer.parseInt(this.imsConfigProperties.getImsServerResponseTimeoutMillis()));
+            ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setReadTimeout(Integer.parseInt(this.imsConfigProperties.getImsServerResponseTimeoutMillis()));
+            ResponseEntity<GFAPwdResponse> responseEntity = restTemplate.exchange(this.imsConfigProperties.getImsPermanentWithdrawalDirectEndpoint(), HttpMethod.POST, requestEntity, GFAPwdResponse.class);
             gfaPwdResponse = responseEntity.getBody();
             log.info("GFA PWD Response Status Code at {} : {}", this.imsLocationCode, responseEntity.getStatusCode());
             log.info("GFA PWD Response at {} : {}", this.imsLocationCode, gfaLasServiceUtil.convertJsonToString(responseEntity.getBody()));
@@ -239,9 +239,9 @@ public class GFALasImsLocationConnector extends AbstractLASImsLocationConnector 
             HttpEntity<GFAPwiRequest> requestEntity = new HttpEntity<>(gfaPwiRequest, getHttpHeaders());
             log.info("GFA PWI Request at {} : {}", this.imsLocationCode, gfaLasServiceUtil.convertJsonToString(requestEntity.getBody()));
             RestTemplate restTemplate = getRestTemplate();
-            ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setConnectTimeout(Integer.parseInt(this.imsConfigProperties.getLasServerResponseTimeoutMillis()));
-            ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setReadTimeout(Integer.parseInt(this.imsConfigProperties.getLasServerResponseTimeoutMillis()));
-            ResponseEntity<GFAPwiResponse> responseEntity = restTemplate.exchange(this.imsConfigProperties.getLasPermanentWithdrawalIndirectEndpoint(), HttpMethod.POST, requestEntity, GFAPwiResponse.class);
+            ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setConnectTimeout(Integer.parseInt(this.imsConfigProperties.getImsServerResponseTimeoutMillis()));
+            ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setReadTimeout(Integer.parseInt(this.imsConfigProperties.getImsServerResponseTimeoutMillis()));
+            ResponseEntity<GFAPwiResponse> responseEntity = restTemplate.exchange(this.imsConfigProperties.getImsPermanentWithdrawalIndirectEndpoint(), HttpMethod.POST, requestEntity, GFAPwiResponse.class);
             gfaPwiResponse = responseEntity.getBody();
             log.info("GFA PWI Response Status Code at {} : {}", this.imsLocationCode, responseEntity.getStatusCode());
             log.info("GFA PWI Response at {} : {}", this.imsLocationCode, gfaLasServiceUtil.convertJsonToString(responseEntity.getBody()));

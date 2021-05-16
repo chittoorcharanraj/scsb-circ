@@ -1,6 +1,7 @@
 package org.recap.controller;
 
 import org.apache.camel.ProducerTemplate;
+import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
 import org.recap.camel.EmailPayLoad;
@@ -59,7 +60,7 @@ public class EmailPendingRequestJobController {
                 logger.info("Pending Request at {} : {}", imsLocationCode, pendingRequests);
                 EmailPayLoad emailPayLoad = new EmailPayLoad();
                 emailPayLoad.setPendingRequestLimit(String.valueOf(pendingRequestLimit));
-                emailPayLoad.setTo(propertyUtil.getPropertyByImsLocationAndKey(imsLocationCode, "las.email.assist.to"));
+                emailPayLoad.setTo(propertyUtil.getPropertyByImsLocationAndKey(imsLocationCode, PropertyKeyConstants.IMS.IMS_EMAIL_ASSIST_TO));
                 producerTemplate.sendBodyAndHeader(ScsbConstants.EMAIL_Q, emailPayLoad, ScsbConstants.EMAIL_BODY_FOR, ScsbConstants.EMAIL_HEADER_REQUEST_PENDING);
             }
         }
