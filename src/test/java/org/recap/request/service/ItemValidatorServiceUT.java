@@ -151,35 +151,38 @@ public class ItemValidatorServiceUT extends BaseTestCaseUT {
     @Test
     public void getCheckDeliveryLocation(){
         String ownerCode = "PA";
+        Integer institution = Integer.valueOf(1);
         ItemRequestInformation itemRequestInformation = getItemRequestInformation(Arrays.asList("2456744"));
         OwnerCodeEntity ownerCodeEntity = getOwnerCodeEntity();
 //        Mockito.when(ownerCodeDetailsRepository.findByOwnerCodeAndOwningInstitutionCode(itemRequestInformation.getDeliveryLocation(), itemRequestInformation.getRequestingInstitution())).thenReturn(ownerCodeEntity);
         Mockito.when(ownerCodeDetailsRepository.findByOwnerCode(any())).thenReturn(ownerCodeEntity);
-        itemValidatorService.checkDeliveryLocation(ownerCode,itemRequestInformation);
-        itemValidatorService.checkDeliveryLocation(ownerCode,itemRequestInformation);
-        itemValidatorService.checkDeliveryLocation(ownerCode,itemRequestInformation);
+        itemValidatorService.checkDeliveryLocation(ownerCode,institution, itemRequestInformation);
+        itemValidatorService.checkDeliveryLocation(ownerCode,institution, itemRequestInformation);
+        itemValidatorService.checkDeliveryLocation(ownerCode,institution, itemRequestInformation);
     }
     @Test
     public void getCheckDeliveryLocationForDifferentInstitution(){
         String ownerCode = "PA";
+        Integer institution = Integer.valueOf(1);
         ItemRequestInformation itemRequestInformation = getItemRequestInformation(Arrays.asList("2456744"));
         itemRequestInformation.setRequestingInstitution("3");
         OwnerCodeEntity ownerCodeEntity = getOwnerCodeEntity();
 //        Mockito.when(ownerCodeDetailsRepository.findByOwnerCodeAndOwningInstitutionCode(itemRequestInformation.getDeliveryLocation(), itemRequestInformation.getRequestingInstitution())).thenReturn(ownerCodeEntity);
         Mockito.when(ownerCodeDetailsRepository.findByOwnerCode(any())).thenReturn(ownerCodeEntity);
-        itemValidatorService.checkDeliveryLocation(ownerCode,itemRequestInformation);
+        itemValidatorService.checkDeliveryLocation(ownerCode, institution, itemRequestInformation);
     }
     @Test
     public void getCheckDeliveryLocationForDifferentInstitutionWithSameDeliveryRestrictions(){
         String ownerCode = "PA";
+        Integer institution = Integer.valueOf(1);
         ItemRequestInformation itemRequestInformation = getItemRequestInformation(Arrays.asList("2456744"));
         itemRequestInformation.setRequestingInstitution("PUL");
         OwnerCodeEntity ownerCodeEntity = getOwnerCodeEntity();
 //        Mockito.when(ownerCodeDetailsRepository.findByOwnerCodeAndOwningInstitutionCode(any(), any())).thenReturn(ownerCodeEntity);
         Mockito.when(ownerCodeDetailsRepository.findByOwnerCode(any())).thenReturn(ownerCodeEntity);
-        itemValidatorService.checkDeliveryLocation(ownerCode,itemRequestInformation);
+        itemValidatorService.checkDeliveryLocation(ownerCode, institution, itemRequestInformation);
         itemRequestInformation.setDeliveryLocation("PA");
-        itemValidatorService.checkDeliveryLocation(ownerCode,itemRequestInformation);
+        itemValidatorService.checkDeliveryLocation(ownerCode, institution, itemRequestInformation);
     }
 
     private ItemRequestInformation getItemRequestInformation(List<String> itemBarcodes) {

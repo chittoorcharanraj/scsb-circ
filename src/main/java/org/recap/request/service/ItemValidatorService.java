@@ -151,7 +151,7 @@ public class ItemValidatorService {
                 ItemEntity itemEntity = itemEntityList.get(0);
                 ResponseEntity responseEntity1 = null;
                 if (itemRequestInformation.getRequestType().equalsIgnoreCase(ScsbCommonConstants.REQUEST_TYPE_RETRIEVAL) || itemRequestInformation.getRequestType().equalsIgnoreCase(ScsbCommonConstants.REQUEST_TYPE_RECALL)) {
-                    int validateCustomerCode = checkDeliveryLocation(itemEntity.getCustomerCode(), itemRequestInformation);
+                    int validateCustomerCode = checkDeliveryLocation(itemEntity.getCustomerCode(), itemEntity.getOwningInstitutionId(), itemRequestInformation);
                     if (validateCustomerCode == 1) {
                         int validateDeliveryTranslationCode = checkDeliveryLocationTranslationCode(itemEntity, itemRequestInformation);
                         if (validateDeliveryTranslationCode == 1) {
@@ -253,7 +253,7 @@ public class ItemValidatorService {
             }
 
             if (!(itemRequestInformation.getRequestType().equalsIgnoreCase(ScsbCommonConstants.REQUEST_TYPE_EDD))) {
-                int validateCustomerCode = checkDeliveryLocation(itemEntity.getCustomerCode(), itemRequestInformation);
+                int validateCustomerCode = checkDeliveryLocation(itemEntity.getCustomerCode(), itemEntity.getOwningInstitutionId(), itemRequestInformation);
                 if (validateCustomerCode == 1) {
                  int validateDeliveryTranslationCode = checkDeliveryLocationTranslationCode(itemEntity, itemRequestInformation);
                     if (validateDeliveryTranslationCode == 1) {
@@ -301,9 +301,9 @@ public class ItemValidatorService {
      * @param itemRequestInformation the item request information
      * @return the int
      */
-    public int checkDeliveryLocation(String onwerCode, ItemRequestInformation itemRequestInformation) {
+    public int checkDeliveryLocation(String onwerCode, Integer institutionId, ItemRequestInformation itemRequestInformation) {
         int bSuccess = 0;
-        DeliveryCodeEntity deliveryCodeEntity = deliveryCodeDetailsRepository.findByDeliveryCodeAndActive(itemRequestInformation.getDeliveryLocation(), "Y");
+        DeliveryCodeEntity deliveryCodeEntity = deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(itemRequestInformation.getDeliveryLocation(), institutionId, 'Y');
         if (deliveryCodeEntity != null && deliveryCodeEntity.getDeliveryCode().equalsIgnoreCase(itemRequestInformation.getDeliveryLocation())) {
                 OwnerCodeEntity onwerCodeEntity = onwerCodeDetailsRepository.findByOwnerCode(onwerCode);
                 String requestingInstitution = itemRequestInformation.getRequestingInstitution();
@@ -322,7 +322,7 @@ public class ItemValidatorService {
 
     public int checkDeliveryLocationTranslationCode(ItemEntity itemEntity, ItemRequestInformation itemRequestInformation) {
         int bSuccess = -1;
-        DeliveryCodeEntity deliveryCodeEntity = deliveryCodeDetailsRepository.findByDeliveryCodeAndActive(itemRequestInformation.getDeliveryLocation(), "Y");
+        DeliveryCodeEntity deliveryCodeEntity = deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(itemRequestInformation.getDeliveryLocation(), itemEntity.getOwningInstitutionId(), 'Y');
         InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionCode(itemRequestInformation.getRequestingInstitution());
             DeliveryCodeTranslationEntity deliveryCodeTranslationEntity = deliveryCodeTranslationDetailsRepository.findByRequestingInstitutionandImsLocation(institutionEntity.getId(), deliveryCodeEntity.getId(), itemEntity.getImsLocationId());
             if (deliveryCodeTranslationEntity != null) {
