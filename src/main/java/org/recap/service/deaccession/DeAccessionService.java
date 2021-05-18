@@ -408,8 +408,8 @@ public class DeAccessionService {
                     GFAPwdTtItemRequest gfaPwdTtItemRequest = new GFAPwdTtItemRequest();
                     gfaPwdTtItemRequest.setCustomerCode(deAccessionDBResponseEntity.getCustomerCode());
                     gfaPwdTtItemRequest.setItemBarcode(deAccessionDBResponseEntity.getBarcode());
-                    DeliveryCodeEntity deliveryCodeEntity = deliveryCodeDetailsRepository.findByDeliveryCodeAndActive(deAccessionDBResponseEntity.getDeliveryLocation(), "Y");
                     InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionCode(deAccessionDBResponseEntity.getInstitutionCode());
+                    DeliveryCodeEntity deliveryCodeEntity = deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(deAccessionDBResponseEntity.getDeliveryLocation(), institutionEntity.getId(), 'Y');
                     ImsLocationEntity imsLocationEntity = imsLocationDetailsRepository.findByImsLocationCode(deAccessionDBResponseEntity.getImsLocationCode());
                     if (deliveryCodeEntity != null && institutionEntity != null && imsLocationEntity != null) {
                         DeliveryCodeTranslationEntity deliveryCodeTranslationEntity = deliveryCodeTranslationDetailsRepository.findByRequestingInstitutionandImsLocation(institutionEntity.getId(), deliveryCodeEntity.getId(), imsLocationEntity.getId());
