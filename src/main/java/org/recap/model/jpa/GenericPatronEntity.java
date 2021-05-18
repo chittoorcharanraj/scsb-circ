@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "generic_patron_t", schema = "recap", catalog = "")
+@Table(name = "generic_patron_t", catalog = "")
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = false)
