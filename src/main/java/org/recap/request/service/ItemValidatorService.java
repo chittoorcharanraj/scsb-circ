@@ -142,7 +142,7 @@ public class ItemValidatorService {
                     }
 
                     if (itemRequestInformation.getRequestType().equalsIgnoreCase(ScsbCommonConstants.REQUEST_TYPE_EDD)) {
-                        OwnerCodeEntity onwerCodeEntity = onwerCodeDetailsRepository.findByOwnerCodeAndRecapDeliveryRestrictionLikeEDD(itemEntity1.getCustomerCode());
+                        OwnerCodeEntity onwerCodeEntity = onwerCodeDetailsRepository.findByOwnerCodeAndRecapDeliveryRestrictionLikeEDD(itemEntity1.getCustomerCode(), itemEntity1.getOwningInstitutionId());
                         if (onwerCodeEntity == null) {
                             return new ResponseEntity<>(ScsbConstants.EDD_REQUEST_NOT_ALLOWED, getHttpHeaders(), HttpStatus.BAD_REQUEST);
                         }

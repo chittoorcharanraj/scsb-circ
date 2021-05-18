@@ -42,8 +42,8 @@ public interface OwnerCodeDetailsRepository extends BaseRepository<OwnerCodeEnti
     @Query(value="select ownerCode from OwnerCodeEntity ownerCode where ownerCode.ownerCode =:ownerCode and ownerCode.recapDeliveryRestrictions LIKE ('%EDD%')")
    */
 
-    @Query(value="select OC.* from OWNER_CODES_T OC join OWN_DELIVERY_MAPPING_T ODM on OC.OWNER_CODE_ID = ODM.OWNER_CODE_ID JOIN DELIVERY_CODES_T DC ON DC.DELIVERY_CODE_ID = ODM.DELIVERY_CODE_ID WHERE DC.DELIVERY_CODE = 'EDD' AND OC.OWNER_CODE=:ownerCode", nativeQuery = true)
-    OwnerCodeEntity findByOwnerCodeAndRecapDeliveryRestrictionLikeEDD(@Param("ownerCode") String ownerCode);
+    @Query(value="select OC.* from OWNER_CODES_T OC join OWN_DELIVERY_MAPPING_T ODM on OC.OWNER_CODE_ID = ODM.OWNER_CODE_ID JOIN DELIVERY_CODES_T DC ON DC.DELIVERY_CODE_ID = ODM.DELIVERY_CODE_ID WHERE DC.DELIVERY_CODE = 'EDD' AND OC.OWNER_CODE=:ownerCode OC.INSTITUTION_ID=:institutionId", nativeQuery = true)
+    OwnerCodeEntity findByOwnerCodeAndRecapDeliveryRestrictionLikeEDD(@Param("ownerCode") String ownerCode, @Param("institutionId") Integer institutionId);
 
     @Query(value="select DC.* from DELIVERY_CODES_T DC where DC.DELIVERY_CODE = :deliveryLocation and DC.DELIVERY_CODE_ID in (select ODM.DELIVERY_CODE_ID from OWN_DELIVERY_MAPPING_T ODM where ODM.OWNER_CODE_ID =:ownerCodeId and ODM.REQUESTING_INST_ID = :institutionId) ", nativeQuery = true)
             List<Object[]> findByOwnerCodeAndRequestingInstitution(@Param("ownerCodeId") Integer ownerCodeId, @Param("institutionId") Integer institutionId, @Param("deliveryLocation") String deliveryLocation);
