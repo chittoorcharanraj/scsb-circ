@@ -1,6 +1,7 @@
 package org.recap.service;
 
 import org.apache.camel.ProducerTemplate;
+import org.recap.PropertyKeyConstants;
 import org.recap.ScsbConstants;
 import org.recap.camel.EmailPayLoad;
 import org.recap.model.jpa.PendingRequestEntity;
@@ -40,10 +41,10 @@ public class IdentifyPendingRequestService {
     @Autowired
     ProducerTemplate producerTemplate;
 
-    @Value("${email.pending.request.to}")
+    @Value("${" + PropertyKeyConstants.EMAIL_PENDING_REQUEST_TO + "}")
     private String pendingRequestEmailTo;
 
-    @Value("${email.pending.request.cc}")
+    @Value("${" + PropertyKeyConstants.EMAIL_PENDING_REQUEST_CC + "}")
     private String pendingRequestEmailCc;
 
     public boolean identifyPendingRequest(){

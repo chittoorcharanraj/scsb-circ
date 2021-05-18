@@ -435,5 +435,6 @@ public final class ScsbConstants {
 
     public static final String RECAP_DEPOSITORY = "RD";
     public static final String NCIP_REMOTE_STORAGE = "NCIP_REMOTE_STORAGE";
+    public static final String ILS_SOURCE_FOR_ITEM = ScsbConstants.ILS_SOURCE_FOR_ITEM;
 
 }

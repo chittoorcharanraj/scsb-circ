@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailService {
 
-    @Value("${email.bulk.request.to}")
+    @Value("${" + PropertyKeyConstants.EMAIL_BULK_REQUEST_TO + "}")
     private String bulkRequestEmailTo;
 
     @Autowired
@@ -75,7 +75,7 @@ public class EmailService {
         if (institution.equalsIgnoreCase(ScsbConstants.GFA)) {
             return propertyUtil.getPropertyByImsLocationAndKey(imsLocationCode, PropertyKeyConstants.IMS.IMS_EMAIL_REQUEST_CANCEL_TO);
         } else {
-            return propertyUtil.getPropertyByInstitutionAndKey(institution, "email.recall.request.to");
+            return propertyUtil.getPropertyByInstitutionAndKey(institution, PropertyKeyConstants.ILS.ILS_EMAIL_RECALL_REQUEST_TO);
         }
     }
 
@@ -83,7 +83,7 @@ public class EmailService {
         if (institution.equalsIgnoreCase(ScsbConstants.GFA)) {
             return propertyUtil.getPropertyByImsLocationAndKey(imsLocationCode, PropertyKeyConstants.IMS.IMS_EMAIL_REQUEST_RECALL_CC);
         } else {
-            return propertyUtil.getPropertyByInstitutionAndKey(institution, "email.request.recall.cc");
+            return propertyUtil.getPropertyByInstitutionAndKey(institution, PropertyKeyConstants.ILS.ILS_EMAIL_REQUEST_RECALL_CC);
         }
     }
 }

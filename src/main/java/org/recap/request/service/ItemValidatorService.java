@@ -49,7 +49,7 @@ public class ItemValidatorService {
     /**
      * The Scsb solr client url.
      */
-    @Value("${scsb.solr.doc.url}")
+    @Value("${" + PropertyKeyConstants.SCSB_SOLR_DOC_URL + "}")
     private String scsbSolrClientUrl;
 
     /**

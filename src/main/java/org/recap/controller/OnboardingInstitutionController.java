@@ -3,6 +3,7 @@ package org.recap.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
+import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
 import org.recap.ims.service.GFALasService;
@@ -46,9 +47,9 @@ public class OnboardingInstitutionController {
     public String createTopicsForNewInstitution(@RequestParam String institutionCode) {
         String responseStatus = ScsbCommonConstants.SUCCESS;
         try {
-            String retrievalInstitutionTopic = propertyUtil.getPropertyByInstitutionAndKey(institutionCode, "ils.topic.retrieval.request");
-            String eddInstitutionTopic = propertyUtil.getPropertyByInstitutionAndKey(institutionCode, "ils.topic.edd.request");
-            String recallInstitutionTopic = propertyUtil.getPropertyByInstitutionAndKey(institutionCode, "ils.topic.recall.request");
+            String retrievalInstitutionTopic = propertyUtil.getPropertyByInstitutionAndKey(institutionCode, PropertyKeyConstants.ILS.ILS_TOPIC_RETRIEVAL_REQUEST);
+            String eddInstitutionTopic = propertyUtil.getPropertyByInstitutionAndKey(institutionCode, PropertyKeyConstants.ILS.ILS_TOPIC_EDD_REQUEST);
+            String recallInstitutionTopic = propertyUtil.getPropertyByInstitutionAndKey(institutionCode, PropertyKeyConstants.ILS.ILS_TOPIC_RECALL_REQUEST);
 
             camelContext.addRoutes(new RouteBuilder() {
                 @Override

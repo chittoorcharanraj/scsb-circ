@@ -566,7 +566,7 @@ public class DeAccessionService {
     }
 
     private boolean isAllowedToCancelRequest(ItemInformationResponse itemInformationResponse, String requestingInstitution) {
-        String checkedOutCirculationStatuses = propertyUtil.getPropertyByInstitutionAndKey(requestingInstitution, "ils.checkedout.circulation.status");
+        String checkedOutCirculationStatuses = propertyUtil.getPropertyByInstitutionAndKey(requestingInstitution, PropertyKeyConstants.ILS.ILS_CHECKEDOUT_CIRCULATION_STATUS);
         return getHoldQueueLength(itemInformationResponse) > 0 || (StringUtils.isNotBlank(checkedOutCirculationStatuses) && StringUtils.containsIgnoreCase(checkedOutCirculationStatuses, itemInformationResponse.getCirculationStatus()));
     }
 
