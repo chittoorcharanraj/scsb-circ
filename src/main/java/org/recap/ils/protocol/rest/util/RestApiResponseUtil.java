@@ -3,6 +3,7 @@ package org.recap.ils.protocol.rest.util;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
+import org.recap.PropertyKeyConstants;
 import org.recap.ScsbConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.ils.protocol.rest.model.CancelHoldData;
@@ -242,7 +243,7 @@ public class RestApiResponseUtil {
      * @return the nypl source
      */
     public String getRestApiSourceForInstitution(String reqInstitution, String owningInstitution) {
-        return propertyUtil.getPropertyByInstitutionAndKey(reqInstitution, "ils.source.for.item." + owningInstitution.toLowerCase());
+        return propertyUtil.getPropertyByInstitutionAndKey(reqInstitution, ScsbConstants.ILS_SOURCE_FOR_ITEM + owningInstitution.toLowerCase());
     }
 
     /**
@@ -260,7 +261,7 @@ public class RestApiResponseUtil {
             if (null != itemEntity.getInstitutionEntity()) {
                 String institutionCode = itemEntity.getInstitutionEntity().getInstitutionCode();
                 itemId = itemEntity.getOwningInstitutionItemId();
-                String isNormalizeOwningInstItemId = propertyUtil.getPropertyByInstitutionAndKey(institutionCode, "ils.normalize.owning.inst.item.id");
+                String isNormalizeOwningInstItemId = propertyUtil.getPropertyByInstitutionAndKey(institutionCode, PropertyKeyConstants.ILS.ILS_NORMALIZE_OWNING_INST_ITEM_ID);
                 if (Boolean.TRUE.toString().equalsIgnoreCase(isNormalizeOwningInstItemId)) {
                     itemId = itemId.replace(".i", ""); // Remove prefix .i
                     itemId = StringUtils.chop(itemId); // Remove last check digit or char

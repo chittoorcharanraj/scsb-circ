@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.recap.BaseTestCaseUT;
+import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
 import org.recap.controller.RequestItemController;
@@ -114,7 +115,7 @@ public class ItemEDDRequestServiceUT extends BaseTestCaseUT {
         Mockito.when(genericPatronDetailsRepository.findByRequestingInstitutionCodeAndItemOwningInstitutionCode(any(), any())).thenReturn(getGenericPatronEntity());
         Mockito.when(itemRequestService.updateGFA(any(), any())).thenReturn(itemResponseInformation);
         Mockito.doNothing().when(itemRequestService).sendMessageToTopic(any(), any(), any(), any());
-        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), "use.generic.patron.edd.self")).thenReturn(Boolean.TRUE.toString());
+        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_USE_GENERIC_PATRON_EDD_SELF)).thenReturn(Boolean.TRUE.toString());
         ItemInformationResponse itemInfoResponse = itemEDDRequestService.eddRequestItem(itemRequestInfo, exchange);
         assertNotNull(itemInfoResponse);
         Mockito.when(itemRequestService.updateGFA(any(), any())).thenReturn(itemResponseInformation1);
@@ -158,7 +159,7 @@ public class ItemEDDRequestServiceUT extends BaseTestCaseUT {
         Mockito.when(itemDetailsRepository.findByBarcodeIn(itemRequestInfo.getItemBarcodes())).thenReturn(bibliographicEntity.getItemEntities());
         Mockito.when(itemRequestService.updateRecapRequestItem(any(), any(), any())).thenReturn(1);
         Mockito.when(genericPatronDetailsRepository.findByRequestingInstitutionCodeAndItemOwningInstitutionCode(any(), any())).thenThrow(new NullPointerException());
-        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), "use.generic.patron.edd.self")).thenReturn(Boolean.TRUE.toString());
+        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_USE_GENERIC_PATRON_EDD_SELF)).thenReturn(Boolean.TRUE.toString());
         ItemInformationResponse itemInfoResponse = itemEDDRequestService.eddRequestItem(itemRequestInfo, exchange);
         assertNotNull(itemInfoResponse);
     }
@@ -188,7 +189,7 @@ public class ItemEDDRequestServiceUT extends BaseTestCaseUT {
         Mockito.when(itemDetailsRepository.findByBarcodeIn(itemRequestInfo.getItemBarcodes())).thenReturn(bibliographicEntity.getItemEntities());
         Mockito.when(itemRequestService.updateGFA(any(), any())).thenReturn(itemResponseInformation);
         Mockito.doNothing().when(itemRequestService).sendMessageToTopic(any(), any(), any(), any());
-        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), "use.generic.patron.edd.cross")).thenReturn(Boolean.TRUE.toString());
+        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_USE_GENERIC_PATRON_EDD_CROSS)).thenReturn(Boolean.TRUE.toString());
         ItemInformationResponse itemInfoResponse = itemEDDRequestService.eddRequestItem(itemRequestInfo, exchange);
         assertNotNull(itemInfoResponse);
     }
@@ -219,7 +220,7 @@ public class ItemEDDRequestServiceUT extends BaseTestCaseUT {
         Mockito.when(itemRequestServiceUtil.getPatronIdBorrowingInstitution(any(), any(), any())).thenThrow(new NullPointerException());
         Mockito.when(itemRequestService.updateGFA(any(), any())).thenReturn(itemResponseInformation);
         Mockito.doNothing().when(itemRequestService).sendMessageToTopic(any(), any(), any(), any());
-        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), "use.generic.patron.edd.cross")).thenReturn(Boolean.TRUE.toString());
+        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_USE_GENERIC_PATRON_EDD_CROSS)).thenReturn(Boolean.TRUE.toString());
         ItemInformationResponse itemInfoResponse = itemEDDRequestService.eddRequestItem(itemRequestInfo, exchange);
         assertNotNull(itemInfoResponse);
     }

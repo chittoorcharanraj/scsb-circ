@@ -26,6 +26,7 @@ import org.extensiblecatalog.ncip.v2.service.RecallItemInitiationData;
 import org.extensiblecatalog.ncip.v2.service.RecallItemResponseData;
 import org.json.JSONObject;
 
+import org.recap.PropertyKeyConstants;
 import org.recap.ils.protocol.ncip.util.NCIPToolKitUtil;
 import org.recap.model.jpa.ItemEntity;
 import org.recap.model.request.ItemRequestInformation;
@@ -314,14 +315,14 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
         String imsLocation = itemEntity != null ? itemEntity.getImsLocationEntity().getImsLocationCode() : null;
         Boolean isRemoteCheckin = Boolean.FALSE;
 
-        String remoteCheckin = propertyUtil.getPropertyByInstitutionAndKey(getInstitution(), "ils.remote.checkin");
+        String remoteCheckin = propertyUtil.getPropertyByInstitutionAndKey(getInstitution(), PropertyKeyConstants.ILS.ILS_REMOTE_CHECKIN);
            if(Boolean.TRUE.toString().equalsIgnoreCase(remoteCheckin) && (
                     getInstitution().equals(itemRequestInformation.getItemOwningInstitution())
               || itemRequestInformation.getRequestingInstitution().equals(itemRequestInformation.getItemOwningInstitution()))) {
                 isRemoteCheckin = Boolean.TRUE;
             }
                 if (isRemoteCheckin.booleanValue()) {
-                    String remoteProfileType = propertyUtil.getPropertyByInstitutionAndLocationAndKey(getInstitution(), imsLocation,"ils.remote.profile.type");
+                    String remoteProfileType = propertyUtil.getPropertyByInstitutionAndLocationAndKey(getInstitution(), imsLocation, PropertyKeyConstants.ILS.ILS_REMOTE_PROFILE_TYPE);
                     if (!itemRequestInformation.getRequestingInstitution().equals(itemRequestInformation.getItemOwningInstitution()) || itemRequestInformation.getRequestType().equals(ScsbCommonConstants.REQUEST_TYPE_EDD)) {
                         CheckInItemInitiationData checkInItemInitiationData = checkInItem.getCheckInItemInitiationData(itemIdentifier,  getNcipAgencyId());
                         CheckInItemResponseData checkinItemResponse = getCheckinResponse(checkInItem, checkInItemInitiationData);

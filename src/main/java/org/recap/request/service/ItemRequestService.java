@@ -66,7 +66,7 @@ public class ItemRequestService {
 
     private static final Logger logger = LoggerFactory.getLogger(ItemRequestService.class);
 
-    @Value("${scsb.solr.doc.url}")
+    @Value("${" + PropertyKeyConstants.SCSB_SOLR_DOC_URL + "}")
     private String scsbSolrClientUrl;
 
     @Autowired
@@ -414,7 +414,7 @@ public class ItemRequestService {
                     else {
                         itemRequestInfo.setPatronBarcode(requestItemEntity.getPatronId());
                     }
-                    String isRefileForCheckin = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), "ils.use.refile.for.checkin");
+                    String isRefileForCheckin = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_USE_REFILE_FOR_CHECKIN);
                     if (Boolean.TRUE.toString().equalsIgnoreCase(isRefileForCheckin)) {
                         requestItemController.getIlsProtocolConnectorFactory().getIlsProtocolConnector(itemRequestInfo.getRequestingInstitution()).refileItem(itemBarcode);
                     } else {
@@ -550,13 +550,13 @@ public class ItemRequestService {
      * @param exchange          the exchange
      */
     public void sendMessageToTopic(String owningInstituteId, String requestType, ItemInformationResponse itemResponseInfo, Exchange exchange) {
-        String selectTopic = propertyUtil.getPropertyByInstitutionAndKey(owningInstituteId, "ils.topic.retrieval.request");
+        String selectTopic = propertyUtil.getPropertyByInstitutionAndKey(owningInstituteId, PropertyKeyConstants.ILS.ILS_TOPIC_RETRIEVAL_REQUEST);
         if (requestType.equalsIgnoreCase(ScsbCommonConstants.REQUEST_TYPE_RETRIEVAL)) {
-            selectTopic = propertyUtil.getPropertyByInstitutionAndKey(owningInstituteId, "ils.topic.retrieval.request");
+            selectTopic = propertyUtil.getPropertyByInstitutionAndKey(owningInstituteId, PropertyKeyConstants.ILS.ILS_TOPIC_RETRIEVAL_REQUEST);
         } else if (requestType.equalsIgnoreCase(ScsbCommonConstants.REQUEST_TYPE_EDD)) {
-            selectTopic = propertyUtil.getPropertyByInstitutionAndKey(owningInstituteId, "ils.topic.edd.request");
+            selectTopic = propertyUtil.getPropertyByInstitutionAndKey(owningInstituteId, PropertyKeyConstants.ILS.ILS_TOPIC_EDD_REQUEST);
         } else if (requestType.equalsIgnoreCase(ScsbCommonConstants.REQUEST_TYPE_RECALL)) {
-            selectTopic = propertyUtil.getPropertyByInstitutionAndKey(owningInstituteId, "ils.topic.recall.request");
+            selectTopic = propertyUtil.getPropertyByInstitutionAndKey(owningInstituteId, PropertyKeyConstants.ILS.ILS_TOPIC_RECALL_REQUEST);
         }
         ObjectMapper objectMapper = new ObjectMapper();
         String json = "";
@@ -698,7 +698,7 @@ public class ItemRequestService {
             } else {// Not the Owning Institute
                 // Get Temporary bibId from SCSB DB
                 ItemCreateBibResponse createBibResponse;
-                String isCreateBibEnabled = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), "ils.create.bib.api.enabled");
+                String isCreateBibEnabled = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_CREATE_BIB_API_ENABLED);
                 if (Boolean.TRUE.toString().equalsIgnoreCase(isCreateBibEnabled)) {
                     createBibResponse = (ItemCreateBibResponse) requestItemController.createBibliogrphicItem(itemRequestInfo, itemRequestInfo.getRequestingInstitution());
                 } else {
@@ -732,7 +732,7 @@ public class ItemRequestService {
             logger.info("GFA Response for Retrieval request : {}",itemResponseInformation.isSuccess());
             if(itemResponseInformation.isSuccess()){
                 try {
-                    String useGenericPatronRetrievalForCross = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), "use.generic.patron.retrieval.cross");
+                    String useGenericPatronRetrievalForCross = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_USE_GENERIC_PATRON_RETRIEVAL_CROSS);
                     if (Boolean.TRUE.toString().equalsIgnoreCase(useGenericPatronRetrievalForCross)) {
                         try {
                             itemRequestInfo.setPatronBarcode(itemRequestServiceUtil.getPatronIdBorrowingInstitution(itemRequestInfo.getRequestingInstitution(), itemRequestInfo.getItemOwningInstitution(), ScsbCommonConstants.REQUEST_TYPE_RETRIEVAL));
@@ -799,7 +799,7 @@ public class ItemRequestService {
         logger.info("Requesting Inst = {}" , itemRequestInfo.getRequestingInstitution());
         String instToGetItemInfo = requestItemEntity.getInstitutionEntity().getInstitutionCode();
         ItemInformationResponse itemInformation = (ItemInformationResponse) requestItemController.itemInformation(itemRequestInfo, instToGetItemInfo);
-        String checkedOutCirculationStatuses = propertyUtil.getPropertyByInstitutionAndKey(instToGetItemInfo, "ils.checkedout.circulation.status");
+        String checkedOutCirculationStatuses = propertyUtil.getPropertyByInstitutionAndKey(instToGetItemInfo, PropertyKeyConstants.ILS.ILS_CHECKEDOUT_CIRCULATION_STATUS);
         if (StringUtils.isNotBlank(checkedOutCirculationStatuses) && StringUtils.containsIgnoreCase(checkedOutCirculationStatuses, itemInformation.getCirculationStatus())) {
             if (requestItemEntity.getInstitutionEntity().getInstitutionCode().equalsIgnoreCase(itemRequestInfo.getRequestingInstitution())) {
                 ItemRecallResponse itemRecallResponse = (ItemRecallResponse) requestItemController.recallItem(itemRequestInfo, requestItemEntity.getInstitutionEntity().getInstitutionCode());
@@ -818,7 +818,7 @@ public class ItemRequestService {
                 if (itemResponseInformation.isSuccess()) { // IF Hold command is successfully
                     itemRequestInfo.setExpirationDate(itemRequestInfo.getExpirationDate());
                     String requestingPatron = itemRequestInfo.getPatronBarcode();
-                    String useGenericPatronRetrievalForCross = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), "use.generic.patron.retrieval.cross");
+                    String useGenericPatronRetrievalForCross = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_USE_GENERIC_PATRON_RETRIEVAL_CROSS);
                     ItemRecallResponse itemRecallResponse = new ItemRecallResponse();
                     if (Boolean.TRUE.toString().equalsIgnoreCase(useGenericPatronRetrievalForCross)) {
                         try {
@@ -874,7 +874,7 @@ public class ItemRequestService {
 
     private ItemInformationResponse createBibAndHold(ItemRequestInformation itemRequestInfo, ItemInformationResponse itemResponseInformation, ItemEntity itemEntity) {
         ItemCreateBibResponse createBibResponse;
-        String isCreateBibEnabled = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), "ils.create.bib.api.enabled");
+        String isCreateBibEnabled = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_CREATE_BIB_API_ENABLED);
         if (Boolean.TRUE.toString().equalsIgnoreCase(isCreateBibEnabled)) {
             createBibResponse = (ItemCreateBibResponse) requestItemController.createBibliogrphicItem(itemRequestInfo, itemRequestInfo.getRequestingInstitution());
         } else {
@@ -973,7 +973,7 @@ public class ItemRequestService {
             saveItemChangeLogEntity(itemEntity.getId(), getUser(itemRequestInfo.getUsername()), ScsbConstants.REQUEST_ITEM_GFA_FAILURE, itemRequestInfo.getPatronBarcode() + " - " + itemResponseInformation.getScreenMessage());
         }
 
-        String isCheckinInstitution = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), "ils.checkin.institution");
+        String isCheckinInstitution = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_CHECKIN_INSTITUTION);
 
         if (Boolean.TRUE.toString().equalsIgnoreCase(isCheckinInstitution) && itemRequestInfo.isOwningInstitutionItem()) {
         //DO NOTHING
@@ -996,7 +996,7 @@ public class ItemRequestService {
             requestItemController.checkinItem(itemRequestInformation, itemRequestInformation.getRequestingInstitution());
         } else {
 
-            String isCheckinInstitution = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInformation.getRequestingInstitution(), "ils.checkin.institution");
+            String isCheckinInstitution = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInformation.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_CHECKIN_INSTITUTION);
             if (Boolean.TRUE.toString().equalsIgnoreCase(isCheckinInstitution)) {
                 if(!itemRequestInformation.isOwningInstitutionItem()) {
                     requestItemController.checkinItem(itemRequestInformation, itemRequestInformation.getRequestingInstitution());

@@ -34,7 +34,7 @@ public class EmailPendingRequestJobController {
     /**
      * The Pending request limit.
      */
-    @Value("${request.pending.limit}")
+    @Value("${" + PropertyKeyConstants.REQUEST_PENDING_LIMIT + "}")
     Integer pendingRequestLimit;
 
     @Autowired

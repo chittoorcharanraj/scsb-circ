@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCaseUT;
+import org.recap.PropertyKeyConstants;
 import org.recap.request.service.ItemEDDRequestService;
 import org.recap.request.service.ItemRequestService;
 import org.recap.util.PropertyUtil;
@@ -39,9 +40,9 @@ public class OnboardingInstitutionControllerUT extends BaseTestCaseUT {
     @Before
     public void setup(){
         String institutionCode = "PUL";
-        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(institutionCode, "ils.topic.retrieval.request")).thenReturn("scsbactivemq:topic:PUL.RequestT");
-        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(institutionCode, "ils.topic.edd.request")).thenReturn("recap");
-        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(institutionCode, "ils.topic.recall.request")).thenReturn("recap");
+        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(institutionCode, PropertyKeyConstants.ILS.ILS_TOPIC_RETRIEVAL_REQUEST)).thenReturn("scsbactivemq:topic:PUL.RequestT");
+        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(institutionCode, PropertyKeyConstants.ILS.ILS_TOPIC_EDD_REQUEST)).thenReturn("recap");
+        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(institutionCode, PropertyKeyConstants.ILS.ILS_TOPIC_RECALL_REQUEST)).thenReturn("recap");
     }
     @Test
     public void createTopicsForNewInstitution(){

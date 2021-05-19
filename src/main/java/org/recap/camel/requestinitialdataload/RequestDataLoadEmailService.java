@@ -2,6 +2,7 @@ package org.recap.camel.requestinitialdataload;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
+import org.recap.PropertyKeyConstants;
 import org.recap.ScsbConstants;
 import org.recap.camel.EmailPayLoad;
 import org.recap.util.PropertyUtil;
@@ -27,7 +28,7 @@ public class RequestDataLoadEmailService {
     @Autowired
     private PropertyUtil propertyUtil;
 
-    @Value("${email.request.initial.load.subject}")
+    @Value("${" + PropertyKeyConstants.EMAIL_REQUEST_INITIAL_LOAD_SUBJECT + "}")
     private String subjectForRequestInitialDataLoad;
 
     private String institutionCode;
@@ -50,7 +51,7 @@ public class RequestDataLoadEmailService {
     }
 
     public String emailIdTo(String institution) {
-        return propertyUtil.getPropertyByInstitutionAndKey(institution, "email.request.initial.load.to");
+        return propertyUtil.getPropertyByInstitutionAndKey(institution, PropertyKeyConstants.ILS.ILS_EMAIL_REQUEST_INITIAL_LOAD_TO);
     }
 
     public String messageDisplayForInstitution(String fileNameWithPath){

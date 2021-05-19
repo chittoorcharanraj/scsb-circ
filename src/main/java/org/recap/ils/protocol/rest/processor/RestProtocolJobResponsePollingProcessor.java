@@ -1,5 +1,6 @@
 package org.recap.ils.protocol.rest.processor;
 
+import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.ils.protocol.rest.callable.RestJobResponsePollingCallable;
 import org.recap.ils.connector.RestProtocolConnector;
@@ -52,12 +53,12 @@ public class RestProtocolJobResponsePollingProcessor {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         try {
             ILSConfigProperties ilsConfigProperties = new ILSConfigProperties();
-            ilsConfigProperties.setIlsRestDataApi(propertyUtil.getPropertyByInstitutionAndKey(institution, "ils.rest.data.api"));
-            ilsConfigProperties.setOauthTokenApiUrl(propertyUtil.getPropertyByInstitutionAndKey(institution, "oauth.token.api.url"));
-            ilsConfigProperties.setOperatorUserId(propertyUtil.getPropertyByInstitutionAndKey(institution, "ils.server.operator.user.id"));
-            ilsConfigProperties.setOperatorPassword(propertyUtil.getPropertyByInstitutionAndKey(institution, "ils.server.operator.password"));
-            pollingMaxTimeOut = Integer.valueOf(propertyUtil.getPropertyByInstitutionAndKey(institution, "ils.rest.polling.max.timeout"));
-            pollingTimeInterval = Integer.valueOf(propertyUtil.getPropertyByInstitutionAndKey(institution, "ils.rest.polling.time.interval"));
+            ilsConfigProperties.setIlsRestDataApi(propertyUtil.getPropertyByInstitutionAndKey(institution,PropertyKeyConstants.ILS.ILS_REST_DATA_API));
+            ilsConfigProperties.setOauthTokenApiUrl(propertyUtil.getPropertyByInstitutionAndKey(institution,PropertyKeyConstants.ILS.ILS_OAUTH_TOKEN_API_URL));
+            ilsConfigProperties.setOperatorUserId(propertyUtil.getPropertyByInstitutionAndKey(institution, PropertyKeyConstants.ILS.ILS_SERVER_OPERATOR_USER_ID));
+            ilsConfigProperties.setOperatorPassword(propertyUtil.getPropertyByInstitutionAndKey(institution, PropertyKeyConstants.ILS.ILS_SERVER_OPERATOR_PASSWORD));
+            pollingMaxTimeOut = Integer.valueOf(propertyUtil.getPropertyByInstitutionAndKey(institution, PropertyKeyConstants.ILS.ILS_REST_POLLING_MAX_TIMEOUT));
+            pollingTimeInterval = Integer.valueOf(propertyUtil.getPropertyByInstitutionAndKey(institution,PropertyKeyConstants.ILS.ILS_REST_POLLING_TIME_INTERVAL));
             restProtocolConnector.setInstitution(institution);
             restProtocolConnector.setIlsConfigProperties(ilsConfigProperties);
             Future<JobResponse> future = executor.submit(new RestJobResponsePollingCallable(jobId, pollingTimeInterval, restProtocolConnector));

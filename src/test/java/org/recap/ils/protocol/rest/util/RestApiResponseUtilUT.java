@@ -5,6 +5,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCaseUT;
+import org.recap.PropertyKeyConstants;
 import org.recap.ScsbConstants;
 import org.recap.ils.protocol.rest.model.*;
 import org.recap.ils.protocol.rest.model.response.*;
@@ -42,7 +43,7 @@ public class RestApiResponseUtilUT extends BaseTestCaseUT {
 
     @Test
     public void getRestApiSourceForInstitution() {
-        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey("NYPL", "ils.source.for.item." + "PUL".toLowerCase())).thenReturn("test");
+        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey("NYPL", ScsbConstants.ILS_SOURCE_FOR_ITEM + "PUL".toLowerCase())).thenReturn("test");
         String result1 = restApiResponseUtil.getRestApiSourceForInstitution("NYPL", "PUL");
         assertNotNull(result1);
     }
@@ -51,7 +52,7 @@ public class RestApiResponseUtilUT extends BaseTestCaseUT {
     public void getNormalizedItemIdForRest() throws Exception {
         ItemEntity itemEntity = getItemEntity();
         Mockito.when(itemDetailsRepository.findByBarcode("123456")).thenReturn(Arrays.asList(itemEntity));
-        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(itemEntity.getInstitutionEntity().getInstitutionCode(), "ils.normalize.owning.inst.item.id")).thenReturn(Boolean.TRUE.toString());
+        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(itemEntity.getInstitutionEntity().getInstitutionCode(), PropertyKeyConstants.ILS.ILS_NORMALIZE_OWNING_INST_ITEM_ID)).thenReturn(Boolean.TRUE.toString());
         String itemId = restApiResponseUtil.getNormalizedItemIdForRestProtocolApi("123456");
         assertNotNull(itemId);
     }
@@ -133,7 +134,7 @@ public class RestApiResponseUtilUT extends BaseTestCaseUT {
 
     @Test
     public void testgetRestApiSourceForInstitution() {
-        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey("NYPL", "ils.source.for.item." + "PUL".toLowerCase())).thenReturn("test");
+        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey("NYPL", ScsbConstants.ILS_SOURCE_FOR_ITEM + "PUL".toLowerCase())).thenReturn("test");
         String resNypl = restApiResponseUtil.getRestApiSourceForInstitution("NYPL", "PUL");
         assertNotNull(resNypl);
     }
