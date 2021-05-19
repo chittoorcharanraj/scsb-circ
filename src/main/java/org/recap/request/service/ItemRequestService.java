@@ -186,8 +186,8 @@ public class ItemRequestService {
                 itemRequestInfo.setItemOwningInstitution(itemEntity.getInstitutionEntity().getInstitutionCode());
                 itemRequestInfo.setImsLocationCode(itemEntity.getImsLocationEntity().getImsLocationCode());
 
-                DeliveryCodeEntity deliveryCodeEntity = deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(itemRequestInfo.getDeliveryLocation(), itemEntity.getOwningInstitutionId(), 'Y');
                 InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionCode(itemRequestInfo.getRequestingInstitution());
+                DeliveryCodeEntity deliveryCodeEntity = deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(itemRequestInfo.getDeliveryLocation(), institutionEntity.getId(), 'Y');
 
                 DeliveryCodeTranslationEntity deliveryCodeTranslationEntity = deliveryCodeTranslationDetailsRepository.findByRequestingInstitutionandImsLocation(institutionEntity.getId(), deliveryCodeEntity.getId(), itemEntity.getImsLocationEntity().getId());
                 if(deliveryCodeTranslationEntity != null && deliveryCodeTranslationEntity.getImsLocationDeliveryCode() != null) {
@@ -291,7 +291,8 @@ public class ItemRequestService {
                     itemRequestInfo.setBibId(itemEntity.getBibliographicEntities().get(0).getOwningInstitutionBibId());
                     itemRequestInfo.setItemOwningInstitution(itemEntity.getInstitutionEntity().getInstitutionCode());
                     itemRequestInfo.setImsLocationCode(itemEntity.getImsLocationEntity().getImsLocationCode());
-                    itemRequestInfo.setPickupLocation(getPickupLocation(itemEntity.getOwningInstitutionId(), itemRequestInfo.getDeliveryLocation()));
+                    InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionCode(itemRequestInfo.getRequestingInstitution());
+                    itemRequestInfo.setPickupLocation(getPickupLocation(institutionEntity.getId(), itemRequestInfo.getDeliveryLocation()));
                     itemResponseInformation.setItemId(itemEntity.getId());
                     Integer requestId = updateRecapRequestItem(itemRequestInfo, itemEntity, ScsbConstants.REQUEST_STATUS_PROCESSING);
                     itemRequestInfo.setRequestId(requestId);
@@ -822,7 +823,8 @@ public class ItemRequestService {
                     if (Boolean.TRUE.toString().equalsIgnoreCase(useGenericPatronRetrievalForCross)) {
                         try {
                             itemRequestInfo.setPatronBarcode(itemRequestServiceUtil.getPatronIdBorrowingInstitution(itemRequestInfo.getRequestingInstitution(), requestItemEntity.getInstitutionEntity().getInstitutionCode(), ScsbCommonConstants.REQUEST_TYPE_RETRIEVAL));
-                            itemRequestInfo.setPickupLocation(getPickupLocation(itemEntity.getOwningInstitutionId(), requestItemEntity.getStopCode()));
+                            InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionCode(itemRequestInfo.getRequestingInstitution());
+                            itemRequestInfo.setPickupLocation(getPickupLocation(institutionEntity.getId(), requestItemEntity.getStopCode()));
                             itemRequestInfo.setBibId(itemInformation.getBibID());
                             itemRecallResponse = (ItemRecallResponse) requestItemController.recallItem(itemRequestInfo, requestItemEntity.getInstitutionEntity().getInstitutionCode());
                         } catch (Exception e) {

@@ -283,8 +283,7 @@ public class ItemRequestDBService {
         ItemRequestInformation itemRequestInformation = new ItemRequestInformation();
         Optional<RequestItemEntity> requestItemEntity = requestItemDetailsRepository.findById(itemInformationResponse.getRequestId());
         if(requestItemEntity.isPresent()) {
-            OwnerCodeEntity ownerCodeEntity= ownerCodeDetailsRepository.findByOwnerCode(requestItemEntity.get().getItemEntity().getCustomerCode());
-            DeliveryCodeEntity deliveryCodeEntity= deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive( requestItemEntity.get().getStopCode(), requestItemEntity.get().getItemEntity().getOwningInstitutionId(),'Y');
+            DeliveryCodeEntity deliveryCodeEntity= deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive( requestItemEntity.get().getStopCode(), requestItemEntity.get().getRequestingInstitutionId(),'Y');
             commonUtil.rollbackUpdateItemAvailabilityStatus(requestItemEntity.get().getItemEntity(), ScsbConstants.GUEST_USER);
             commonUtil.saveItemChangeLogEntity(itemInformationResponse.getRequestId(), requestItemEntity.get().getCreatedBy(), ScsbConstants.REQUEST_ITEM_GFA_FAILURE, ScsbConstants.REQUEST_ITEM_GFA_FAILURE + itemInformationResponse.getScreenMessage());
             itemRequestInformation.setBibId(requestItemEntity.get().getItemEntity().getBibliographicEntities().get(0).getOwningInstitutionBibId());
