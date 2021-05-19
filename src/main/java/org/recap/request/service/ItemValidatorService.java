@@ -103,6 +103,7 @@ public class ItemValidatorService {
      */
     public ResponseEntity itemValidation(ItemRequestInformation itemRequestInformation) {
         List<ItemEntity> itemEntityList = getItemEntities(itemRequestInformation.getItemBarcodes());
+        InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionCode(itemRequestInformation.getRequestingInstitution());
         Map<String, String> frozenInstitutionPropertyMap = propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_ENABLE_CIRCULATION_FREEZE);
         Map<String, String> frozenInstitutionMessagesPropertyMap = propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_CIRCULATION_FREEZE_MESSAGE);
         if (itemRequestInformation.getItemBarcodes().size() == 1) {
@@ -151,7 +152,7 @@ public class ItemValidatorService {
                 ItemEntity itemEntity = itemEntityList.get(0);
                 ResponseEntity responseEntity1 = null;
                 if (itemRequestInformation.getRequestType().equalsIgnoreCase(ScsbCommonConstants.REQUEST_TYPE_RETRIEVAL) || itemRequestInformation.getRequestType().equalsIgnoreCase(ScsbCommonConstants.REQUEST_TYPE_RECALL)) {
-                    int validateCustomerCode = checkDeliveryLocation(itemEntity.getCustomerCode(), itemEntity.getOwningInstitutionId(), itemRequestInformation);
+                    int validateCustomerCode = checkDeliveryLocation(itemEntity.getCustomerCode(), institutionEntity.getId(), itemRequestInformation);
                     if (validateCustomerCode == 1) {
                         int validateDeliveryTranslationCode = checkDeliveryLocationTranslationCode(itemEntity, itemRequestInformation);
                         if (validateDeliveryTranslationCode == 1) {
@@ -233,6 +234,7 @@ public class ItemValidatorService {
     private ResponseEntity multipleRequestItemValidation(List<ItemEntity> itemEntityList, Set<Integer> bibliographicIds, ItemRequestInformation itemRequestInformation, Map<String, String> frozenInstitutionPropertyMap, Map<String, String> frozenInstitutionMessagesPropertyMap) {
         String status = "";
         List<BibliographicEntity> bibliographicList;
+        InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionCode(itemRequestInformation.getRequestingInstitution());
 
         for (ItemEntity itemEntity : itemEntityList) {
             if (!checkRequestItemStatus(itemEntity.getBarcode(), ScsbCommonConstants.REQUEST_STATUS_INITIAL_LOAD)) {
@@ -253,7 +255,7 @@ public class ItemValidatorService {
             }
 
             if (!(itemRequestInformation.getRequestType().equalsIgnoreCase(ScsbCommonConstants.REQUEST_TYPE_EDD))) {
-                int validateCustomerCode = checkDeliveryLocation(itemEntity.getCustomerCode(), itemEntity.getOwningInstitutionId(), itemRequestInformation);
+                int validateCustomerCode = checkDeliveryLocation(itemEntity.getCustomerCode(), institutionEntity.getId(), itemRequestInformation);
                 if (validateCustomerCode == 1) {
                  int validateDeliveryTranslationCode = checkDeliveryLocationTranslationCode(itemEntity, itemRequestInformation);
                     if (validateDeliveryTranslationCode == 1) {
@@ -322,8 +324,8 @@ public class ItemValidatorService {
 
     public int checkDeliveryLocationTranslationCode(ItemEntity itemEntity, ItemRequestInformation itemRequestInformation) {
         int bSuccess = -1;
-        DeliveryCodeEntity deliveryCodeEntity = deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(itemRequestInformation.getDeliveryLocation(), itemEntity.getOwningInstitutionId(), 'Y');
         InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionCode(itemRequestInformation.getRequestingInstitution());
+        DeliveryCodeEntity deliveryCodeEntity = deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(itemRequestInformation.getDeliveryLocation(), institutionEntity.getId(), 'Y');
             DeliveryCodeTranslationEntity deliveryCodeTranslationEntity = deliveryCodeTranslationDetailsRepository.findByRequestingInstitutionandImsLocation(institutionEntity.getId(), deliveryCodeEntity.getId(), itemEntity.getImsLocationId());
             if (deliveryCodeTranslationEntity != null) {
                 bSuccess = 1;
