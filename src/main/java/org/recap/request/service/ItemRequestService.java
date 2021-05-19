@@ -179,7 +179,6 @@ public class ItemRequestService {
 
             if (itemEntities != null && !itemEntities.isEmpty()) {
                 itemEntity = itemEntities.get(0);
-                OwnerCodeEntity ownerCodeEntity = ownerCodeDetailsRepository.findByOwnerCode(itemRequestInfo.getDeliveryLocation());
                 if (StringUtils.isBlank(itemRequestInfo.getBibId())) {
                     itemRequestInfo.setBibId(itemEntity.getBibliographicEntities().get(0).getOwningInstitutionBibId());
                 }
@@ -205,7 +204,7 @@ public class ItemRequestService {
                 itemRequestInfo.setTitleIdentifier(getTitle(itemRequestInfo.getTitleIdentifier(), itemEntity, searchResultRow));
                 itemRequestInfo.setAuthor(searchResultRow.getAuthor());
                 itemRequestInfo.setCustomerCode(itemEntity.getCustomerCode());
-                if (ownerCodeEntity != null) {
+                if (deliveryCodeEntity != null) {
                     itemRequestInfo.setPickupLocation(deliveryCodeEntity.getPickupLocation());
                 }
                 itemResponseInformation.setItemId(itemEntity.getId());
