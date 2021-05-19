@@ -84,7 +84,7 @@ public class ItemValidatorService {
      * The Owner code details repository.
      */
     @Autowired
-    private OwnerCodeDetailsRepository onwerCodeDetailsRepository;
+    private OwnerCodeDetailsRepository ownerCodeDetailsRepository;
 
     @Autowired
     private DeliveryCodeDetailsRepository deliveryCodeDetailsRepository;
@@ -143,8 +143,8 @@ public class ItemValidatorService {
                     }
 
                     if (itemRequestInformation.getRequestType().equalsIgnoreCase(ScsbCommonConstants.REQUEST_TYPE_EDD)) {
-                        OwnerCodeEntity onwerCodeEntity = onwerCodeDetailsRepository.findByOwnerCodeAndRecapDeliveryRestrictionLikeEDD(itemEntity1.getCustomerCode(), itemEntity1.getOwningInstitutionId());
-                        if (onwerCodeEntity == null) {
+                        OwnerCodeEntity ownerCodeEntity = ownerCodeDetailsRepository.findByOwnerCodeAndRecapDeliveryRestrictionLikeEDD(itemEntity1.getCustomerCode(), itemEntity1.getOwningInstitutionId());
+                        if (ownerCodeEntity == null) {
                             return new ResponseEntity<>(ScsbConstants.EDD_REQUEST_NOT_ALLOWED, getHttpHeaders(), HttpStatus.BAD_REQUEST);
                         }
                     }
@@ -152,7 +152,7 @@ public class ItemValidatorService {
                 ItemEntity itemEntity = itemEntityList.get(0);
                 ResponseEntity responseEntity1 = null;
                 if (itemRequestInformation.getRequestType().equalsIgnoreCase(ScsbCommonConstants.REQUEST_TYPE_RETRIEVAL) || itemRequestInformation.getRequestType().equalsIgnoreCase(ScsbCommonConstants.REQUEST_TYPE_RECALL)) {
-                    int validateCustomerCode = checkDeliveryLocation(itemEntity.getCustomerCode(), institutionEntity.getId(), itemRequestInformation);
+                    int validateCustomerCode = checkDeliveryLocation(itemEntity.getCustomerCode(), institutionEntity, itemRequestInformation);
                     if (validateCustomerCode == 1) {
                         int validateDeliveryTranslationCode = checkDeliveryLocationTranslationCode(itemEntity, itemRequestInformation);
                         if (validateDeliveryTranslationCode == 1) {
@@ -255,7 +255,7 @@ public class ItemValidatorService {
             }
 
             if (!(itemRequestInformation.getRequestType().equalsIgnoreCase(ScsbCommonConstants.REQUEST_TYPE_EDD))) {
-                int validateCustomerCode = checkDeliveryLocation(itemEntity.getCustomerCode(), institutionEntity.getId(), itemRequestInformation);
+                int validateCustomerCode = checkDeliveryLocation(itemEntity.getCustomerCode(), institutionEntity, itemRequestInformation);
                 if (validateCustomerCode == 1) {
                  int validateDeliveryTranslationCode = checkDeliveryLocationTranslationCode(itemEntity, itemRequestInformation);
                     if (validateDeliveryTranslationCode == 1) {
@@ -299,19 +299,19 @@ public class ItemValidatorService {
     /**
      * Check delivery location int.
      *
-     * @param onwerCode           the ower code
+     * @param ownerCode           the ower code
      * @param itemRequestInformation the item request information
      * @return the int
      */
-    public int checkDeliveryLocation(String onwerCode, Integer institutionId, ItemRequestInformation itemRequestInformation) {
+    public int checkDeliveryLocation(String ownerCode, InstitutionEntity institutionEntity, ItemRequestInformation itemRequestInformation) {
         int bSuccess = 0;
-        DeliveryCodeEntity deliveryCodeEntity = deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(itemRequestInformation.getDeliveryLocation(), institutionId, 'Y');
+        DeliveryCodeEntity deliveryCodeEntity = deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(itemRequestInformation.getDeliveryLocation(), institutionEntity.getId(), 'Y');
         if (deliveryCodeEntity != null && deliveryCodeEntity.getDeliveryCode().equalsIgnoreCase(itemRequestInformation.getDeliveryLocation())) {
-                OwnerCodeEntity onwerCodeEntity = onwerCodeDetailsRepository.findByOwnerCode(onwerCode);
+                OwnerCodeEntity ownerCodeEntity = ownerCodeDetailsRepository.findByOwnerCodeAndOwningInstitutionCode(ownerCode, institutionEntity.getInstitutionCode());
                 String requestingInstitution = itemRequestInformation.getRequestingInstitution();
                 institutionDetailsRepository.findByInstitutionCode(requestingInstitution);
 
-                List<Object[]> deliveryCodeEntityList = onwerCodeDetailsRepository.findByOwnerCodeAndRequestingInstitution(onwerCodeEntity.getId(), institutionDetailsRepository.findByInstitutionCode(requestingInstitution).getId(), itemRequestInformation.getDeliveryLocation());
+                List<Object[]> deliveryCodeEntityList = ownerCodeDetailsRepository.findByOwnerCodeAndRequestingInstitution(ownerCodeEntity.getId(), institutionEntity.getId(), itemRequestInformation.getDeliveryLocation());
                 if (!deliveryCodeEntityList.isEmpty()) {
                             bSuccess = 1;
                         } else {
