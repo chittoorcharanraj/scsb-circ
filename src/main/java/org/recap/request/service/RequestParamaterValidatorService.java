@@ -1,6 +1,7 @@
 package org.recap.request.service;
 
 
+import org.recap.PropertyKeyConstants;
 import org.recap.ScsbConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.controller.ItemController;
@@ -36,7 +37,7 @@ public class RequestParamaterValidatorService {
     /**
      * The Scsb solr client url.
      */
-    @Value("${scsb.solr.doc.url}")
+    @Value("${" + PropertyKeyConstants.SCSB_SOLR_DOC_URL + "}")
     String scsbSolrClientUrl;
 
     /**

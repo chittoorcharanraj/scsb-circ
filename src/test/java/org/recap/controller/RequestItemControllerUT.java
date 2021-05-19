@@ -6,6 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCaseUT;
+import org.recap.PropertyKeyConstants;
 import org.recap.ils.connector.AbstractProtocolConnector;
 import org.recap.ils.connector.factory.ILSProtocolConnectorFactory;
 import org.recap.model.AbstractResponseItem;
@@ -168,7 +169,7 @@ public class RequestItemControllerUT extends BaseTestCaseUT {
         itemRequestInformation.setTrackingId("235");
         itemRequestInformation.setRequestingInstitution(callInstitition);
         ItemHoldResponse itemHoldResponse = getItemHoldResponse();
-        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(callInstitition, "ils.default.pickup.location")).thenReturn("PA");
+        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(callInstitition, PropertyKeyConstants.ILS.ILS_DEFAULT_PICKUP_LOCATION)).thenReturn("PA");
         Mockito.when(ilsProtocolConnectorFactory.getIlsProtocolConnector(any())).thenReturn(abstractProtocolConnector);
         Mockito.when(ilsProtocolConnectorFactory.getIlsProtocolConnector(any()).cancelHold(itembarcode, itemRequestInformation.getRequestId(), itemRequestInformation.getPatronBarcode(),
                 itemRequestInformation.getRequestingInstitution(),
@@ -190,7 +191,7 @@ public class RequestItemControllerUT extends BaseTestCaseUT {
         String itembarcode = "PULTST54325";
         ItemRequestInformation itemRequestInformation = getItemRequestInformation(callInstitution, itembarcode);
         ItemHoldResponse itemHoldResponse = getItemHoldResponse();
-        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(callInstitution, "ils.use.delivery.location.as.pickup.location")).thenReturn(Boolean.TRUE.toString());
+        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(callInstitution, PropertyKeyConstants.ILS.ILS_USE_DELIVERY_LOCATION_AS_PICKUP_LOCATION)).thenReturn(Boolean.TRUE.toString());
         Mockito.when(ilsProtocolConnectorFactory.getIlsProtocolConnector(any())).thenReturn(abstractProtocolConnector);
         Mockito.when(abstractProtocolConnector.placeHold(itembarcode, itemRequestInformation.getRequestId(), itemRequestInformation.getPatronBarcode(),
                 itemRequestInformation.getRequestingInstitution(),
@@ -327,7 +328,7 @@ public class RequestItemControllerUT extends BaseTestCaseUT {
         itemRequestInformation.setRequestingInstitution(callInstitition);
         ItemRecallResponse itemRecallResponse = new ItemRecallResponse();
         itemRecallResponse.setSuccess(true);
-        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(callInstitition, "ils.use.delivery.location.as.pickup.location")).thenReturn(Boolean.TRUE.toString());
+        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(callInstitition, PropertyKeyConstants.ILS.ILS_USE_DELIVERY_LOCATION_AS_PICKUP_LOCATION)).thenReturn(Boolean.TRUE.toString());
         Mockito.when(ilsProtocolConnectorFactory.getIlsProtocolConnector(any())).thenReturn(abstractProtocolConnector);
         Mockito.when(ilsProtocolConnectorFactory.getIlsProtocolConnector(any()).recallItem(itembarcode, itemRequestInformation.getPatronBarcode(),
                 itemRequestInformation.getRequestingInstitution(),
@@ -416,7 +417,7 @@ public class RequestItemControllerUT extends BaseTestCaseUT {
     @Test
     public void getPickupLocationCUL() {
         String institution = "CUL";
-        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(institution, "ils.default.pickup.location")).thenReturn("CIRCrecap");
+        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(institution, PropertyKeyConstants.ILS.ILS_DEFAULT_PICKUP_LOCATION)).thenReturn("CIRCrecap");
         String pickUpLocation = mockedRequestItemController.getPickupLocation(institution);
         assertNotNull(pickUpLocation);
         assertEquals("CIRCrecap", pickUpLocation);
@@ -434,7 +435,7 @@ public class RequestItemControllerUT extends BaseTestCaseUT {
     @Test
     public void getPickupLocationPUL() {
         String institution = "PUL";
-        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(institution, "ils.default.pickup.location")).thenReturn("rcpcirc");
+        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(institution, PropertyKeyConstants.ILS.ILS_DEFAULT_PICKUP_LOCATION)).thenReturn("rcpcirc");
         String pickUpLocation = mockedRequestItemController.getPickupLocation(institution);
         assertNotNull(pickUpLocation);
         assertEquals("rcpcirc", pickUpLocation);

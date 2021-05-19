@@ -2,6 +2,7 @@ package org.recap.request.util;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.text.StringEscapeUtils;
+import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
 import org.recap.model.request.BulkRequestItem;
@@ -35,7 +36,7 @@ public class ItemRequestServiceUtil {
 
     private final Logger logger = LoggerFactory.getLogger(ItemRequestServiceUtil.class);
 
-    @Value("${scsb.solr.doc.url}")
+    @Value("${" + PropertyKeyConstants.SCSB_SOLR_DOC_URL + "}")
     private String scsbSolrClientUrl;
 
     @Autowired

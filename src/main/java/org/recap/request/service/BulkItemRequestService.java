@@ -2,6 +2,7 @@ package org.recap.request.service;
 
 import org.apache.camel.ProducerTemplate;
 import org.apache.commons.collections.CollectionUtils;
+import org.recap.PropertyKeyConstants;
 import org.recap.ScsbConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.model.request.BulkRequestItem;
@@ -33,7 +34,7 @@ public class BulkItemRequestService {
 
     private final Logger logger = LoggerFactory.getLogger(BulkItemRequestService.class);
 
-    @Value("${bulk.request.item.count.limit}")
+    @Value("${" + PropertyKeyConstants.BULK_REQUEST_ITEM_COUNT_LIMIT + "}")
     private Integer bulkRequestItemCountLimit;
 
     @Autowired

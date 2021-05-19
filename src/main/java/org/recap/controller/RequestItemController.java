@@ -2,6 +2,7 @@ package org.recap.controller;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.recap.PropertyKeyConstants;
 import org.recap.ScsbConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.ils.connector.factory.ILSProtocolConnectorFactory;
@@ -341,7 +342,7 @@ public class RequestItemController {
      * @return the pickup location
      */
     public String getPickupLocation(String institution) {
-        return propertyUtil.getPropertyByInstitutionAndKey(institution, "ils.default.pickup.location");
+        return propertyUtil.getPropertyByInstitutionAndKey(institution, PropertyKeyConstants.ILS.ILS_DEFAULT_PICKUP_LOCATION);
     }
 
     /**
@@ -376,7 +377,7 @@ public class RequestItemController {
     }
 
     private String getPickupLocationDB(ItemRequestInformation itemRequestInformation, String callInstitution) {
-        String useDeliveryLocationAsPickupLocation = propertyUtil.getPropertyByInstitutionAndKey(callInstitution, "ils.use.delivery.location.as.pickup.location");
+        String useDeliveryLocationAsPickupLocation = propertyUtil.getPropertyByInstitutionAndKey(callInstitution, PropertyKeyConstants.ILS.ILS_USE_DELIVERY_LOCATION_AS_PICKUP_LOCATION);
         if (Boolean.TRUE.toString().equalsIgnoreCase(useDeliveryLocationAsPickupLocation)) {
             return itemRequestInformation.getDeliveryLocation();
         }

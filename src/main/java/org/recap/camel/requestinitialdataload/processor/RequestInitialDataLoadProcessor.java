@@ -3,6 +3,7 @@ package org.recap.camel.requestinitialdataload.processor;
 import com.amazonaws.services.s3.AmazonS3;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
+import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
 import org.recap.camel.requestinitialdataload.RequestDataLoadCSVRecord;
@@ -37,7 +38,7 @@ public class RequestInitialDataLoadProcessor {
     @Autowired
     private RequestDataLoadService requestDataLoadService;
 
-    @Value("${request.initial.load.filepath}")
+    @Value("${" + PropertyKeyConstants.REQUEST_INITIAL_LOAD_FILEPATH + "}")
     private String requestInitialLoadFilePath;
 
     private String institutionCode;

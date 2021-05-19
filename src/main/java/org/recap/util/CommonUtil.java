@@ -32,13 +32,13 @@ public class CommonUtil {
     private Map<String, String> ftpPropertiesMap;
 
 
-    @Value("${ftp.server.userName}")
+    @Value("${" + PropertyKeyConstants.FTP_SERVER_USERNAME + "}")
     String ftpUserName;
 
-    @Value("${ftp.server.privateKey}")
+    @Value("${" + PropertyKeyConstants.FTP_SERVER_PRIVATEKEY + "}")
     String ftpPrivateKey;
 
-    @Value("${ftp.server.knownHost}")
+    @Value("${" + PropertyKeyConstants.FTP_SERVER_KNOWNHOST + "}")
     String ftpKnownHost;
 
     @Autowired
