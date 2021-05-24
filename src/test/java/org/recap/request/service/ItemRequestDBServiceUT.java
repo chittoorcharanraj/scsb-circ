@@ -9,26 +9,13 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.recap.BaseTestCaseUT;
 import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
+import org.recap.model.jpa.*;
 import org.recap.model.response.ItemInformationResponse;
-import org.recap.model.jpa.BibliographicEntity;
-import org.recap.model.jpa.BulkRequestItemEntity;
-import org.recap.model.jpa.InstitutionEntity;
-import org.recap.model.jpa.ItemEntity;
 import org.recap.model.request.ItemRequestInformation;
-import org.recap.model.jpa.ItemStatusEntity;
-import org.recap.model.jpa.OwnerCodeEntity;
-import org.recap.model.jpa.RequestItemEntity;
-import org.recap.model.jpa.RequestStatusEntity;
-import org.recap.model.jpa.RequestTypeEntity;
-import org.recap.repository.jpa.InstitutionDetailsRepository;
-import org.recap.repository.jpa.ItemDetailsRepository;
-import org.recap.repository.jpa.ItemStatusDetailsRepository;
-import org.recap.repository.jpa.OwnerCodeDetailsRepository;
-import org.recap.repository.jpa.RequestItemDetailsRepository;
-import org.recap.repository.jpa.RequestItemStatusDetailsRepository;
-import org.recap.repository.jpa.RequestTypeDetailsRepository;
+import org.recap.repository.jpa.*;
 import org.recap.util.CommonUtil;
 import org.recap.util.SecurityUtil;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -41,12 +28,12 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyChar;
 
 /**
  * Created by hemalathas on 21/2/17.
  */
-@RunWith(MockitoJUnitRunner.class)
-public class ItemRequestDBServiceUT{
+public class ItemRequestDBServiceUT extends BaseTestCaseUT {
 
     @InjectMocks
     @Spy
@@ -56,24 +43,23 @@ public class ItemRequestDBServiceUT{
     ItemDetailsRepository itemDetailsRepository;
 
     @Mock
-    OwnerCodeDetailsRepository ownerCodeDetailsRepository;
-
-    @Mock
     SecurityUtil securityUtil;
 
     @Mock
     ItemStatusDetailsRepository itemStatusDetailsRepository;
 
     @Mock
-    InstitutionDetailsRepository institutionDetailRepository;
-
-    @Mock
     RequestTypeDetailsRepository requestTypeDetailsRepository;
 
     @Mock
     RequestItemDetailsRepository requestItemDetailsRepository;
+
     @Mock
     RequestItemStatusDetailsRepository requestItemStatusDetailsRepository;
+
+    @Mock
+    DeliveryCodeDetailsRepository deliveryCodeDetailsRepository;
+
     @Mock
     InstitutionDetailsRepository institutionDetailsRepository;
     @Mock
@@ -334,14 +320,8 @@ public class ItemRequestDBServiceUT{
     public void rollbackAfterGFA() {
         ItemInformationResponse itemInformationResponse = getItemInformationResponse();
         RequestItemEntity requestItemEntity = getBulkRequestItemEntity().getRequestItemEntities().get(0);
-        OwnerCodeEntity ownerCodeEntity = new OwnerCodeEntity();
-        ownerCodeEntity.setInstitutionId(1);
-        ownerCodeEntity.setInstitutionEntity(getBulkRequestItemEntity().getInstitutionEntity());
-        ownerCodeEntity.setOwnerCode("PA");
-        ownerCodeEntity.setId(1);
-        ownerCodeEntity.setDescription("test");
+        Mockito.when(deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(any(),any(),anyChar())).thenReturn(getDeliveryCodeEntity());
         Mockito.when(requestItemDetailsRepository.findById(itemInformationResponse.getRequestId())).thenReturn(Optional.of(requestItemEntity));
-        Mockito.when(ownerCodeDetailsRepository.findByOwnerCode(requestItemEntity.getItemEntity().getCustomerCode())).thenReturn(ownerCodeEntity);
         ItemRequestInformation itemRequestInformation = itemRequestDBService.rollbackAfterGFA(itemInformationResponse);
         assertNotNull(itemRequestInformation);
     }
@@ -455,4 +435,14 @@ public class ItemRequestDBServiceUT{
         return itemEntity;
     }
 
+    private DeliveryCodeEntity getDeliveryCodeEntity() {
+        DeliveryCodeEntity deliveryCodeEntity = new DeliveryCodeEntity();
+        deliveryCodeEntity.setId(1);
+        deliveryCodeEntity.setDescription("Test");
+        deliveryCodeEntity.setDeliveryCode("PA");
+        deliveryCodeEntity.setAddress("Test");
+        deliveryCodeEntity.setDeliveryCodeTypeId(1);
+        deliveryCodeEntity.setActive('Y');
+        return deliveryCodeEntity;
+    }
 }

@@ -328,13 +328,8 @@ public class RequestItemControllerUT extends BaseTestCaseUT {
         itemRequestInformation.setRequestingInstitution(callInstitition);
         ItemRecallResponse itemRecallResponse = new ItemRecallResponse();
         itemRecallResponse.setSuccess(true);
-        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(callInstitition, PropertyKeyConstants.ILS.ILS_USE_DELIVERY_LOCATION_AS_PICKUP_LOCATION)).thenReturn(Boolean.TRUE.toString());
         Mockito.when(ilsProtocolConnectorFactory.getIlsProtocolConnector(any())).thenReturn(abstractProtocolConnector);
-        Mockito.when(ilsProtocolConnectorFactory.getIlsProtocolConnector(any()).recallItem(itembarcode, itemRequestInformation.getPatronBarcode(),
-                itemRequestInformation.getRequestingInstitution(),
-                itemRequestInformation.getExpirationDate(),
-                itemRequestInformation.getBibId(),
-                getPickupLocationDB(itemRequestInformation, "NYPL"))).thenReturn(itemRecallResponse);
+        Mockito.when(ilsProtocolConnectorFactory.getIlsProtocolConnector(any()).recallItem(any(),any(),any(),any(),any(),any())).thenReturn(itemRecallResponse);
         AbstractResponseItem abstractResponseItem = mockedRequestItemController.recallItem(itemRequestInformation, callInstitition);
         assertNotNull(abstractResponseItem);
     }

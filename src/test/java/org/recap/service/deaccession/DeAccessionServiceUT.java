@@ -35,7 +35,7 @@ import java.net.URL;
 import java.util.*;
 
 import static org.junit.Assert.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 /**
@@ -67,6 +67,18 @@ public class DeAccessionServiceUT extends BaseTestCaseUT {
 
     @Mock
     LASImsLocationConnectorFactory lasImsLocationConnectorFactory;
+
+    @Mock
+    InstitutionDetailsRepository institutionDetailsRepository;
+
+    @Mock
+    DeliveryCodeDetailsRepository deliveryCodeDetailsRepository;
+
+    @Mock
+    DeliveryCodeTranslationDetailsRepository deliveryCodeTranslationDetailsRepository;
+
+    @Mock
+    ImsLocationDetailsRepository imsLocationDetailsRepository;
 
     @Mock
     AbstractLASImsLocationConnector abstractLASImsLocationConnector;
@@ -101,9 +113,12 @@ public class DeAccessionServiceUT extends BaseTestCaseUT {
     @Mock
     ItemEntity itemEntity;
 
+    @Mock
+    UserDetailRepository userDetailRepository;
+
     @Before
     public void setup() {
-        Mockito.when(commonUtil.checkIfImsItemStatusIsAvailableOrNotAvailable(any(), any(), true)).thenReturn(Boolean.TRUE);
+        Mockito.when(commonUtil.checkIfImsItemStatusIsAvailableOrNotAvailable(any(), any(), anyBoolean())).thenReturn(Boolean.TRUE);
     }
 
     @Test
@@ -136,14 +151,19 @@ public class DeAccessionServiceUT extends BaseTestCaseUT {
         when(requestItemDetailsRepository.findByItemBarcode(itemBarcode)).thenReturn(Arrays.asList(requestItemEntity));
         when(propertyUtil.getPropertyByImsLocationAndKey(any(), any())).thenReturn(Boolean.TRUE.toString());
         when(requestItemController.itemInformation(any(), any())).thenReturn(itemInformationResponse);
+        Mockito.when(commonUtil.findAllInstitutionsExceptSupportInstitution()).thenReturn(Arrays.asList(itemEntity.getInstitutionEntity()));
         Mockito.when(requestItemController.cancelHoldItem(any(), any())).thenReturn(itemHoldResponse);
         Mockito.when(requestItemStatusDetailsRepository.findByRequestStatusCode(ScsbCommonConstants.REQUEST_STATUS_CANCELED)).thenReturn(getRequestItem().getRequestStatusEntity());
         Mockito.when(requestItemDetailsRepository.save(any())).thenReturn(requestItemEntity);
         Mockito.when(deaccesionItemChangeLogDetailsRepository.saveAll(itemChangeLogEntities)).thenReturn(Arrays.asList(deaccessionItemChangeLog));
-        //Mockito.when(bibliographicDetailsRepository.markBibsAsNotDeleted(any(), any(), any())).thenReturn(1);
-        //Mockito.when(holdingsDetailsRepository.markHoldingsAsNotDeleted(any(), any(), any())).thenReturn(1);
+        Mockito.when(userDetailRepository.findInstitutionCodeByUserName(any())).thenReturn("PUL");
+        Mockito.when(userDetailRepository.getUserRoles(any())).thenReturn(Arrays.asList("test"));
         Mockito.when(lasImsLocationConnectorFactory.getLasImsLocationConnector(any())).thenReturn(abstractLASImsLocationConnector);
         Mockito.when(abstractLASImsLocationConnector.gfaPermanentWithdrawalDirect(any())).thenReturn(gfaPwdResponse);
+        Mockito.when(institutionDetailsRepository.findByInstitutionCode(any())).thenReturn(getItemEntity().getInstitutionEntity());
+        Mockito.when(deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(any(), any(), anyChar())).thenReturn(getDeliveryCodeEntity());
+        Mockito.when(imsLocationDetailsRepository.findByImsLocationCode(any())).thenReturn(getImsLocationEntity());
+        Mockito.when(deliveryCodeTranslationDetailsRepository.findByRequestingInstitutionandImsLocation(any(), any(), any())).thenReturn(getDeliveryCodeTranslationEntity());
         Map<String, String> result = deAccessionService.deAccession(deAccessionRequest);
         assertNotNull(result);
         getGFAPwdTtItemResponse(gfaPwdResponse);
@@ -495,8 +515,12 @@ public class DeAccessionServiceUT extends BaseTestCaseUT {
         deAccessionDBResponseEntity.setItemStatus(ScsbCommonConstants.AVAILABLE);
         deAccessionDBResponseEntities.add(deAccessionDBResponseEntity);
         String username = "test";
+        Mockito.when(institutionDetailsRepository.findByInstitutionCode(deAccessionDBResponseEntity.getInstitutionCode())).thenReturn(getItemEntity().getInstitutionEntity());
+        Mockito.when(deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(any(), any(), anyChar())).thenReturn(getDeliveryCodeEntity());
+        Mockito.when(imsLocationDetailsRepository.findByImsLocationCode(deAccessionDBResponseEntity.getImsLocationCode())).thenReturn(getImsLocationEntity());
         Mockito.when(lasImsLocationConnectorFactory.getLasImsLocationConnector(any())).thenReturn(abstractLASImsLocationConnector);
         Mockito.when(abstractLASImsLocationConnector.gfaPermanentWithdrawalDirect(any())).thenReturn(null);
+        Mockito.when(deliveryCodeTranslationDetailsRepository.findByRequestingInstitutionandImsLocation(any(), any(), any())).thenReturn(getDeliveryCodeTranslationEntity());
         ReflectionTestUtils.invokeMethod(deAccessionService, "callGfaDeaccessionService", deAccessionDBResponseEntities, username);
     }
 
@@ -714,6 +738,7 @@ public class DeAccessionServiceUT extends BaseTestCaseUT {
         itemEntity.setCollectionGroupEntity(collectionGroupEntity);
         itemEntity.setBibliographicEntities(Arrays.asList(bibliographicEntity));
         itemEntity.setHoldingsEntities(Arrays.asList(holdingsEntity));
+        itemEntity.setOwningInstitutionId(1);
         itemEntity.setCgdProtection(true);
         itemEntity.setImsLocationEntity(getImsLocationEntity());
         assertTrue(itemEntity.isCgdProtection());
@@ -983,11 +1008,23 @@ public class DeAccessionServiceUT extends BaseTestCaseUT {
         gfaPwiResponse.setDsitem(gfaPwiDsItemResponse);
         return gfaPwiResponse;
     }
-   /* @Test
-    public void testcancelRequest() {
-        ItemHoldResponse itemHoldResponse = null;
-        RequestItemEntity requestItemEntity = new RequestItemEntity();
-        itemHoldResponse = deAccessionService.cancelRequest(requestItemEntity, "test");
-        assertTrue(true);
-    }*/
+    private DeliveryCodeEntity getDeliveryCodeEntity() {
+        DeliveryCodeEntity deliveryCodeEntity = new DeliveryCodeEntity();
+        deliveryCodeEntity.setId(1);
+        deliveryCodeEntity.setDescription("Test");
+        deliveryCodeEntity.setDeliveryCode("PA");
+        deliveryCodeEntity.setAddress("Test");
+        deliveryCodeEntity.setDeliveryCodeTypeId(1);
+        deliveryCodeEntity.setActive('Y');
+        return deliveryCodeEntity;
+    }
+    private DeliveryCodeTranslationEntity getDeliveryCodeTranslationEntity() {
+        DeliveryCodeTranslationEntity deliveryCodeTranslationEntity = new DeliveryCodeTranslationEntity();
+        deliveryCodeTranslationEntity.setId(1);
+        deliveryCodeTranslationEntity.setImsLocationDeliveryCode("HD");
+        deliveryCodeTranslationEntity.setRequestingInstitutionId(1);
+        deliveryCodeTranslationEntity.setRequestingInstitutionDeliveryCodeId(1);
+        deliveryCodeTranslationEntity.setInstitutionEntity(getItemEntity().getInstitutionEntity());
+        return deliveryCodeTranslationEntity;
+    }
 }
