@@ -86,7 +86,10 @@ public class BulkItemRequestService {
                     exceptionBulkRequestItems.add(buildBulkRequestItem(itemBarcode, itemEntity.getCustomerCode(), ScsbConstants.RETRIEVAL_NOT_FOR_UNAVAILABLE_ITEM));
                 } else if (!itemEntity.getOwningInstitutionId().equals(bulkRequestItemEntity.get().getRequestingInstitutionId())) {
                     exceptionBulkRequestItems.add(buildBulkRequestItem(itemBarcode, itemEntity.getCustomerCode(), "Item doesn't belong to the requesting institution."));
-                } else {
+                } else if(!itemEntity.getImsLocationId().equals(bulkRequestItemEntity.get().getImsLocation())) {
+                    exceptionBulkRequestItems.add(buildBulkRequestItem(itemBarcode, itemEntity.getCustomerCode(), "Item doesn't belong to the requesting storage location."));
+                }
+                else {
                     producerTemplate.sendBodyAndHeader(ScsbConstants.BULK_REQUEST_ITEM_PROCESSING_QUEUE, itemBarcode, ScsbCommonConstants.BULK_REQUEST_ID, bulkRequestId);
                 }
             } else {

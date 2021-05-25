@@ -978,9 +978,10 @@ public class ItemRequestService {
         //DO NOTHING
         }
         else if (Boolean.TRUE.toString().equalsIgnoreCase(isCheckinInstitution) && !itemRequestInfo.isOwningInstitutionItem()) {
-            requestItemController.checkinItem(itemRequestInfo, itemRequestInfo.getRequestingInstitution());
+            sendLASExceptionEmail(itemEntity.getCustomerCode(), itemEntity.getBarcode(), itemRequestInfo.getPatronBarcode(), itemRequestInfo.getItemOwningInstitution());
         }
         else {
+            sendLASExceptionEmail(itemEntity.getCustomerCode(), itemEntity.getBarcode(), itemRequestInfo.getPatronBarcode(), itemRequestInfo.getItemOwningInstitution());
             requestItemController.cancelHoldItem(itemRequestInfo, itemRequestInfo.getRequestingInstitution());
         }
     }
@@ -994,18 +995,20 @@ public class ItemRequestService {
         if (itemResponseInformation.isBulk()) {
             requestItemController.checkinItem(itemRequestInformation, itemRequestInformation.getRequestingInstitution());
         } else {
-
             String isCheckinInstitution = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInformation.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_CHECKIN_INSTITUTION);
             if (Boolean.TRUE.toString().equalsIgnoreCase(isCheckinInstitution)) {
                 if(!itemRequestInformation.isOwningInstitutionItem()) {
-                    requestItemController.checkinItem(itemRequestInformation, itemRequestInformation.getRequestingInstitution());
+                    sendLASExceptionEmail(requestItemEntity.get().getItemEntity().getCustomerCode(), requestItemEntity.get().getItemEntity().getBarcode(), requestItemEntity.get().getPatronId(), requestItemEntity.get().getInstitutionEntity().getInstitutionCode());
                 }
             }
             else {
                 requestItemController.cancelHoldItem(itemRequestInformation, itemRequestInformation.getRequestingInstitution());
+                sendLASExceptionEmail(requestItemEntity.get().getItemEntity().getCustomerCode(), requestItemEntity.get().getItemEntity().getBarcode(), requestItemEntity.get().getPatronId(), requestItemEntity.get().getInstitutionEntity().getInstitutionCode());
             }
         }
-    }
+        logger.info("Send LAS Status eMail");
+        logger.info("Send LAS Status eMail Done");
+ }
 
     /**
      * Gets notes.
@@ -1065,6 +1068,10 @@ public class ItemRequestService {
 
     private void sendEmail(String customerCode, String itemBarcode, String imsLocationCode, String patronBarcode, String toInstitution) {
         emailService.sendEmail(customerCode, itemBarcode, imsLocationCode, ScsbConstants.REQUEST_RECALL_TO_BORRWER, patronBarcode, toInstitution, ScsbConstants.REQUEST_RECALL_SUBJECT);
+    }
+
+    private void sendLASExceptionEmail(String customerCode, String itemBarcode, String patronBarcode, String toInstitution) {
+        emailService.sendLASExceptionEmail(customerCode, itemBarcode, ScsbConstants.ITEM_STATUS_NOT_AVAILABLE, patronBarcode, toInstitution, ScsbConstants.GFA_RETRIVAL_ITEM_NOT_AVAILABLE);
     }
 
     private String getPickupLocation(Integer InstitutionId, String deliveryLocation) {
