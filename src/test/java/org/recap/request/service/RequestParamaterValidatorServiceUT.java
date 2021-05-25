@@ -9,11 +9,14 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
 import org.recap.controller.ItemController;
+import org.recap.model.jpa.InstitutionEntity;
 import org.recap.model.request.ItemRequestInformation;
 import org.recap.repository.jpa.InstitutionDetailsRepository;
+import org.recap.util.CommonUtil;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static junit.framework.TestCase.assertNull;
@@ -33,6 +36,9 @@ public class RequestParamaterValidatorServiceUT{
     ItemController itemController;
 
     @Mock
+    CommonUtil commonUtil;
+
+    @Mock
     InstitutionDetailsRepository institutionDetailsRepository;
 
     @Test
@@ -46,7 +52,9 @@ public class RequestParamaterValidatorServiceUT{
     @Test
     public void testForValidatingInvalidRequestingInstitutionWithBarcode(){
         ItemRequestInformation itemRequestInformation = getItemRequestInformation();
+        InstitutionEntity institutionEntity = getInstitutionEntity();
         itemRequestInformation.setRequestType(ScsbConstants.EDD_REQUEST);
+        Mockito.when(commonUtil.findAllInstitutionCodesExceptSupportInstitution()).thenReturn(Arrays.asList(institutionEntity.getInstitutionName()));
         ResponseEntity responseEntity = requestParamaterValidatorService.validateItemRequestParameters(itemRequestInformation);
         assertNotNull(responseEntity);
         itemRequestInformation.setEmailAddress("");
@@ -74,7 +82,7 @@ public class RequestParamaterValidatorServiceUT{
         itemRequestInformation.setPatronBarcode("45678915");
         itemRequestInformation.setRequestType(ScsbCommonConstants.REQUEST_TYPE_BORROW_DIRECT);
         itemRequestInformation.setRequestingInstitution("PUL");
-        itemRequestInformation.setEmailAddress("test@email.com");
+        itemRequestInformation.setEmailAddress("test");
         Mockito.when(institutionDetailsRepository.existsByInstitutionCode(itemRequestInformation.getRequestingInstitution())).thenReturn(true);
         ResponseEntity responseEntity = requestParamaterValidatorService.validateItemRequestParameters(itemRequestInformation);
         assertNotNull(responseEntity);
@@ -117,10 +125,11 @@ public class RequestParamaterValidatorServiceUT{
         assertNull(responseEntity);
     }
 
-
-
-
-
-
-
+    private InstitutionEntity getInstitutionEntity() {
+        InstitutionEntity institutionEntity = new InstitutionEntity();
+        institutionEntity.setId(1);
+        institutionEntity.setInstitutionCode("PUL");
+        institutionEntity.setInstitutionName("PUL");
+        return institutionEntity;
+    }
 }
