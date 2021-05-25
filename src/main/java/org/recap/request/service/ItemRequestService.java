@@ -973,16 +973,20 @@ public class ItemRequestService {
         }
 
         String isCheckinInstitution = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_CHECKIN_INSTITUTION);
+        String isEmailOnlyInstitution = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_EMAIL_ONLY_INSTITUTION);
 
         if (Boolean.TRUE.toString().equalsIgnoreCase(isCheckinInstitution) && itemRequestInfo.isOwningInstitutionItem()) {
         //DO NOTHING
         }
         else if (Boolean.TRUE.toString().equalsIgnoreCase(isCheckinInstitution) && !itemRequestInfo.isOwningInstitutionItem()) {
+            if(Boolean.FALSE.toString().equalsIgnoreCase(isEmailOnlyInstitution)) {
+                requestItemController.checkinItem(itemRequestInfo, itemRequestInfo.getRequestingInstitution());
+            }
             sendLASExceptionEmail(itemEntity.getCustomerCode(), itemEntity.getBarcode(), itemRequestInfo.getPatronBarcode(), itemRequestInfo.getItemOwningInstitution());
         }
         else {
-            sendLASExceptionEmail(itemEntity.getCustomerCode(), itemEntity.getBarcode(), itemRequestInfo.getPatronBarcode(), itemRequestInfo.getItemOwningInstitution());
             requestItemController.cancelHoldItem(itemRequestInfo, itemRequestInfo.getRequestingInstitution());
+            sendLASExceptionEmail(itemEntity.getCustomerCode(), itemEntity.getBarcode(), itemRequestInfo.getPatronBarcode(), itemRequestInfo.getItemOwningInstitution());
         }
     }
 
@@ -996,8 +1000,13 @@ public class ItemRequestService {
             requestItemController.checkinItem(itemRequestInformation, itemRequestInformation.getRequestingInstitution());
         } else {
             String isCheckinInstitution = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInformation.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_CHECKIN_INSTITUTION);
+            String isEmailOnlyInstitution = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInformation.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_EMAIL_ONLY_INSTITUTION);
+
             if (Boolean.TRUE.toString().equalsIgnoreCase(isCheckinInstitution)) {
                 if(!itemRequestInformation.isOwningInstitutionItem()) {
+                    if(Boolean.FALSE.toString().equalsIgnoreCase(isEmailOnlyInstitution)) {
+                        requestItemController.checkinItem(itemRequestInformation, itemRequestInformation.getRequestingInstitution());
+                    }
                     sendLASExceptionEmail(requestItemEntity.get().getItemEntity().getCustomerCode(), requestItemEntity.get().getItemEntity().getBarcode(), requestItemEntity.get().getPatronId(), requestItemEntity.get().getInstitutionEntity().getInstitutionCode());
                 }
             }
