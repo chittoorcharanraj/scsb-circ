@@ -81,7 +81,6 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
     private String returnedResponseCode = " returned response code ";
     private String responseBody = ".  Response body: ";
     private String failureReason = "Failure due to ";
-    private String success = "Success";
 
     @Autowired
     RestApiResponseUtil restApiResponseUtil;
@@ -231,6 +230,9 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
             if (!checkoutItemResponse.getProblems().isEmpty()) {
                 itemCheckoutResponse.setSuccess(Boolean.FALSE);
                 itemCheckoutResponse.setScreenMessage(failureReason + checkoutItemResponse.getProblems());
+                log.error("checkOutItem Response >>> " + checkoutItemResponse.getProblems());
+                log.error("checkOutItem Response message >>> " + itemCheckoutResponse.getScreenMessage());
+
                 return itemCheckoutResponse;
             } else {
                 log.info(responseObject.toString());
@@ -243,7 +245,10 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
                 itemCheckoutResponse.setPatronIdentifier(checkoutItemResponse.getUserId().getUserIdentifierValue());
                 itemCheckoutResponse.setDueDate(responseObject.getString("dueDate"));
                 itemCheckoutResponse.setSuccess(Boolean.TRUE);
-                itemCheckoutResponse.setScreenMessage(success);
+                itemCheckoutResponse.setScreenMessage(ScsbCommonConstants.SUCCESS);
+            log.info("checkOutItem Response >>> " + checkoutItemResponse.getProblems());
+                log.info("checkOutItem Response message >>> " + itemCheckoutResponse.getScreenMessage());
+
                 return itemCheckoutResponse;
             }
 
@@ -251,10 +256,12 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
             log.error(ScsbCommonConstants.LOG_ERROR, httpException);
             itemCheckoutResponse.setSuccess(false);
             itemCheckoutResponse.setScreenMessage(httpException.getStatusText());
+            log.error("checkOutItem Response message >>> " + itemCheckoutResponse.getScreenMessage());
         } catch (Exception e) {
             log.error(ScsbCommonConstants.LOG_ERROR, e);
             itemCheckoutResponse.setSuccess(false);
             itemCheckoutResponse.setScreenMessage(e.getMessage());
+            log.error("checkOutItem Response message >>> " + itemCheckoutResponse.getScreenMessage());
         }
         return itemCheckoutResponse;
     }
@@ -297,11 +304,15 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
             log.error(ScsbCommonConstants.LOG_ERROR, httpException);
             itemCheckinResponse.setSuccess(false);
             itemCheckinResponse.setScreenMessage(httpException.getStatusText());
+            log.error("CheckinItem Response message >>> " + itemCheckinResponse.getScreenMessage());
         } catch (Exception e) {
             log.error(ScsbCommonConstants.LOG_ERROR, e);
             itemCheckinResponse.setSuccess(false);
             itemCheckinResponse.setScreenMessage(e.getMessage());
+            log.error("CheckinItem Response message >>> " + itemCheckinResponse.getScreenMessage());
         }
+        log.info("CheckinItem Response >>> " + checkinItemResponse);
+        log.info("CheckinItem Response message >>> " + itemCheckinResponse.getScreenMessage());
         return checkinItemResponse;
     }
     @Override
@@ -329,6 +340,8 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
                         if (!checkinItemResponse.getProblems().isEmpty()) {
                             itemCheckinResponse.setSuccess(Boolean.FALSE);
                             itemCheckinResponse.setScreenMessage(failureReason + checkinItemResponse.getProblems());
+                            log.error("CheckinItem Response >>> " + checkinItemResponse.getProblems());
+                            log.error("CheckinItem Response message >>> " + itemCheckinResponse.getScreenMessage());
                             return itemCheckinResponse;
                         }
                         checkInItemInitiationData = checkInItem.getCheckInItemInitiationRemoteData(itemIdentifier, itemEntity, imsLocation, remoteProfileType, getNcipAgencyId(), getNcipScheme());
@@ -336,6 +349,8 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
                         if (!checkinItemResponse.getProblems().isEmpty()) {
                             itemCheckinResponse.setSuccess(Boolean.FALSE);
                             itemCheckinResponse.setScreenMessage(failureReason + checkinItemResponse.getProblems());
+                            log.error("CheckinItem Response >>> " + checkinItemResponse.getProblems());
+                            log.error("CheckinItem Response message >>> " + itemCheckinResponse.getScreenMessage());
                             return itemCheckinResponse;
                         }
                     } else {
@@ -344,6 +359,8 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
                         if (!checkinItemResponse.getProblems().isEmpty()) {
                             itemCheckinResponse.setSuccess(Boolean.FALSE);
                             itemCheckinResponse.setScreenMessage(failureReason + checkinItemResponse.getProblems());
+                            log.error("CheckinItem Response >>> " + checkinItemResponse.getProblems());
+                            log.error("CheckinItem Response message >>> " + itemCheckinResponse.getScreenMessage());
                             return itemCheckinResponse;
                         }
                       }
@@ -354,13 +371,16 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
                         if (!checkinItemResponse.getProblems().isEmpty()) {
                             itemCheckinResponse.setSuccess(Boolean.FALSE);
                             itemCheckinResponse.setScreenMessage(failureReason + checkinItemResponse.getProblems());
+                            log.info("itemCheckinResponse Response message >>> " + itemCheckinResponse.getScreenMessage());
+                            log.info("itemCheckinResponse problems >>> " + checkinItemResponse.getProblems());
                             return itemCheckinResponse;
                         }
-                    }
+                    log.info("itemCheckinResponse Response message >>> " + itemCheckinResponse.getScreenMessage());
+                }
                     itemCheckinResponse.setSuccess(Boolean.TRUE);
-                    itemCheckinResponse.setScreenMessage(success);
+                    itemCheckinResponse.setScreenMessage(ScsbCommonConstants.SUCCESS);
                     itemCheckinResponse.setItemOwningInstitution(getInstitution());
-
+                    log.info("itemCheckinResponse Response message >>> " + itemCheckinResponse.getScreenMessage());
         return itemCheckinResponse;
     }
 
@@ -374,7 +394,7 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
 
     @Override
     public Object placeHold(String itemIdentifier, Integer requestId, String patronIdentifier, String callInstitutionId, String itemInstitutionId, String expirationDate, String bibId, String pickupLocation, String trackingId, String title, String author, String callNumber) {
-        log.info("Item barcode {} received for hold request in " + itemInstitutionId + " for patron {}", itemIdentifier, patronIdentifier);
+        log.info("Item barcode {} received for hold request in " + callInstitutionId + " for patron {}", itemIdentifier, patronIdentifier);
         ItemHoldResponse itemHoldResponse = new ItemHoldResponse();
         if (callInstitutionId.equalsIgnoreCase(itemInstitutionId)) {
                 itemHoldResponse.setSuccess(Boolean.TRUE);
@@ -427,6 +447,8 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
             if (!cancelItemResponse.getProblems().isEmpty()) {
                 itemHoldResponse.setSuccess(Boolean.FALSE);
                 itemHoldResponse.setScreenMessage(failureReason + cancelItemResponse.getProblems());
+                log.error("cancelHold Response >>> " + cancelItemResponse.getProblems());
+                log.error("cancelHold Response message >>> " + itemHoldResponse.getScreenMessage());
                 return itemHoldResponse;
             }
 
@@ -434,16 +456,21 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
             itemHoldResponse.setItemBarcode(cancelItemResponse.getItemId().getItemIdentifierValue());
             itemHoldResponse.setPatronIdentifier(cancelItemResponse.getRequestId().getAgencyId().getValue());
             itemHoldResponse.setSuccess(Boolean.TRUE);
+            itemHoldResponse.setScreenMessage(ScsbCommonConstants.SUCCESS);
             itemHoldResponse.setTitleIdentifier(cancelItemResponse.getItemId().getItemIdentifierValue());
         } catch (HttpClientErrorException httpException) {
             log.error(ScsbCommonConstants.LOG_ERROR, httpException);
             itemHoldResponse.setSuccess(false);
             itemHoldResponse.setScreenMessage(httpException.getStatusText());
+            log.error("cancelHold Response message >>> " + itemHoldResponse.getScreenMessage());
         } catch (Exception e) {
             log.error(ScsbCommonConstants.LOG_ERROR, e);
             itemHoldResponse.setSuccess(false);
             itemHoldResponse.setScreenMessage(e.getMessage());
+            log.error("cancelHold Response message >>> " + itemHoldResponse.getScreenMessage());
         }
+        log.info("cancelHold Response >>> " + itemHoldResponse);
+        log.info("cancelHold Response message >>> " + itemHoldResponse.getScreenMessage());
         return itemHoldResponse;
     }
 
@@ -497,12 +524,14 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
             if (!lookupUserResponseData.getProblems().isEmpty()) {
                 patronInformationResponse.setSuccess(Boolean.FALSE);
                 patronInformationResponse.setScreenMessage(failureReason + lookupUserResponseData.getProblems());
+                log.error("patronInformation Response >>> " + lookupUserResponseData.getProblems());
+                log.error("patronInformation Response message >>> " + patronInformationResponse.getScreenMessage());
 
                 return patronInformationResponse;
             } else {
                 patronInformationResponse.setPatronName(responseObject.getString("name"));
                 patronInformationResponse.setSuccess(Boolean.TRUE);
-                patronInformationResponse.setScreenMessage(success);
+                patronInformationResponse.setScreenMessage(ScsbCommonConstants.SUCCESS);
                 patronInformationResponse.setHomeAddress(lookupUserResponseData.getUserOptionalFields().getUserAddressInformation(0).getPhysicalAddress().getStructuredAddress().getStreet().concat(",").concat(
                         lookupUserResponseData.getUserOptionalFields().getUserAddressInformation(0).getPhysicalAddress().getStructuredAddress().getLocality()).concat(",").
                         concat(lookupUserResponseData.getUserOptionalFields().getUserAddressInformation(0).getPhysicalAddress().getStructuredAddress().getRegion().concat(",").
@@ -510,6 +539,8 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
 
                 patronInformationResponse.setEmail(lookupUserResponseData.getUserOptionalFields().getUserAddressInformation(1).getElectronicAddress().getElectronicAddressData());
                 patronInformationResponse.setPatronIdentifier(patronIdentifier);
+                log.info("patronInformation Response >>> " + lookupUserResponseData);
+                log.info("patronInformation Response message >>> " + patronInformationResponse.getScreenMessage());
 
                 return patronInformationResponse;
             }
@@ -517,10 +548,12 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
             log.error(ScsbCommonConstants.LOG_ERROR, httpException);
             patronInformationResponse.setSuccess(false);
             patronInformationResponse.setScreenMessage(httpException.getStatusText());
+            log.error("patronInformation Response message >>> " + patronInformationResponse.getScreenMessage());
         } catch (Exception e) {
             log.error(ScsbCommonConstants.LOG_ERROR, e);
             patronInformationResponse.setSuccess(false);
             patronInformationResponse.setScreenMessage(e.getMessage());
+            log.error("patronInformation Response message >>> " + patronInformationResponse.getScreenMessage());
         }
         return patronInformationResponse;
     }
@@ -563,6 +596,8 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
             if (!recallItemResponse.getProblems().isEmpty()) {
                 itemRecallResponse.setSuccess(false);
                 itemRecallResponse.setScreenMessage("Faiure due to " + recallItemResponse.getProblems());
+                log.error("recallItem Response >>> " + recallItemResponse.getProblems());
+                log.error("recallItem Response message >>> " + itemRecallResponse.getScreenMessage());
                 return itemRecallResponse;
             }
             log.info(responseObject.toString());
@@ -575,16 +610,20 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
             itemRecallResponse.setExpirationDate(simpleDateFormat.format(expirationDateforRecall));
 
             itemRecallResponse.setSuccess(Boolean.TRUE);
-            itemRecallResponse.setScreenMessage(success);
+            itemRecallResponse.setScreenMessage(ScsbCommonConstants.SUCCESS);
+            log.error("recallItem Response >>> " + recallItemResponse.getProblems());
+            log.error("recallItem Response message >>> " + itemRecallResponse.getScreenMessage());
 
         } catch (HttpClientErrorException httpException) {
             log.error(ScsbCommonConstants.LOG_ERROR, httpException);
             itemRecallResponse.setSuccess(false);
             itemRecallResponse.setScreenMessage(httpException.getStatusText());
-        } catch (Exception e) {
+            log.error("recallItem Response message >>> " + itemRecallResponse.getScreenMessage());
+      } catch (Exception e) {
             log.error(ScsbCommonConstants.LOG_ERROR, e);
             itemRecallResponse.setSuccess(false);
             itemRecallResponse.setScreenMessage(e.getMessage());
+            log.error("recallItem Response message >>> " + itemRecallResponse.getScreenMessage());
         }
         return itemRecallResponse;
     }
@@ -664,7 +703,7 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
             itemHoldResponse.setItemBarcode(acceptItemResponse.getItemId().getItemIdentifierValue());
             itemHoldResponse.setPatronIdentifier(patronIdentifier);
             itemHoldResponse.setSuccess(Boolean.TRUE);
-            itemHoldResponse.setScreenMessage(success);
+            itemHoldResponse.setScreenMessage(ScsbCommonConstants.SUCCESS);
             itemHoldResponse.setTitleIdentifier(acceptItemResponse.getItemId().getItemIdentifierValue());
             itemHoldResponse.setPickupLocation(pickupLocation);
             itemHoldResponse.setInstitutionID(getInstitution());

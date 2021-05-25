@@ -973,15 +973,20 @@ public class ItemRequestService {
         }
 
         String isCheckinInstitution = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_CHECKIN_INSTITUTION);
+        String isEmailOnlyInstitution = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_EMAIL_ONLY_INSTITUTION);
 
         if (Boolean.TRUE.toString().equalsIgnoreCase(isCheckinInstitution) && itemRequestInfo.isOwningInstitutionItem()) {
         //DO NOTHING
         }
         else if (Boolean.TRUE.toString().equalsIgnoreCase(isCheckinInstitution) && !itemRequestInfo.isOwningInstitutionItem()) {
-            requestItemController.checkinItem(itemRequestInfo, itemRequestInfo.getRequestingInstitution());
+            if(Boolean.FALSE.toString().equalsIgnoreCase(isEmailOnlyInstitution)) {
+                requestItemController.checkinItem(itemRequestInfo, itemRequestInfo.getRequestingInstitution());
+            }
+            sendLASExceptionEmail(itemEntity.getCustomerCode(), itemEntity.getBarcode(), itemRequestInfo.getPatronBarcode(), itemRequestInfo.getItemOwningInstitution());
         }
         else {
             requestItemController.cancelHoldItem(itemRequestInfo, itemRequestInfo.getRequestingInstitution());
+            sendLASExceptionEmail(itemEntity.getCustomerCode(), itemEntity.getBarcode(), itemRequestInfo.getPatronBarcode(), itemRequestInfo.getItemOwningInstitution());
         }
     }
 
@@ -994,18 +999,25 @@ public class ItemRequestService {
         if (itemResponseInformation.isBulk()) {
             requestItemController.checkinItem(itemRequestInformation, itemRequestInformation.getRequestingInstitution());
         } else {
-
             String isCheckinInstitution = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInformation.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_CHECKIN_INSTITUTION);
+            String isEmailOnlyInstitution = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInformation.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_EMAIL_ONLY_INSTITUTION);
+
             if (Boolean.TRUE.toString().equalsIgnoreCase(isCheckinInstitution)) {
                 if(!itemRequestInformation.isOwningInstitutionItem()) {
-                    requestItemController.checkinItem(itemRequestInformation, itemRequestInformation.getRequestingInstitution());
+                    if(Boolean.FALSE.toString().equalsIgnoreCase(isEmailOnlyInstitution)) {
+                        requestItemController.checkinItem(itemRequestInformation, itemRequestInformation.getRequestingInstitution());
+                    }
+                    sendLASExceptionEmail(requestItemEntity.get().getItemEntity().getCustomerCode(), requestItemEntity.get().getItemEntity().getBarcode(), requestItemEntity.get().getPatronId(), requestItemEntity.get().getInstitutionEntity().getInstitutionCode());
                 }
             }
             else {
                 requestItemController.cancelHoldItem(itemRequestInformation, itemRequestInformation.getRequestingInstitution());
+                sendLASExceptionEmail(requestItemEntity.get().getItemEntity().getCustomerCode(), requestItemEntity.get().getItemEntity().getBarcode(), requestItemEntity.get().getPatronId(), requestItemEntity.get().getInstitutionEntity().getInstitutionCode());
             }
         }
-    }
+        logger.info("Send LAS Status eMail");
+        logger.info("Send LAS Status eMail Done");
+ }
 
     /**
      * Gets notes.
@@ -1065,6 +1077,10 @@ public class ItemRequestService {
 
     private void sendEmail(String customerCode, String itemBarcode, String imsLocationCode, String patronBarcode, String toInstitution) {
         emailService.sendEmail(customerCode, itemBarcode, imsLocationCode, ScsbConstants.REQUEST_RECALL_TO_BORRWER, patronBarcode, toInstitution, ScsbConstants.REQUEST_RECALL_SUBJECT);
+    }
+
+    private void sendLASExceptionEmail(String customerCode, String itemBarcode, String patronBarcode, String toInstitution) {
+        emailService.sendLASExceptionEmail(customerCode, itemBarcode, ScsbConstants.ITEM_STATUS_NOT_AVAILABLE, patronBarcode, toInstitution, ScsbConstants.GFA_RETRIVAL_ITEM_NOT_AVAILABLE);
     }
 
     private String getPickupLocation(Integer InstitutionId, String deliveryLocation) {

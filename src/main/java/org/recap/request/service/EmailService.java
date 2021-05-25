@@ -46,6 +46,18 @@ public class EmailService {
         producer.sendBodyAndHeader(ScsbConstants.EMAIL_Q, emailPayLoad, ScsbConstants.EMAIL_BODY_FOR, ScsbConstants.REQUEST_RECALL_MAIL_QUEUE);
     }
 
+    public void sendLASExceptionEmail(String customerCode, String itemBarcode, String messageDisplay, String patronBarcode, String toInstitution, String subject) {
+        EmailPayLoad emailPayLoad = new EmailPayLoad();
+        emailPayLoad.setTo(emailLASIdTo(toInstitution));
+        emailPayLoad.setCc(emailLASIdCC(toInstitution));
+        emailPayLoad.setCustomerCode(customerCode);
+        emailPayLoad.setItemBarcode(itemBarcode);
+        emailPayLoad.setMessageDisplay(messageDisplay);
+        emailPayLoad.setPatronBarcode(patronBarcode);
+        emailPayLoad.setSubject(subject + itemBarcode);
+        producer.sendBodyAndHeader(ScsbConstants.EMAIL_Q, emailPayLoad, ScsbConstants.EMAIL_BODY_FOR, ScsbConstants.REQUEST_LAS_STATUS_MAIL_QUEUE);
+    }
+
     /**
      * Send email for bulk request process.
      *
@@ -71,12 +83,12 @@ public class EmailService {
      * @param institution
      * @return
      */
-    private String emailIdTo(String institution, String imsLocationCode) {
-        if (institution.equalsIgnoreCase(ScsbConstants.GFA)) {
-            return propertyUtil.getPropertyByImsLocationAndKey(imsLocationCode, PropertyKeyConstants.IMS.IMS_EMAIL_REQUEST_CANCEL_TO);
-        } else {
-            return propertyUtil.getPropertyByInstitutionAndKey(institution, PropertyKeyConstants.ILS.ILS_EMAIL_RECALL_REQUEST_TO);
-        }
+    private String emailLASIdTo(String institution) {
+            return propertyUtil.getPropertyByInstitutionAndKey(institution, PropertyKeyConstants.ILS.ILS_EMAIL_LAS_EXCEPTION_TO);
+    }
+
+    private String emailLASIdCC(String institution) {
+            return propertyUtil.getPropertyByInstitutionAndKey(institution, PropertyKeyConstants.ILS.ILS_EMAIL_LAS_EXCEPTION_CC);
     }
 
     private String emailIdCC(String institution, String imsLocationCode) {
@@ -84,6 +96,14 @@ public class EmailService {
             return propertyUtil.getPropertyByImsLocationAndKey(imsLocationCode, PropertyKeyConstants.IMS.IMS_EMAIL_REQUEST_RECALL_CC);
         } else {
             return propertyUtil.getPropertyByInstitutionAndKey(institution, PropertyKeyConstants.ILS.ILS_EMAIL_REQUEST_RECALL_CC);
+        }
+    }
+
+    private String emailIdTo(String institution, String imsLocationCode) {
+        if (institution.equalsIgnoreCase(ScsbConstants.GFA)) {
+            return propertyUtil.getPropertyByImsLocationAndKey(imsLocationCode, PropertyKeyConstants.IMS.IMS_EMAIL_REQUEST_CANCEL_TO);
+        } else {
+            return propertyUtil.getPropertyByInstitutionAndKey(institution, PropertyKeyConstants.ILS.ILS_EMAIL_RECALL_REQUEST_TO);
         }
     }
 }

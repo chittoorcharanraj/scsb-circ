@@ -289,7 +289,9 @@ public class ItemRequestDBService {
             itemRequestInformation.setBibId(requestItemEntity.get().getItemEntity().getBibliographicEntities().get(0).getOwningInstitutionBibId());
             itemRequestInformation.setPatronBarcode(requestItemEntity.get().getPatronId());
             itemRequestInformation.setItemBarcodes(Collections.singletonList(requestItemEntity.get().getItemEntity().getBarcode()));
-            itemRequestInformation.setPickupLocation(deliveryCodeEntity.getPickupLocation());
+            if(deliveryCodeEntity != null) {
+                itemRequestInformation.setPickupLocation(deliveryCodeEntity.getPickupLocation());
+            }
             itemRequestInformation.setItemOwningInstitution(requestItemEntity.get().getItemEntity().getInstitutionEntity().getInstitutionCode());
             itemRequestInformation.setRequestingInstitution(requestItemEntity.get().getInstitutionEntity().getInstitutionCode());
         }
