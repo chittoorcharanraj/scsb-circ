@@ -1497,7 +1497,8 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
         String body = "text";
         ItemInformationResponse itemInformationResponse = new ItemInformationResponse();
         ItemRequestInformation itemRequestInformation = new ItemRequestInformation();
-        RequestItemEntity requestItemEntity = new RequestItemEntity();
+        RequestItemEntity requestItemEntity = getRequestItemEntity();
+        Mockito.when(mockedRequestItemDetailsRepository.findById(any())).thenReturn(Optional.of(getRequestItemEntity()));
         Mockito.when(mockedGfaLasService.processLASRetrieveResponse(body)).thenReturn(itemInformationResponse);
         Mockito.when(mockedItemRequestDBService.updateRecapRequestStatus(itemInformationResponse)).thenReturn(itemInformationResponse);
         Mockito.when(mockedItemRequestDBService.rollbackAfterGFA(itemInformationResponse)).thenReturn(itemRequestInformation);
@@ -1521,6 +1522,7 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
         String body = "text";
         ItemInformationResponse itemInformationResponse = new ItemInformationResponse();
         ItemRequestInformation itemRequestInformation = new ItemRequestInformation();
+        Mockito.when(mockedRequestItemDetailsRepository.findById(any())).thenReturn(Optional.of(getRequestItemEntity()));
         Mockito.when(mockedGfaLasService.processLASEDDRetrieveResponse(body)).thenReturn(itemInformationResponse);
         Mockito.when(mockedItemRequestDBService.updateRecapRequestStatus(itemInformationResponse)).thenReturn(itemInformationResponse);
         Mockito.when(mockedItemRequestDBService.rollbackAfterGFA(itemInformationResponse)).thenReturn(itemRequestInformation);
@@ -1754,6 +1756,23 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
         deliveryCodeEntity.setDeliveryCodeTypeId(1);
         deliveryCodeEntity.setActive('Y');
         return deliveryCodeEntity;
+    }
+
+    private RequestItemEntity getRequestItemEntity(){
+        RequestItemEntity requestItemEntity = new RequestItemEntity();
+        requestItemEntity.setItemId(1);
+        requestItemEntity.setRequestingInstitutionId(1);
+        requestItemEntity.setRequestTypeId(1);
+        requestItemEntity.setRequestExpirationDate(new Date());
+        requestItemEntity.setCreatedBy("userName");
+        requestItemEntity.setCreatedDate(new Date());
+        requestItemEntity.setLastUpdatedDate(new Date());
+        requestItemEntity.setPatronId("12345");
+        requestItemEntity.setStopCode("PA");
+        requestItemEntity.setRequestStatusId(1);
+        requestItemEntity.setInstitutionEntity(getItemEntity().getInstitutionEntity());
+        requestItemEntity.setItemEntity(getItemEntity());
+        return requestItemEntity;
     }
 
 

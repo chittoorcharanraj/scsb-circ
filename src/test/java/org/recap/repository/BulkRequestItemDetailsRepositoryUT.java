@@ -31,6 +31,9 @@ public class BulkRequestItemDetailsRepositoryUT extends BaseTestCase {
         bulkRequestItemEntity.setCreatedDate(new Date());
         bulkRequestItemEntity.setStopCode("PA");
         bulkRequestItemEntity.setPatronId("45678915");
+        bulkRequestItemEntity.setLastUpdatedDate(new Date());
+        bulkRequestItemEntity.setBulkRequestStatus("Complete");
+        bulkRequestItemEntity.setImsLocation(1);
 
         BulkRequestItemEntity savedBulkRequestItemEntity = bulkRequestItemDetailsRepository.save(bulkRequestItemEntity);
         assertNotNull(savedBulkRequestItemEntity);

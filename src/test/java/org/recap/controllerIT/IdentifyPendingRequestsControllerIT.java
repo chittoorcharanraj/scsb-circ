@@ -19,6 +19,5 @@ public class IdentifyPendingRequestsControllerIT extends BaseControllerUT {
         assertNotNull(result);
         int status = mvcResult.getResponse().getStatus();
         assertTrue(status == 200);
-        assertEquals("There are no pending requests or no new pending request",result);
     }
 }

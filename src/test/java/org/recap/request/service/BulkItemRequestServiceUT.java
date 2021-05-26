@@ -176,6 +176,7 @@ public class BulkItemRequestServiceUT {
         bulkRequestItemEntity.setCreatedBy("test");
         bulkRequestItemEntity.setInstitutionEntity(institutionEntity);
         bulkRequestItemEntity.setRequestingInstitutionId(1);
+        bulkRequestItemEntity.setImsLocation(1);
         bulkRequestItemEntity.setRequestItemEntities(Arrays.asList(requestItemEntity));
         return bulkRequestItemEntity;
     }
@@ -185,6 +186,7 @@ public class BulkItemRequestServiceUT {
         itemEntity.setCustomerCode("PA");
         itemEntity.setOwningInstitutionItemId("13567");
         itemEntity.setOwningInstitutionId(1);
+        itemEntity.setImsLocationId(1);
         ItemStatusEntity itemStatusEntity = new ItemStatusEntity();
         itemStatusEntity.setId(2);
         itemStatusEntity.setStatusCode(ScsbCommonConstants.NOT_AVAILABLE);
