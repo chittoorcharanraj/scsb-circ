@@ -481,7 +481,7 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
 
     @Override
     public boolean patronValidation(String institutionId, String patronIdentifier) {
-        return false;
+        return true;
     }
 
     @Override

@@ -414,10 +414,12 @@ public class ItemRequestService {
                         itemRequestInfo.setPatronBarcode(requestItemEntity.getPatronId());
                     }
                     String isRefileForCheckin = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_USE_REFILE_FOR_CHECKIN);
-                    if (Boolean.TRUE.toString().equalsIgnoreCase(isRefileForCheckin)) {
-                        requestItemController.getIlsProtocolConnectorFactory().getIlsProtocolConnector(itemRequestInfo.getRequestingInstitution()).refileItem(itemBarcode);
-                    } else {
-                        requestItemController.checkinItem(itemRequestInfo, itemRequestInfo.getRequestingInstitution());
+                    if(!itemRequestInfo.getRequestType().equalsIgnoreCase(ScsbConstants.EDD_REQUEST)) {
+                        if (Boolean.TRUE.toString().equalsIgnoreCase(isRefileForCheckin)) {
+                            requestItemController.getIlsProtocolConnectorFactory().getIlsProtocolConnector(itemRequestInfo.getRequestingInstitution()).refileItem(itemBarcode);
+                        } else {
+                            requestItemController.checkinItem(itemRequestInfo, itemRequestInfo.getRequestingInstitution());
+                        }
                     }
                     if (!itemRequestInfo.isOwningInstitutionItem()) {
                         //TODO - Check if EDD and change Patron accordingly to checkIn in ItemOwningInstitution

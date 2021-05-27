@@ -169,6 +169,7 @@ public class BulkItemRequestProcessService {
         itemRequestInformation.setRequestingInstitution(bulkRequestItemEntity.getInstitutionEntity().getInstitutionCode());
         itemRequestInformation.setPatronBarcode(bulkRequestItemEntity.getPatronId());
         itemRequestInformation.setDeliveryLocation(bulkRequestItemEntity.getStopCode());
+        itemRequestInformation.setTranslatedDeliveryLocation(bulkRequestItemEntity.getStopCode());
         itemRequestInformation.setEmailAddress(bulkRequestItemEntity.getEmailId());
         itemRequestInformation.setRequestNotes(bulkRequestItemEntity.getNotes());
         itemRequestInformation.setUsername(bulkRequestItemEntity.getCreatedBy() + "(Bulk)");
