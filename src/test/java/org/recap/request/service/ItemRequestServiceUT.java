@@ -532,8 +532,6 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
 
         List<String> requestItemStatusList = Arrays.asList(ScsbCommonConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED, ScsbCommonConstants.REQUEST_STATUS_EDD, ScsbCommonConstants.REQUEST_STATUS_CANCELED, ScsbCommonConstants.REQUEST_STATUS_INITIAL_LOAD);
         Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(any(), any())).thenReturn(Boolean.TRUE.toString());
-        Mockito.when(mockedRequestItemController.getIlsProtocolConnectorFactory()).thenReturn(ilsProtocolConnectorFactory);
-        Mockito.when(mockedRequestItemController.getIlsProtocolConnectorFactory().getIlsProtocolConnector(any())).thenReturn(abstractProtocolConnector);
         Mockito.when(mockedRequestItemDetailsRepository.findByIdsAndStatusCodes(itemRefileRequest.getRequestIds(), requestItemStatusList)).thenReturn(Arrays.asList(requestItemEntity));
         Mockito.when(mockedRequestItemDetailsRepository.findByItemBarcodes(itemRefileRequest.getItemBarcodes())).thenReturn(Arrays.asList(requestItemEntity));
         Mockito.when(mockedRequestItemStatusDetailsRepository.findByRequestStatusCode(ScsbCommonConstants.REQUEST_STATUS_REFILED)).thenReturn(requestItemEntity.getRequestStatusEntity());
