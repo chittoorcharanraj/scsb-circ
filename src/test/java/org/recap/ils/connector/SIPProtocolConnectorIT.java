@@ -8,10 +8,16 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.recap.BaseTestCase;
 import org.recap.BaseTestCaseUT;
+import org.recap.PropertyKeyConstants;
 import org.recap.ScsbConstants;
 import org.recap.model.ILSConfigProperties;
 import org.recap.model.request.ItemRequestInformation;
+import org.recap.util.PropertyUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -21,8 +27,7 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
-public class SIPProtocolConnectorIT extends BaseTestCaseUT {
+public class SIPProtocolConnectorIT extends BaseTestCase {
 
     @InjectMocks
     @Spy
@@ -31,6 +36,8 @@ public class SIPProtocolConnectorIT extends BaseTestCaseUT {
     @Mock
     SIP2SocketConnection sip2SocketConnection;
 
+    @Autowired
+    PropertyUtil propertyUtil;
 
     @Test
     public void supports() {
@@ -43,18 +50,18 @@ public class SIPProtocolConnectorIT extends BaseTestCaseUT {
     @Test
     public void testGetSocketConnection() {
         SIPProtocolConnector sipProtocolConnector = new SIPProtocolConnector();
-        ILSConfigProperties ilsConfigProperties = getIlsConfigProperties();
+        ILSConfigProperties ilsConfigProperties = getIlsConfigProperties("PUL");
         sipProtocolConnector.setInstitution("PUL");
         sipProtocolConnector.setIlsConfigProperties(ilsConfigProperties);
         boolean connected = sipProtocolConnector.checkSocketConnection();
-        //assertTrue(connected);
+        assertTrue(connected);
     }
 
     @Test
     public void jSIPLogin() throws IOException {
         SIPProtocolConnector sipProtocolConnector = new SIPProtocolConnector();
-        ILSConfigProperties ilsConfigProperties = getIlsConfigProperties();
         sipProtocolConnector.setInstitution("PUL");
+        ILSConfigProperties ilsConfigProperties = getIlsConfigProperties("PUL");
         sipProtocolConnector.setIlsConfigProperties(ilsConfigProperties);
         SIP2SocketConnection connection = new SIP2SocketConnection(ilsConfigProperties.getHost(), ilsConfigProperties.getPort());
         sipProtocolConnector.jSIPLogin(connection, "123456");
@@ -71,7 +78,7 @@ public class SIPProtocolConnectorIT extends BaseTestCaseUT {
         String institutionId = "1";
         String patronIdentifier = "123456";
         SIPProtocolConnector sipProtocolConnector = new SIPProtocolConnector();
-        ILSConfigProperties ilsConfigProperties = getIlsConfigProperties();
+        ILSConfigProperties ilsConfigProperties = getIlsConfigProperties("PUL");
         sipProtocolConnector.setInstitution("PUL");
         sipProtocolConnector.setIlsConfigProperties(ilsConfigProperties);
         sipProtocolConnector.patronValidation(institutionId, patronIdentifier);
@@ -92,7 +99,7 @@ public class SIPProtocolConnectorIT extends BaseTestCaseUT {
     public void lookupItem() {
         String itemIdentifier = "231456";
         SIPProtocolConnector sipProtocolConnector = new SIPProtocolConnector();
-        ILSConfigProperties ilsConfigProperties = getIlsConfigProperties();
+        ILSConfigProperties ilsConfigProperties = getIlsConfigProperties("PUL");
         sipProtocolConnector.setInstitution("PUL");
         sipProtocolConnector.setIlsConfigProperties(ilsConfigProperties);
         sipProtocolConnector.lookupItem(itemIdentifier);
@@ -113,7 +120,7 @@ public class SIPProtocolConnectorIT extends BaseTestCaseUT {
         String institutionId = "231456";
         String patronIdentifier = "23456676";
         SIPProtocolConnector sipProtocolConnector = new SIPProtocolConnector();
-        ILSConfigProperties ilsConfigProperties = getIlsConfigProperties();
+        ILSConfigProperties ilsConfigProperties = getIlsConfigProperties("PUL");
         sipProtocolConnector.setInstitution("PUL");
         sipProtocolConnector.setIlsConfigProperties(ilsConfigProperties);
         sipProtocolConnector.lookupUser(institutionId, patronIdentifier);
@@ -130,13 +137,13 @@ public class SIPProtocolConnectorIT extends BaseTestCaseUT {
         sipProtocolConnector.lookupUser(institutionId, patronIdentifier);
     }
 
-    private ILSConfigProperties getIlsConfigProperties() {
+    private ILSConfigProperties getIlsConfigProperties(String institution) {
         ILSConfigProperties ilsConfigProperties = new ILSConfigProperties();
-        ilsConfigProperties.setHost("test");
+        ilsConfigProperties.setHost(propertyUtil.getPropertyByInstitutionAndKey(institution,PropertyKeyConstants.ILS.ILS_SERVER));
         ilsConfigProperties.setPort(7031);
-        ilsConfigProperties.setOperatorUserId("test");
-        ilsConfigProperties.setOperatorPassword("test");
-        ilsConfigProperties.setOperatorLocation("test");
+        ilsConfigProperties.setOperatorUserId(propertyUtil.getPropertyByInstitutionAndKey(institution,PropertyKeyConstants.ILS.ILS_SERVER_OPERATOR_USER_ID));
+        ilsConfigProperties.setOperatorPassword(propertyUtil.getPropertyByInstitutionAndKey(institution,PropertyKeyConstants.ILS.ILS_SERVER_OPERATOR_PASSWORD));
+        ilsConfigProperties.setOperatorLocation(propertyUtil.getPropertyByInstitutionAndKey(institution,PropertyKeyConstants.ILS.ILS_SERVER_OPERATOR_LOCATION));
         return ilsConfigProperties;
     }
 
@@ -146,7 +153,7 @@ public class SIPProtocolConnectorIT extends BaseTestCaseUT {
         String patronIdentifier = "123456";
         Integer requestId = 2;
         SIPProtocolConnector sipProtocolConnector = new SIPProtocolConnector();
-        ILSConfigProperties ilsConfigProperties = getIlsConfigProperties();
+        ILSConfigProperties ilsConfigProperties = getIlsConfigProperties("PUL");
         sipProtocolConnector.setInstitution("PUL");
         sipProtocolConnector.setIlsConfigProperties(ilsConfigProperties);
         sipProtocolConnector.checkOutItem(itemIdentifier, requestId, patronIdentifier);
@@ -157,7 +164,7 @@ public class SIPProtocolConnectorIT extends BaseTestCaseUT {
         String itemIdentifier = "1456883";
         String patronIdentifier = "123456";
         Integer requestId = 2;
-        ILSConfigProperties ilsConfigProperties = getIlsConfigProperties();
+        ILSConfigProperties ilsConfigProperties = getIlsConfigProperties("PUL");
         sipProtocolConnector.setInstitution("PUL");
         sipProtocolConnector.setIlsConfigProperties(ilsConfigProperties);
         Mockito.when(sipProtocolConnector.jSIPLogin(any(), anyString())).thenReturn(true);
@@ -181,7 +188,7 @@ public class SIPProtocolConnectorIT extends BaseTestCaseUT {
         String itemIdentifier = "1456883";
         String patronIdentifier = "123456";
         SIPProtocolConnector sipProtocolConnector = new SIPProtocolConnector();
-        ILSConfigProperties ilsConfigProperties = getIlsConfigProperties();
+        ILSConfigProperties ilsConfigProperties = getIlsConfigProperties("PUL");
         sipProtocolConnector.setInstitution("PUL");
         sipProtocolConnector.setIlsConfigProperties(ilsConfigProperties);
         sipProtocolConnector.checkInItem(getItemRequestInformation(), patronIdentifier);
@@ -213,7 +220,7 @@ public class SIPProtocolConnectorIT extends BaseTestCaseUT {
         String callNumber = "54956";
         Integer requestId = 2;
         SIPProtocolConnector sipProtocolConnector = new SIPProtocolConnector();
-        ILSConfigProperties ilsConfigProperties = getIlsConfigProperties();
+        ILSConfigProperties ilsConfigProperties = getIlsConfigProperties("PUL");
         sipProtocolConnector.setInstitution("PUL");
         sipProtocolConnector.setIlsConfigProperties(ilsConfigProperties);
         sipProtocolConnector.placeHold(itemIdentifier, requestId, patronIdentifier, callInstitutionId, itemInstitutionId, expirationDate, bibId, pickupLocation, trackingId, title, author, callNumber);
@@ -252,7 +259,7 @@ public class SIPProtocolConnectorIT extends BaseTestCaseUT {
         String trackingId = "67878890";
         Integer requestId = 2;
         SIPProtocolConnector sipProtocolConnector = new SIPProtocolConnector();
-        ILSConfigProperties ilsConfigProperties = getIlsConfigProperties();
+        ILSConfigProperties ilsConfigProperties = getIlsConfigProperties("PUL");
         sipProtocolConnector.setInstitution("PUL");
         sipProtocolConnector.setIlsConfigProperties(ilsConfigProperties);
         sipProtocolConnector.cancelHold(itemIdentifier, requestId, patronIdentifier, institutionId, expirationDate, bibId, pickupLocation, trackingId);
@@ -282,7 +289,7 @@ public class SIPProtocolConnectorIT extends BaseTestCaseUT {
         String institutionId = "2";
         String titleIdentifier = "245";
         SIPProtocolConnector sipProtocolConnector = new SIPProtocolConnector();
-        ILSConfigProperties ilsConfigProperties = getIlsConfigProperties();
+        ILSConfigProperties ilsConfigProperties = getIlsConfigProperties("PUL");
         sipProtocolConnector.setInstitution("PUL");
         sipProtocolConnector.setIlsConfigProperties(ilsConfigProperties);
         sipProtocolConnector.createBib(itemIdentifier, patronIdentifier, institutionId, titleIdentifier);
@@ -305,7 +312,7 @@ public class SIPProtocolConnectorIT extends BaseTestCaseUT {
     public void lookupPatron() {
         String patronIdentifier = "132456";
         SIPProtocolConnector sipProtocolConnector = new SIPProtocolConnector();
-        ILSConfigProperties ilsConfigProperties = getIlsConfigProperties();
+        ILSConfigProperties ilsConfigProperties = getIlsConfigProperties("PUL");
         sipProtocolConnector.setInstitution("PUL");
         sipProtocolConnector.setIlsConfigProperties(ilsConfigProperties);
         sipProtocolConnector.lookupPatron(patronIdentifier);
@@ -331,7 +338,7 @@ public class SIPProtocolConnectorIT extends BaseTestCaseUT {
         String pickupLocation = "PA";
 
         SIPProtocolConnector sipProtocolConnector = new SIPProtocolConnector();
-        ILSConfigProperties ilsConfigProperties = getIlsConfigProperties();
+        ILSConfigProperties ilsConfigProperties = getIlsConfigProperties("PUL");
         sipProtocolConnector.setInstitution("PUL");
         sipProtocolConnector.setIlsConfigProperties(ilsConfigProperties);
         sipProtocolConnector.recallItem(itemIdentifier, patronIdentifier, institutionId, expirationDate, bibId, pickupLocation);
@@ -357,6 +364,11 @@ public class SIPProtocolConnectorIT extends BaseTestCaseUT {
         String itemIdentifier = "223467";
         SIPProtocolConnector sipProtocolConnector = new SIPProtocolConnector();
         sipProtocolConnector.refileItem(itemIdentifier);
+    }
+
+    @Test
+    public void formatFromSipDateException(){
+        ReflectionTestUtils.invokeMethod(sipProtocolConnector,"formatFromSipDate","TEst");
     }
 
     private ItemRequestInformation getItemRequestInformation() {
