@@ -371,7 +371,8 @@ public class NCIPProtocolConnectorUT extends BaseTestCaseUT {
     @Test
     public void patronValidation() {
         boolean result = ncipProtocolConnector.patronValidation("23434", "234563");
-        assertFalse(result);
+        assertNotNull(result);
+        assertTrue(result);
     }
 
     @Test
