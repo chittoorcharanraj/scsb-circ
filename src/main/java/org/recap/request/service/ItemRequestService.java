@@ -975,7 +975,7 @@ public class ItemRequestService {
         }
 
         String isCheckinInstitution = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_CHECKIN_INSTITUTION);
-        String isEmailOnlyInstitution = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_EMAIL_ONLY_INSTITUTION);
+        String isEmailOnlyInstitution = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.LAS_EXCEPTION_EMAIL_ONLY);
 
         if (Boolean.TRUE.toString().equalsIgnoreCase(isCheckinInstitution) && itemRequestInfo.isOwningInstitutionItem()) {
         //DO NOTHING
@@ -1002,7 +1002,7 @@ public class ItemRequestService {
             requestItemController.checkinItem(itemRequestInformation, itemRequestInformation.getRequestingInstitution());
         } else {
             String isCheckinInstitution = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInformation.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_CHECKIN_INSTITUTION);
-            String isEmailOnlyInstitution = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInformation.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_EMAIL_ONLY_INSTITUTION);
+            String isEmailOnlyInstitution = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInformation.getRequestingInstitution(), PropertyKeyConstants.ILS.LAS_EXCEPTION_EMAIL_ONLY);
 
             if (Boolean.TRUE.toString().equalsIgnoreCase(isCheckinInstitution)) {
                 if(!itemRequestInformation.isOwningInstitutionItem()) {
@@ -1090,8 +1090,8 @@ public class ItemRequestService {
         emailService.sendLASExceptionEmail(customerCode, itemBarcode, ScsbConstants.ITEM_STATUS_NOT_AVAILABLE, patronBarcode, toInstitution, ScsbConstants.GFA_RETRIVAL_ITEM_NOT_AVAILABLE);
     }
 
-    private String getPickupLocation(Integer InstitutionId, String deliveryLocation) {
-        DeliveryCodeEntity deliveryCodeEntity = deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(deliveryLocation, InstitutionId, 'Y');
+    private String getPickupLocation(Integer institutionId, String deliveryLocation) {
+        DeliveryCodeEntity deliveryCodeEntity = deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(deliveryLocation, institutionId, 'Y');
         return deliveryCodeEntity.getPickupLocation();
     }
 
