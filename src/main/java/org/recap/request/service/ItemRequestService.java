@@ -1009,12 +1009,17 @@ public class ItemRequestService {
                     if(Boolean.FALSE.toString().equalsIgnoreCase(isEmailOnlyInstitution)) {
                         requestItemController.checkinItem(itemRequestInformation, itemRequestInformation.getRequestingInstitution());
                     }
-                    sendLASExceptionEmail(requestItemEntity.get().getItemEntity().getCustomerCode(), requestItemEntity.get().getItemEntity().getBarcode(), requestItemEntity.get().getPatronId(), requestItemEntity.get().getInstitutionEntity().getInstitutionCode());
+                    if (requestItemEntity.isPresent()) {
+                        sendLASExceptionEmail(requestItemEntity.get().getItemEntity().getCustomerCode(), requestItemEntity.get().getItemEntity().getBarcode(), requestItemEntity.get().getPatronId(), requestItemEntity.get().getInstitutionEntity().getInstitutionCode());
+                    }
+
                 }
             }
             else {
                 requestItemController.cancelHoldItem(itemRequestInformation, itemRequestInformation.getRequestingInstitution());
-                sendLASExceptionEmail(requestItemEntity.get().getItemEntity().getCustomerCode(), requestItemEntity.get().getItemEntity().getBarcode(), requestItemEntity.get().getPatronId(), requestItemEntity.get().getInstitutionEntity().getInstitutionCode());
+                if (requestItemEntity.isPresent()) {
+                    sendLASExceptionEmail(requestItemEntity.get().getItemEntity().getCustomerCode(), requestItemEntity.get().getItemEntity().getBarcode(), requestItemEntity.get().getPatronId(), requestItemEntity.get().getInstitutionEntity().getInstitutionCode());
+                }
             }
         }
         logger.info("Send LAS Status eMail");
