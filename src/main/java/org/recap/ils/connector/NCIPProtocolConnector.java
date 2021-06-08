@@ -673,7 +673,7 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
                     List<ItemEntity> itemEntities = itemDetailsRepository.findByBarcode(itemIdentifier);
             ItemEntity itemEntity = !itemEntities.isEmpty() ? itemEntities.get(0) : null;
             String useRestrictions = itemEntity != null ? itemEntity.getUseRestrictions() : null;
-            if(useRestrictions != null) {
+            if(useRestrictions != null && useRestrictions.trim().length() > 0) {
                 itemAgencyId = propertyUtil.getPropertyByInstitutionAndKey(callInstitutionId, PropertyKeyConstants.ILS.ILS_RESTRICTED_ACCEPT_ITEM_AGENCY_ID);
                 acceptItemInitiationData = acceptItem.getAcceptItemInitiationData(itemIdentifier, requestId, patronIdentifier, title, author, pickupLocation, callNumber, getNcipAgencyId(), getNcipScheme(), itemAgencyId);
             }
