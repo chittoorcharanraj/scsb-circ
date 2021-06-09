@@ -421,7 +421,8 @@ public class ItemRequestService {
                             requestItemController.checkinItem(itemRequestInfo, itemRequestInfo.getRequestingInstitution());
                         }
                     }
-                    if (!itemRequestInfo.isOwningInstitutionItem()) {
+                    if (!itemRequestInfo.isOwningInstitutionItem() || ((itemRequestInfo.getRequestType().equalsIgnoreCase(ScsbConstants.EDD_REQUEST))
+                            && itemRequestInfo.isOwningInstitutionItem())) {
                         //TODO - Check if EDD and change Patron accordingly to checkIn in ItemOwningInstitution
                         if(itemRequestInfo.getRequestType().equalsIgnoreCase(ScsbConstants.EDD_REQUEST)){
                             itemRequestInfo.setPatronBarcode(getPatronIDForEDDBorrowingInstitution(itemRequestInfo.getRequestingInstitution(),itemRequestInfo.getItemOwningInstitution()));
