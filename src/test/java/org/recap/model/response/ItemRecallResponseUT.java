@@ -7,6 +7,7 @@ import org.recap.model.response.ItemRecallResponse;
 import java.util.Date;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by hemalathas on 3/4/17.
@@ -29,7 +30,7 @@ public class ItemRecallResponseUT extends BaseTestCaseUT {
         itemRecallResponse.setLccn("7854");
         itemRecallResponse.setJobId("2");
 
-        assertNotNull(itemRecallResponse.getAvailable());
+        assertTrue(itemRecallResponse.isAvailable());
         assertNotNull(itemRecallResponse.getTransactionDate());
         assertNotNull(itemRecallResponse.getInstitutionID());
         assertNotNull(itemRecallResponse.getPatronIdentifier());

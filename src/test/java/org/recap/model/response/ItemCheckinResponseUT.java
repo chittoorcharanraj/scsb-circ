@@ -6,7 +6,7 @@ import org.recap.model.response.ItemCheckinResponse;
 
 import java.util.Date;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 /**
  * Created by hemalathas on 3/4/17.
@@ -45,7 +45,7 @@ public class ItemCheckinResponseUT extends BaseTestCaseUT {
         itemCheckinResponse.setSecurityInhibit("test");
         itemCheckinResponse.setCurrencyType("test");
 
-        assertNotNull(itemCheckinResponse.getAlert());
+        assertFalse(itemCheckinResponse.isAlert());
         assertNotNull(itemCheckinResponse.getPermanentLocation());
         assertNotNull(itemCheckinResponse.getSortBin());
         assertNotNull(itemCheckinResponse.getCollectionCode());
@@ -54,8 +54,8 @@ public class ItemCheckinResponseUT extends BaseTestCaseUT {
         assertNotNull(itemCheckinResponse.getAlertType());
         assertNotNull(itemCheckinResponse.getHoldPatronId());
         assertNotNull(itemCheckinResponse.getHoldPatronName());
-        assertNotNull(itemCheckinResponse.getMagneticMedia());
-        assertNotNull(itemCheckinResponse.getResensitize());
+        assertTrue(itemCheckinResponse.isMagneticMedia());
+        assertTrue(itemCheckinResponse.isResensitize());
         assertNotNull(itemCheckinResponse.getTransactionDate());
         assertNotNull(itemCheckinResponse.getInstitutionID());
         assertNotNull(itemCheckinResponse.getPatronIdentifier());
@@ -70,7 +70,7 @@ public class ItemCheckinResponseUT extends BaseTestCaseUT {
         assertNotNull(itemCheckinResponse.getIsbn());
         assertNotNull(itemCheckinResponse.getLccn());
         assertNotNull(itemCheckinResponse.getJobId());
-        assertNotNull(itemCheckinResponse.isProcessed());
+        assertTrue(itemCheckinResponse.isProcessed());
         assertNotNull(itemCheckinResponse.getUpdatedDate());
         assertNotNull(itemCheckinResponse.getCreatedDate());
     }

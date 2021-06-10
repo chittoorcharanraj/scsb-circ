@@ -44,75 +44,42 @@ public class RequestItemRouteBuilder {
                 @Override
                 public void configure() throws Exception {
                     from(ScsbConstants.REQUEST_ITEM_QUEUE)
-                        .routeId(ScsbConstants.REQUEST_ITEM_QUEUE_ROUTEID)
-                        .threads(30,50)
-                        .choice()
+                            .routeId(ScsbConstants.REQUEST_ITEM_QUEUE_ROUTEID)
+                            .threads(30, 50)
+                            .choice()
                             .when(header(ScsbCommonConstants.REQUEST_TYPE_QUEUE_HEADER).isEqualTo(ScsbCommonConstants.REQUEST_TYPE_RETRIEVAL))
-                                .bean(new RequestItemQueueConsumer(itemRequestService), "requestItemOnMessage")
+                            .bean(new RequestItemQueueConsumer(itemRequestService), ScsbConstants.REQUEST_ITEM_QUEUE_RETRIEVAL_METHOD)
                             .when(header(ScsbCommonConstants.REQUEST_TYPE_QUEUE_HEADER).isEqualTo(ScsbCommonConstants.REQUEST_TYPE_EDD))
-                                .bean(new RequestItemQueueConsumer(itemEDDRequestService), "requestItemEDDOnMessage")
+                            .bean(new RequestItemQueueConsumer(itemEDDRequestService), ScsbConstants.REQUEST_ITEM_QUEUE_EDD_METHOD)
                             .when(header(ScsbCommonConstants.REQUEST_TYPE_QUEUE_HEADER).isEqualTo(ScsbCommonConstants.REQUEST_TYPE_RECALL))
-                                .bean(new RequestItemQueueConsumer(itemRequestService), "requestItemRecallOnMessage");
+                            .bean(new RequestItemQueueConsumer(itemRequestService), ScsbConstants.REQUEST_ITEM_QUEUE_RECALL_METHOD);
                 }
             });
 
             for (String imsLocationCode : commonUtil.findAllImsLocationCodeExceptUN()) {
-                camelContext.addRoutes(new RouteBuilder() {
-                    @Override
-                    public void configure() throws Exception {
-                        from(ScsbConstants.SCSB_LAS_OUTGOING_QUEUE_PREFIX + imsLocationCode + ScsbConstants.OUTGOING_QUEUE_SUFFIX)
-                                .routeId(imsLocationCode + ScsbConstants.SCSB_OUTGOING_ROUTE_ID)
-                                .log("Message Received in SCSB OUTGOING QUEUE for " + imsLocationCode)
-                                .bean(applicationContext.getBean(LasHeartBeatCheckPollingProcessor.class), "pollLasHeartBeatResponse");
-                    }
-                });
-
-                camelContext.addRoutes(new RouteBuilder() {
-                    @Override
-                    public void configure() throws Exception {
-                        from(ScsbConstants.LAS_OUTGOING_QUEUE_PREFIX + imsLocationCode + ScsbConstants.OUTGOING_QUEUE_SUFFIX)
-                                .routeId(imsLocationCode + ScsbConstants.LAS_OUTGOING_ROUTE_ID)
-                                .log("Message Received in LAS OUTGOING QUEUE for " + imsLocationCode)
-                                .bean(applicationContext.getBean(GFALasService.class), "gfaItemRequestProcessor");
-
-                    }
-                });
+                commonUtil.addRoutesToCamelContext(camelContext, ScsbConstants.SCSB_LAS_OUTGOING_QUEUE_PREFIX + imsLocationCode + ScsbConstants.OUTGOING_QUEUE_SUFFIX, imsLocationCode + ScsbConstants.SCSB_OUTGOING_ROUTE_ID, "Message Received in SCSB OUTGOING QUEUE for " + imsLocationCode, applicationContext.getBean(LasHeartBeatCheckPollingProcessor.class), ScsbConstants.SCSB_LAS_OUTGOING_QUEUE_METHOD);
+                commonUtil.addRoutesToCamelContext(camelContext, ScsbConstants.LAS_OUTGOING_QUEUE_PREFIX + imsLocationCode + ScsbConstants.OUTGOING_QUEUE_SUFFIX, imsLocationCode + ScsbConstants.LAS_OUTGOING_ROUTE_ID, "Message Received in LAS OUTGOING QUEUE for " + imsLocationCode, applicationContext.getBean(GFALasService.class), ScsbConstants.LAS_OUTGOING_QUEUE_METHOD);
             }
 
             camelContext.addRoutes(new RouteBuilder() {
                 @Override
                 public void configure() throws Exception {
                     from(ScsbConstants.LAS_INCOMING_QUEUE)
-                        .routeId(ScsbConstants.LAS_INCOMING_ROUTE_ID)
-                        .choice()
-                        .when(header(ScsbCommonConstants.REQUEST_TYPE_QUEUE_HEADER).isEqualTo(ScsbCommonConstants.REQUEST_TYPE_RETRIEVAL))
-                        .bean(new RequestItemQueueConsumer(itemRequestService), "lasResponseRetrievalOnMessage")
-                        .when(header(ScsbCommonConstants.REQUEST_TYPE_QUEUE_HEADER).isEqualTo(ScsbCommonConstants.REQUEST_TYPE_EDD))
-                        .bean(new RequestItemQueueConsumer(itemRequestService), "lasResponseEDDOnMessage")
-                        .when(header(ScsbCommonConstants.REQUEST_TYPE_QUEUE_HEADER).isEqualTo(ScsbConstants.REQUEST_TYPE_PW_INDIRECT))
-                        .bean(new RequestItemQueueConsumer(itemRequestService), "lasResponsePWIOnMessage")
-                        .when(header(ScsbCommonConstants.REQUEST_TYPE_QUEUE_HEADER).isEqualTo(ScsbConstants.REQUEST_TYPE_PW_DIRECT))
-                        .bean(new RequestItemQueueConsumer(itemRequestService), "lasResponsePWDOnMessage");
+                            .routeId(ScsbConstants.LAS_INCOMING_ROUTE_ID)
+                            .choice()
+                            .when(header(ScsbCommonConstants.REQUEST_TYPE_QUEUE_HEADER).isEqualTo(ScsbCommonConstants.REQUEST_TYPE_RETRIEVAL))
+                            .bean(new RequestItemQueueConsumer(itemRequestService), ScsbConstants.LAS_INCOMING_QUEUE_RETRIEVAL_METHOD)
+                            .when(header(ScsbCommonConstants.REQUEST_TYPE_QUEUE_HEADER).isEqualTo(ScsbCommonConstants.REQUEST_TYPE_EDD))
+                            .bean(new RequestItemQueueConsumer(itemRequestService), ScsbConstants.LAS_INCOMING_QUEUE_EDD_METHOD)
+                            .when(header(ScsbCommonConstants.REQUEST_TYPE_QUEUE_HEADER).isEqualTo(ScsbConstants.REQUEST_TYPE_PW_INDIRECT))
+                            .bean(new RequestItemQueueConsumer(itemRequestService), ScsbConstants.LAS_INCOMING_QUEUE_PWI_METHOD)
+                            .when(header(ScsbCommonConstants.REQUEST_TYPE_QUEUE_HEADER).isEqualTo(ScsbConstants.REQUEST_TYPE_PW_DIRECT))
+                            .bean(new RequestItemQueueConsumer(itemRequestService), ScsbConstants.LAS_INCOMING_QUEUE_PWD_METHOD);
                 }
             });
 
-            camelContext.addRoutes(new RouteBuilder() {
-                @Override
-                public void configure() throws Exception {
-                    from(ScsbCommonConstants.BULK_REQUEST_ITEM_QUEUE)
-                            .routeId(ScsbConstants.BULK_REQUEST_ITEM_QUEUE_ROUTEID)
-                            .bean(new RequestItemQueueConsumer(bulkItemRequestService), "bulkRequestItemOnMessage");
-                }
-            });
-
-            camelContext.addRoutes(new RouteBuilder() {
-                @Override
-                public void configure() throws Exception {
-                    from(ScsbConstants.BULK_REQUEST_ITEM_PROCESSING_QUEUE + ScsbConstants.ASYNC_CONCURRENT_CONSUMERS + bulkRequestConsumerCount)
-                            .routeId(ScsbConstants.BULK_REQUEST_ITEM_PROCESSING_QUEUE_ROUTEID)
-                            .bean(new RequestItemQueueConsumer(bulkItemRequestProcessService), "bulkRequestProcessItemOnMessage");
-                }
-            });
+            commonUtil.addRoutesToCamelContext(camelContext, ScsbCommonConstants.BULK_REQUEST_ITEM_QUEUE, ScsbConstants.BULK_REQUEST_ITEM_QUEUE_ROUTEID, "Message Received in BULK REQUEST ITEM QUEUE", new RequestItemQueueConsumer(bulkItemRequestService), ScsbConstants.BULK_REQUEST_ITEM_QUEUE_METHOD);
+            commonUtil.addRoutesToCamelContext(camelContext, ScsbConstants.BULK_REQUEST_ITEM_PROCESSING_QUEUE + ScsbConstants.ASYNC_CONCURRENT_CONSUMERS + bulkRequestConsumerCount, ScsbConstants.BULK_REQUEST_ITEM_PROCESSING_QUEUE_ROUTEID, "Message Received in BULK REQUEST ITEM PROCESSING QUEUE", new RequestItemQueueConsumer(bulkItemRequestProcessService), ScsbConstants.BULK_REQUEST_ITEM_PROCESSING_QUEUE_METHOD);
 
             camelContext.addRoutes(new RouteBuilder() {
                 @Override
@@ -121,52 +88,29 @@ public class RequestItemRouteBuilder {
                             .routeId(ScsbConstants.REQUEST_ITEM_LAS_STATUS_CHECK_QUEUE_ROUTEID)
                             .noAutoStartup()
                             .choice()
-                                .when(body().isNull())
-                                    .log("No Requests To Process")
-                                .otherwise()
-                                    .log("Start Route 1")
-                                    .process(new StartRouteProcessor(ScsbConstants.REQUEST_ITEM_LAS_STATUS_CHECK_QUEUE_ROUTEID))
-                                    .bean(new RequestItemQueueConsumer(itemRequestService), "requestItemLasStatusCheckOnMessage")
+                            .when(body().isNull())
+                            .log("No Requests To Process")
+                            .otherwise()
+                            .log("Start Route 1")
+                            .process(new StartRouteProcessor(ScsbConstants.REQUEST_ITEM_LAS_STATUS_CHECK_QUEUE_ROUTEID))
+                            .bean(new RequestItemQueueConsumer(itemRequestService), ScsbConstants.REQUEST_ITEM_LAS_ITEM_STATUS_QUEUE_METHOD)
                             .endChoice();
                 }
             });
 
             for (String institutionCode : commonUtil.findAllInstitutionCodesExceptSupportInstitution()) {
-                String retrievalInstitutionTopic = propertyUtil.getPropertyByInstitutionAndKey(institutionCode, PropertyKeyConstants.ILS.ILS_TOPIC_RETRIEVAL_REQUEST);
-                String eddInstitutionTopic = propertyUtil.getPropertyByInstitutionAndKey(institutionCode, PropertyKeyConstants.ILS.ILS_TOPIC_EDD_REQUEST);
-                String recallInstitutionTopic = propertyUtil.getPropertyByInstitutionAndKey(institutionCode, PropertyKeyConstants.ILS.ILS_TOPIC_RECALL_REQUEST);
-                camelContext.addRoutes(new RouteBuilder() {
-                    @Override
-                    public void configure() throws Exception {
-                        from(retrievalInstitutionTopic)
-                                .routeId(institutionCode + "RequestTopicRouteId")
-                                .bean(new RequestItemQueueConsumer(institutionCode, itemRequestService, itemEDDRequestService), "requestTopicOnMessage");
-                    }
-                });
+                String retrievalInstitutionTopicUri = propertyUtil.getPropertyByInstitutionAndKey(institutionCode, PropertyKeyConstants.ILS.ILS_TOPIC_RETRIEVAL_REQUEST);
+                String eddInstitutionTopicUri = propertyUtil.getPropertyByInstitutionAndKey(institutionCode, PropertyKeyConstants.ILS.ILS_TOPIC_EDD_REQUEST);
+                String recallInstitutionTopicUri = propertyUtil.getPropertyByInstitutionAndKey(institutionCode, PropertyKeyConstants.ILS.ILS_TOPIC_RECALL_REQUEST);
 
-                camelContext.addRoutes(new RouteBuilder() {
-                    @Override
-                    public void configure() throws Exception {
-                        from(eddInstitutionTopic)
-                                .routeId(institutionCode + "EDDTopicRouteId")
-                                .bean(new RequestItemQueueConsumer(institutionCode, itemRequestService, itemEDDRequestService), "eddTopicOnMessage");
-                    }
-                });
-
-                camelContext.addRoutes(new RouteBuilder() {
-                    @Override
-                    public void configure() throws Exception {
-                        from(recallInstitutionTopic)
-                                .routeId(institutionCode + "RecallTopicRouteId")
-                                .bean(new RequestItemQueueConsumer(institutionCode, itemRequestService, itemEDDRequestService), "recallTopicOnMessage");
-                    }
-                });
+                commonUtil.addRoutesToCamelContext(camelContext, retrievalInstitutionTopicUri, institutionCode + ScsbConstants.REQUEST_TOPIC_ROUTE_ID, "Message Received in Retrieval topic for " + institutionCode, new RequestItemQueueConsumer(institutionCode, itemRequestService, itemEDDRequestService), ScsbConstants.REQUEST_TOPIC_ROUTE_METHOD);
+                commonUtil.addRoutesToCamelContext(camelContext, eddInstitutionTopicUri, institutionCode + ScsbConstants.EDD_TOPIC_ROUTE_ID, "Message Received in EDD topic for " + institutionCode, new RequestItemQueueConsumer(institutionCode, itemRequestService, itemEDDRequestService), ScsbConstants.EDD_TOPIC_ROUTE_METHOD);
+                commonUtil.addRoutesToCamelContext(camelContext, recallInstitutionTopicUri, institutionCode + ScsbConstants.RECALL_TOPIC_ROUTE_ID, "Message Received in Recall topic for " + institutionCode, new RequestItemQueueConsumer(institutionCode, itemRequestService, itemEDDRequestService), ScsbConstants.RECALL_TOPIC_ROUTE_METHOD);
             }
 
         } catch (Exception e) {
             logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
         }
-
     }
 
 }

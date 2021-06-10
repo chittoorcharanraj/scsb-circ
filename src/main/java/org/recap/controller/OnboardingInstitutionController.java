@@ -11,6 +11,7 @@ import org.recap.mqconsumer.RequestItemQueueConsumer;
 import org.recap.ims.processor.LasHeartBeatCheckPollingProcessor;
 import org.recap.request.service.ItemEDDRequestService;
 import org.recap.request.service.ItemRequestService;
+import org.recap.util.CommonUtil;
 import org.recap.util.PropertyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -38,6 +39,9 @@ public class OnboardingInstitutionController {
     private PropertyUtil propertyUtil;
 
     @Autowired
+    private CommonUtil commonUtil;
+
+    @Autowired
     private ItemRequestService itemRequestService;
 
     @Autowired
@@ -47,36 +51,13 @@ public class OnboardingInstitutionController {
     public String createTopicsForNewInstitution(@RequestParam String institutionCode) {
         String responseStatus = ScsbCommonConstants.SUCCESS;
         try {
-            String retrievalInstitutionTopic = propertyUtil.getPropertyByInstitutionAndKey(institutionCode, PropertyKeyConstants.ILS.ILS_TOPIC_RETRIEVAL_REQUEST);
-            String eddInstitutionTopic = propertyUtil.getPropertyByInstitutionAndKey(institutionCode, PropertyKeyConstants.ILS.ILS_TOPIC_EDD_REQUEST);
-            String recallInstitutionTopic = propertyUtil.getPropertyByInstitutionAndKey(institutionCode, PropertyKeyConstants.ILS.ILS_TOPIC_RECALL_REQUEST);
+            String retrievalInstitutionTopicUri = propertyUtil.getPropertyByInstitutionAndKey(institutionCode, PropertyKeyConstants.ILS.ILS_TOPIC_RETRIEVAL_REQUEST);
+            String eddInstitutionTopicUri = propertyUtil.getPropertyByInstitutionAndKey(institutionCode, PropertyKeyConstants.ILS.ILS_TOPIC_EDD_REQUEST);
+            String recallInstitutionTopicUri = propertyUtil.getPropertyByInstitutionAndKey(institutionCode, PropertyKeyConstants.ILS.ILS_TOPIC_RECALL_REQUEST);
 
-            camelContext.addRoutes(new RouteBuilder() {
-                @Override
-                public void configure() throws Exception {
-                    from(retrievalInstitutionTopic)
-                            .routeId(institutionCode + "RequestTopicRouteId")
-                            .bean(new RequestItemQueueConsumer(institutionCode, itemRequestService, itemEDDRequestService), "requestTopicOnMessage");
-                }
-            });
-
-            camelContext.addRoutes(new RouteBuilder() {
-                @Override
-                public void configure() throws Exception {
-                    from(eddInstitutionTopic)
-                            .routeId(institutionCode + "EDDTopicRouteId")
-                            .bean(new RequestItemQueueConsumer(institutionCode, itemRequestService, itemEDDRequestService), "eddTopicOnMessage");
-                }
-            });
-
-            camelContext.addRoutes(new RouteBuilder() {
-                @Override
-                public void configure() throws Exception {
-                    from(recallInstitutionTopic)
-                            .routeId(institutionCode + "RecallTopicRouteId")
-                            .bean(new RequestItemQueueConsumer(institutionCode, itemRequestService, itemEDDRequestService), "recallTopicOnMessage");
-                }
-            });
+            commonUtil.addRoutesToCamelContext(camelContext, retrievalInstitutionTopicUri, institutionCode + ScsbConstants.REQUEST_TOPIC_ROUTE_ID, "Message Received in Retrieval topic for " + institutionCode, new RequestItemQueueConsumer(institutionCode, itemRequestService, itemEDDRequestService), ScsbConstants.REQUEST_TOPIC_ROUTE_METHOD);
+            commonUtil.addRoutesToCamelContext(camelContext, eddInstitutionTopicUri, institutionCode + ScsbConstants.EDD_TOPIC_ROUTE_ID, "Message Received in EDD topic for " + institutionCode, new RequestItemQueueConsumer(institutionCode, itemRequestService, itemEDDRequestService), ScsbConstants.EDD_TOPIC_ROUTE_METHOD);
+            commonUtil.addRoutesToCamelContext(camelContext, recallInstitutionTopicUri, institutionCode + ScsbConstants.RECALL_TOPIC_ROUTE_ID, "Message Received in Recall topic for " + institutionCode, new RequestItemQueueConsumer(institutionCode, itemRequestService, itemEDDRequestService), ScsbConstants.RECALL_TOPIC_ROUTE_METHOD);
         } catch (Exception e) {
             log.error("Failed to create Topics for institution - {} : {}", institutionCode, e);
             responseStatus = ScsbCommonConstants.FAILURE;
@@ -88,26 +69,8 @@ public class OnboardingInstitutionController {
     public String createQueuesForNewImsLocation(@RequestParam String imsLocationCode) {
         String responseStatus = ScsbCommonConstants.SUCCESS;
         try {
-            camelContext.addRoutes(new RouteBuilder() {
-                @Override
-                public void configure() throws Exception {
-                    from(ScsbConstants.SCSB_LAS_OUTGOING_QUEUE_PREFIX + imsLocationCode + ScsbConstants.OUTGOING_QUEUE_SUFFIX)
-                            .routeId(imsLocationCode + ScsbConstants.SCSB_OUTGOING_ROUTE_ID)
-                            .log("Message Received in SCSB OUTGOING QUEUE")
-                            .bean(applicationContext.getBean(LasHeartBeatCheckPollingProcessor.class), "pollLasHeartBeatResponse");
-                }
-            });
-
-            camelContext.addRoutes(new RouteBuilder() {
-                @Override
-                public void configure() throws Exception {
-                    from(ScsbConstants.LAS_OUTGOING_QUEUE_PREFIX + imsLocationCode + ScsbConstants.OUTGOING_QUEUE_SUFFIX)
-                            .routeId(ScsbConstants.LAS_OUTGOING_ROUTE_ID)
-                            .log("Message Received in LAS OUTGOING QUEUE for " + imsLocationCode)
-                            .bean(applicationContext.getBean(GFALasService.class), "gfaItemRequestProcessor");
-
-                }
-            });
+            commonUtil.addRoutesToCamelContext(camelContext, ScsbConstants.SCSB_LAS_OUTGOING_QUEUE_PREFIX + imsLocationCode + ScsbConstants.OUTGOING_QUEUE_SUFFIX, imsLocationCode + ScsbConstants.SCSB_OUTGOING_ROUTE_ID, "Message Received in SCSB OUTGOING QUEUE for " + imsLocationCode, applicationContext.getBean(LasHeartBeatCheckPollingProcessor.class), ScsbConstants.SCSB_LAS_OUTGOING_QUEUE_METHOD);
+            commonUtil.addRoutesToCamelContext(camelContext, ScsbConstants.LAS_OUTGOING_QUEUE_PREFIX + imsLocationCode + ScsbConstants.OUTGOING_QUEUE_SUFFIX, imsLocationCode + ScsbConstants.LAS_OUTGOING_ROUTE_ID, "Message Received in LAS OUTGOING QUEUE for " + imsLocationCode, applicationContext.getBean(GFALasService.class), ScsbConstants.LAS_OUTGOING_QUEUE_METHOD);
         } catch (Exception e) {
             log.error("Failed to create Queues for IMS Location - {} : {}", imsLocationCode, e);
             responseStatus = ScsbCommonConstants.FAILURE;
