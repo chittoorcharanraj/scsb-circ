@@ -876,7 +876,7 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
         replaceRequest.setRequestIds("1");
         replaceRequest.setRequestStatus(ScsbConstants.REQUEST_STATUS_LAS_ITEM_STATUS_PENDING);
         String replaceRequestByType = ScsbCommonConstants.REQUEST_IDS;
-        Mockito.when(mockedRequestItemDetailsRepository.findByRequestStatusCode(Collections.singletonList(ScsbConstants.REQUEST_STATUS_LAS_ITEM_STATUS_PENDING))).thenReturn(Arrays.asList(getRequestItemEntity()));
+        Mockito.when(mockedRequestItemDetailsRepository.findByIdsAndStatusCodes(any(),any())).thenReturn(Arrays.asList(getRequestItemEntity()));
         ReflectionTestUtils.invokeMethod(mockedItemRequestService, "replaceRequestToLASQueueByType", replaceRequest,replaceRequestByType);
     }
 
@@ -885,7 +885,7 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
         ReplaceRequest replaceRequest = getReplaceRequest();
         replaceRequest.setRequestStatus(ScsbConstants.REQUEST_STATUS_LAS_ITEM_STATUS_PENDING);
         String replaceRequestByType = ScsbConstants.REQUEST_IDS_RANGE;
-        Mockito.when(mockedRequestItemDetailsRepository.findByRequestStatusCode(Collections.singletonList(ScsbConstants.REQUEST_STATUS_LAS_ITEM_STATUS_PENDING))).thenReturn(Arrays.asList(getRequestItemEntity()));
+        Mockito.when(mockedRequestItemDetailsRepository.getRequestsBasedOnRequestIdRangeAndRequestStatusCode(any(),any(),anyString())).thenReturn(Arrays.asList(getRequestItemEntity()));
         ReflectionTestUtils.invokeMethod(mockedItemRequestService, "replaceRequestToLASQueueByType", replaceRequest,replaceRequestByType);
     }
 
@@ -894,7 +894,7 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
         ReplaceRequest replaceRequest = getReplaceRequest();
         replaceRequest.setRequestStatus(ScsbConstants.REQUEST_STATUS_LAS_ITEM_STATUS_PENDING);
         String replaceRequestByType = ScsbConstants.REQUEST_DATES_RANGE;
-        Mockito.when(mockedRequestItemDetailsRepository.findByRequestStatusCode(Collections.singletonList(ScsbConstants.REQUEST_STATUS_LAS_ITEM_STATUS_PENDING))).thenReturn(Arrays.asList(getRequestItemEntity()));
+        Mockito.when(mockedRequestItemDetailsRepository.getRequestsBasedOnDateRangeAndRequestStatusCode(any(),any(),anyString())).thenReturn(Arrays.asList(getRequestItemEntity()));
         ReflectionTestUtils.invokeMethod(mockedItemRequestService, "replaceRequestToLASQueueByType", replaceRequest,replaceRequestByType);
     }
 
@@ -910,7 +910,7 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
         ReplaceRequest replaceRequest = getReplaceRequest();
         replaceRequest.setRequestStatus("test");
         String replaceRequestByType = "others";
-        Mockito.when(mockedRequestItemDetailsRepository.findByRequestStatusCode(Collections.singletonList(ScsbConstants.REQUEST_STATUS_LAS_ITEM_STATUS_PENDING))).thenReturn(Arrays.asList(getRequestItemEntity()));
+        //Mockito.when(mockedRequestItemDetailsRepository.findByRequestStatusCode(Collections.singletonList(ScsbConstants.REQUEST_STATUS_LAS_ITEM_STATUS_PENDING))).thenReturn(Arrays.asList(getRequestItemEntity()));
         ReflectionTestUtils.invokeMethod(mockedItemRequestService, "replaceRequestToLASQueueByType", replaceRequest,replaceRequestByType);
     }
 
