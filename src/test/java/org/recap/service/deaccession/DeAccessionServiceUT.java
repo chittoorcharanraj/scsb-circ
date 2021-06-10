@@ -595,6 +595,55 @@ public class DeAccessionServiceUT extends BaseTestCaseUT {
     }
 
     @Test
+    public void removeDeaccessionItems(){
+        List<DeAccessionItem> removeDeaccessionItems = new ArrayList<>();
+        removeDeaccessionItems.add(getDeAccessionItem());
+        DeAccessionRequest deAccessionRequest = new DeAccessionRequest();
+        List<DeAccessionItem> removeDeaccessionItemsList = new ArrayList<>();
+        removeDeaccessionItemsList.add(getDeAccessionItem());
+        Map<String, String> resultMap = new HashMap<>();
+        ReflectionTestUtils.invokeMethod(deAccessionService,"removeDeaccessionItems",removeDeaccessionItems,deAccessionRequest,removeDeaccessionItemsList,resultMap);
+    }
+
+    @Test
+    public void getDeliveryLocation(){
+        DeAccessionRequest deAccessionRequest = new DeAccessionRequest();
+        deAccessionRequest.setDeAccessionItems(Arrays.asList(getDeAccessionItem()));
+        List<DeAccessionItem> removeDeaccessionItems = new ArrayList<>();
+        removeDeaccessionItems.add(getDeAccessionItem());
+        String barCode = "123456";
+        ReflectionTestUtils.invokeMethod(deAccessionService,"getDeliveryLcation",barCode,deAccessionRequest,removeDeaccessionItems);
+    }
+
+    @Test
+    public void validateUserRoles(){
+        List<String> userRoles = new ArrayList<>();
+        userRoles.add(ScsbConstants.ROLE_RECAP);
+        ReflectionTestUtils.invokeMethod(deAccessionService,"validateUserRoles",userRoles);
+    }
+
+    @Test
+    public void validateBarcodesWithUserName(){
+        String userName = "test";
+        List<DeAccessionDBResponseEntity> deAccessionDBResponseEntities = new ArrayList<>();
+        deAccessionDBResponseEntities.add(getDeAccessionDBResponseEntity());
+        DeAccessionRequest deAccessionRequest = new DeAccessionRequest();
+        deAccessionRequest.setDeAccessionItems(Arrays.asList(getDeAccessionItem()));
+        List<DeAccessionItem> removeDeaccessionItems = new ArrayList<>();
+        removeDeaccessionItems.add(getDeAccessionItem());
+        Map<String, String> resultMap = new HashMap<>();
+        List<String> userRoles = new ArrayList<>();
+        userRoles.add("test");
+        Mockito.when(userDetailRepository.findInstitutionCodeByUserName(any())).thenReturn("2");
+        Mockito.when(userDetailRepository.getUserRoles(any())).thenReturn(userRoles);
+        Mockito.when(itemDetailsRepository.findByBarcodeIn(any())).thenReturn(Arrays.asList(getItemEntity()));
+        Mockito.when(commonUtil.findAllInstitutionsExceptSupportInstitution()).thenReturn(Arrays.asList(getItemEntity().getInstitutionEntity()));
+        try {
+            ReflectionTestUtils.invokeMethod(deAccessionService, "validateBarcodesWithUserName", deAccessionRequest, userName, deAccessionDBResponseEntities, removeDeaccessionItems, resultMap);
+        }catch (Exception e){}
+    }
+
+    @Test
     public void deAcessionItemsInSolrSuccess() {
         List<DeAccessionDBResponseEntity> deAccessionDBResponseEntities = new ArrayList<>();
         DeAccessionDBResponseEntity deAccessionDBResponseEntity = new DeAccessionDBResponseEntity();
@@ -790,6 +839,14 @@ public class DeAccessionServiceUT extends BaseTestCaseUT {
         deAccessionService.deAccessionItemsInDB(barcodeAndStopCodeMap, deAccessionDBResponseEntities, ScsbConstants.GUEST_USER);
         assertNotNull(deAccessionDBResponseEntities);
 
+    }
+
+    @Test
+    public void populateDeAccessionDBResponseEntity(){
+        ItemEntity itemEntity = new ItemEntity();
+        itemEntity.setBibliographicEntities(Arrays.asList(getBibliographicEntity()));
+        DeAccessionDBResponseEntity deAccessionDBResponseEntity = new DeAccessionDBResponseEntity();
+        ReflectionTestUtils.invokeMethod(deAccessionService,"populateDeAccessionDBResponseEntity",itemEntity,deAccessionDBResponseEntity);
     }
 
     @Test

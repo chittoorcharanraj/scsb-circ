@@ -4,6 +4,7 @@ import org.apache.http.*;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.extensiblecatalog.ncip.v2.service.*;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -93,6 +94,8 @@ public class NCIPProtocolConnectorUT extends BaseTestCaseUT {
         ncipProtocolConnector.getRestApiResponseUtil();
         ncipProtocolConnector.getHttpHeader();
         ncipProtocolConnector.getHttpEntity(headers);
+        ncipProtocolConnector.getItemDetailsRepository();
+        ncipProtocolConnector.getBibDataApiUrl();
 //        Mockito.when(ilsConfigProperties.getIlsRestDataApi()).thenReturn("");
     }
 
@@ -112,6 +115,12 @@ public class NCIPProtocolConnectorUT extends BaseTestCaseUT {
         ncipProtocolConnector.setIlsConfigProperties(ilsConfigProperties);
     }
 
+    @Test
+    public void getHttpEntity(){
+        JSONObject jsonObject = new JSONObject();
+        org.springframework.http.HttpEntity httpEntity = ncipProtocolConnector.getHttpEntity(jsonObject,headers);
+        assertNotNull(httpEntity);
+    }
    /* @Test
     public void lookupItem() throws Exception {
         ItemLookupResponse itemLookupResponse = getItemLookupResponse();
@@ -273,11 +282,11 @@ public class NCIPProtocolConnectorUT extends BaseTestCaseUT {
     }
 
     @Test
-    public void placeHoldException() throws IOException {
+    public void placeHoldSameInstitution() throws IOException {
         String itemIdentifier = "223467";
         String patronIdentifier = "2234567";
         String callInstitutionId = "1";
-        String itemInstitutionId = "24";
+        String itemInstitutionId = "1";
         String expirationDate = new Date().toString();
         String bibId = "357221";
         String pickupLocation = "PA";
@@ -287,28 +296,14 @@ public class NCIPProtocolConnectorUT extends BaseTestCaseUT {
         String callNumber = "54956";
         Integer requestId = 2;
         getMockedResponse();
-        Mockito.when(statusLine.getStatusCode()).thenReturn(400);
         Object result = ncipProtocolConnector.placeHold(itemIdentifier, requestId, patronIdentifier, callInstitutionId, itemInstitutionId, expirationDate, bibId, pickupLocation, trackingId, title, author, callNumber);
         assertNotNull(result);
     }
 
     @Test
-    public void placeHoldHttpClientErrorException() throws IOException {
-        String itemIdentifier = "223467";
-        String patronIdentifier = "2234567";
-        String callInstitutionId = "1";
-        String itemInstitutionId = "24";
-        String expirationDate = new Date().toString();
-        String bibId = "357221";
-        String pickupLocation = "PA";
-        String trackingId = "67878890";
-        String title = "Y90223";
-        String author = "john";
-        String callNumber = "54956";
-        Integer requestId = 2;
-        getHttpClientErrorException();
-        Object result = ncipProtocolConnector.placeHold(itemIdentifier, requestId, patronIdentifier, callInstitutionId, itemInstitutionId, expirationDate, bibId, pickupLocation, trackingId, title, author, callNumber);
-        assertNotNull(result);
+    public void getParamsMap(){
+        Map<String, String> map = ncipProtocolConnector.getParamsMap("1","1","1");
+        assertNotNull(map);
     }
 
     @Test
