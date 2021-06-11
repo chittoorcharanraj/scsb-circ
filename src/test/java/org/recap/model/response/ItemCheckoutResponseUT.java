@@ -38,9 +38,6 @@ public class ItemCheckoutResponseUT extends BaseTestCaseUT {
         itemCheckoutResponse.setFeeAmount("test");
 
 
-        assertNotNull(itemCheckoutResponse.getRenewal());
-        assertNotNull(itemCheckoutResponse.getMagneticMedia());
-        assertNotNull(itemCheckoutResponse.getDesensitize());
         assertNotNull(itemCheckoutResponse.getTransactionDate());
         assertNotNull(itemCheckoutResponse.getInstitutionID());
         assertNotNull(itemCheckoutResponse.getPatronIdentifier());
