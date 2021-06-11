@@ -29,7 +29,6 @@ public class ItemRecallResponseUT extends BaseTestCaseUT {
         itemRecallResponse.setLccn("7854");
         itemRecallResponse.setJobId("2");
 
-        assertNotNull(itemRecallResponse.getAvailable());
         assertNotNull(itemRecallResponse.getTransactionDate());
         assertNotNull(itemRecallResponse.getInstitutionID());
         assertNotNull(itemRecallResponse.getPatronIdentifier());
