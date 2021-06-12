@@ -7,7 +7,6 @@ import org.recap.model.response.ItemCheckoutResponse;
 import java.util.Date;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Created by hemalathas on 3/4/17.
@@ -39,9 +38,6 @@ public class ItemCheckoutResponseUT extends BaseTestCaseUT {
         itemCheckoutResponse.setFeeAmount("test");
 
 
-        assertTrue(itemCheckoutResponse.isRenewal());
-        assertTrue(itemCheckoutResponse.isMagneticMedia());
-        assertTrue(itemCheckoutResponse.isDesensitize());
         assertNotNull(itemCheckoutResponse.getTransactionDate());
         assertNotNull(itemCheckoutResponse.getInstitutionID());
         assertNotNull(itemCheckoutResponse.getPatronIdentifier());
@@ -56,7 +52,6 @@ public class ItemCheckoutResponseUT extends BaseTestCaseUT {
         assertNotNull(itemCheckoutResponse.getIsbn());
         assertNotNull(itemCheckoutResponse.getLccn());
         assertNotNull(itemCheckoutResponse.getJobId());
-        assertTrue(itemCheckoutResponse.isProcessed());
         assertNotNull(itemCheckoutResponse.getUpdatedDate());
         assertNotNull(itemCheckoutResponse.getCreatedDate());
 

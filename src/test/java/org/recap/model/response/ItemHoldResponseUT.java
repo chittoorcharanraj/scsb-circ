@@ -7,7 +7,6 @@ import org.recap.model.response.ItemHoldResponse;
 import java.util.Date;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Created by hemalathas on 3/4/17.
@@ -34,7 +33,6 @@ public class ItemHoldResponseUT extends BaseTestCaseUT {
         itemHoldResponse.setUpdatedDate(new Date().toString());
         itemHoldResponse.setCreatedDate(new Date().toString());
 
-        assertTrue(itemHoldResponse.isAvailable());
         assertNotNull(itemHoldResponse.getTransactionDate());
         assertNotNull(itemHoldResponse.getInstitutionID());
         assertNotNull(itemHoldResponse.getPatronIdentifier());
