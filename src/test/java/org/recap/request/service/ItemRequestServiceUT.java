@@ -226,7 +226,6 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
         ItemInformationResponse itemInformationResponse = mockedItemRequestService.requestItem(itemRequestInfo,exchange);
         assertNotNull(itemInformationResponse);
     }
-
     @Test
     public void testRequestItemDifferentId() throws Exception {
         ItemRequestInformation itemRequestInfo = getItemRequestInformation();
