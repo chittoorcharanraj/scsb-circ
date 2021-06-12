@@ -2,11 +2,11 @@ package org.recap.model.response;
 
 import org.junit.Test;
 import org.recap.BaseTestCaseUT;
-import org.recap.model.response.ItemCheckoutResponse;
 
 import java.util.Date;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by hemalathas on 3/4/17.
@@ -52,6 +52,7 @@ public class ItemCheckoutResponseUT extends BaseTestCaseUT {
         assertNotNull(itemCheckoutResponse.getIsbn());
         assertNotNull(itemCheckoutResponse.getLccn());
         assertNotNull(itemCheckoutResponse.getJobId());
+        assertTrue(itemCheckoutResponse.isProcessed());
         assertNotNull(itemCheckoutResponse.getUpdatedDate());
         assertNotNull(itemCheckoutResponse.getCreatedDate());
 

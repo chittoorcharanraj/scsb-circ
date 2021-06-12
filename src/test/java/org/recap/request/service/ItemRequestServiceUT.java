@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.recap.BaseTestCaseUT;
 import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
@@ -67,6 +68,7 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
     private static final Logger logger = LoggerFactory.getLogger(ItemRequestServiceUT.class);
 
     @InjectMocks
+    @Spy
     ItemRequestService mockedItemRequestService;
 
     @Mock
@@ -208,6 +210,24 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
     }
 
     @Test
+    public void requestItemWithoutItemEntities(){
+        ItemRequestInformation itemRequestInfo = getItemRequestInformation();
+        Mockito.doNothing().when(mockedItemRequestService).sendMessageToTopic(any(), any(),any(),any());
+        ItemInformationResponse itemInformationResponse = mockedItemRequestService.requestItem(itemRequestInfo,exchange);
+        assertNotNull(itemInformationResponse);
+    }
+
+    @Test
+    public void requestItemWithoutDeliveryCodeEntities(){
+        ItemRequestInformation itemRequestInfo = getItemRequestInformation();
+        Mockito.when(mockedItemDetailsRepository.findByBarcodeIn(itemRequestInfo.getItemBarcodes())).thenReturn(Arrays.asList(getItemEntity()));
+        Mockito.when(institutionDetailsRepository.findByInstitutionCode(itemRequestInfo.getRequestingInstitution())).thenReturn(getItemEntity().getInstitutionEntity());
+        Mockito.when(deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(any(), any(), anyChar())).thenReturn(getDeliveryCodeEntity());
+        ItemInformationResponse itemInformationResponse = mockedItemRequestService.requestItem(itemRequestInfo,exchange);
+        assertNotNull(itemInformationResponse);
+    }
+
+    @Test
     public void testRequestItemDifferentId() throws Exception {
         ItemRequestInformation itemRequestInfo = getItemRequestInformation();
         itemRequestInfo.setRequestingInstitution("CUL");
@@ -305,8 +325,12 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
         searchResultRow.setAuthor("test");
         ItemHoldResponse itemHoldResponse = new ItemHoldResponse();
         itemHoldResponse.setSuccess(true);
+        DeliveryCodeTranslationEntity deliveryCodeTranslationEntity = getDeliveryCodeTranslationEntity();
+        DeliveryCodeEntity deliveryCodeEntity = getDeliveryCodeEntity();
         Mockito.when(mockedItemDetailsRepository.findByBarcodeIn(any())).thenReturn(Arrays.asList(itemEntity));
-//        Mockito.when(mockedOwnerCodeDetailsRepository.findByOwnerCode(itemRequestInfo.getDeliveryLocation())).thenThrow(new RestClientException("Bad Request"));
+        Mockito.when(institutionDetailsRepository.findByInstitutionCode(anyString())).thenReturn(createRequestItem().getInstitutionEntity());
+        Mockito.when(deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(itemRequestInfo.getDeliveryLocation(), createRequestItem().getInstitutionEntity().getId(), 'Y')).thenReturn(deliveryCodeEntity);
+        Mockito.when(deliveryCodeTranslationDetailsRepository.findByRequestingInstitutionandImsLocation(any(),any(), any())).thenReturn(deliveryCodeTranslationEntity);
         ItemInformationResponse itemInformationResponse = mockedItemRequestService.requestItem(itemRequestInfo, exchange);
         assertNotNull(itemInformationResponse);
     }

@@ -6,6 +6,7 @@ import org.recap.BaseTestCaseUT;
 import java.util.Date;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by hemalathas on 3/4/17.
@@ -58,6 +59,7 @@ public class ItemCheckinResponseUT extends BaseTestCaseUT {
         assertNotNull(itemCheckinResponse.getTitleIdentifier());
         assertNotNull(itemCheckinResponse.getDueDate());
         assertNotNull(itemCheckinResponse.getFeeType());
+        assertTrue(itemCheckinResponse.isProcessed());
         assertNotNull(itemCheckinResponse.getSecurityInhibit());
         assertNotNull(itemCheckinResponse.getCurrencyType());
         assertNotNull(itemCheckinResponse.getFeeAmount());
