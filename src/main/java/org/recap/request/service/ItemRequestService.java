@@ -447,11 +447,7 @@ public class ItemRequestService {
                     logger.info("Gfa status received during refile : {}",gfaItemStatus);
                     logger.info("GFA Item Status {} for the barcode {} received on Refile where Request Id : {}", gfaItemStatus, itemEntity.getBarcode(),requestItemEntity.getId());
                     logger.info("Rejecting the Refile for the barcode {} where Request ID : {} and Request Status : {}", itemEntity.getBarcode(), requestItemEntity.getId(), requestItemEntity.getRequestStatusEntity().getRequestStatusCode());
-                    if (gfaItemStatus.contains(":")) {
-                        gfaItemStatus = gfaItemStatus.substring(0, gfaItemStatus.indexOf(':') + 1).toUpperCase();
-                    } else {
-                        gfaItemStatus = gfaItemStatus.toUpperCase();
-                    }
+                    gfaItemStatus = gfaLasService.getGfaItemStatusInUpperCase(gfaItemStatus);
                     logger.info("Gfa status After modifying : {}",gfaItemStatus);
                     boolean isImsItemStatusAvailable = commonUtil.checkIfImsItemStatusIsAvailableOrNotAvailable(itemEntity.getImsLocationEntity().getImsLocationCode(), gfaItemStatus, true);
                     logger.info("Condition satisfied {}", isImsItemStatusAvailable);
