@@ -112,7 +112,7 @@ public class RequestDataLoadService {
             }
             if(itemId == 0 || requestingInstitutionId == 0){
                 barcodesNotInScsb.add(requestDataLoadCSVRecord.getBarcode());
-            }else{
+            }else if(CollectionUtils.isEmpty((Collection<?>) itemInfo.get(ScsbConstants.REQUEST_INITIAL_BARCODES_AVAILABLE_IN_LAS))){
                 prepareRequestItemEntities(requestItemEntityList, requestItemEntity, requestDataLoadCSVRecord, itemId, requestingInstitutionId);
             }
         }
@@ -207,10 +207,10 @@ public class RequestDataLoadService {
                     boolean isImsItemStatusAvailable = commonUtil.checkIfImsItemStatusIsAvailableOrNotAvailable(itemEntity.getImsLocationEntity().getImsLocationCode(), gfaItemStatus, true);
                     if (!isImsItemStatusAvailable) {
                         saveItemAsNotAvailable(itemNotAvailableEntity, itemEntity);
+                        itemsToIndex.add(itemEntity);
                     } else {
                         itemListAvailableInLAS.add(itemEntity);
                     }
-                    itemsToIndex.add(itemEntity);
                 }
                 catch (Exception exception){
                     logger.info("Exception Occurred while checking status for {} in LAS",itemEntity.getBarcode());
