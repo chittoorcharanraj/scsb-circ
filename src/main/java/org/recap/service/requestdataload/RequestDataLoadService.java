@@ -107,7 +107,8 @@ public class RequestDataLoadService {
                 barcodesAvailableInLAS.addAll((Collection<? extends ItemEntity>) itemInfo.get(ScsbConstants.REQUEST_INITIAL_BARCODES_AVAILABLE_IN_LAS));
             }
             if(!CollectionUtils.isEmpty((Collection<?>) itemInfo.get(ScsbConstants.REQUEST_INITIAL_BARCODES_TO_INDEX))){
-                itemsToIndex= (List<ItemEntity>) itemInfo.get(ScsbConstants.REQUEST_INITIAL_BARCODES_TO_INDEX);
+                List<ItemEntity> itemEntityList = (List<ItemEntity>) itemInfo.get(ScsbConstants.REQUEST_INITIAL_BARCODES_TO_INDEX);
+                itemsToIndex.addAll(itemEntityList);
             }
             if(itemId == 0 || requestingInstitutionId == 0){
                 barcodesNotInScsb.add(requestDataLoadCSVRecord.getBarcode());

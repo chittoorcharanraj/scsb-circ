@@ -92,8 +92,7 @@ public class RequestInitialDataLoadProcessor {
      */
     public void processInput(Exchange exchange) throws ParseException {
         List<RequestDataLoadCSVRecord> completeRequestDataLoadCSVRecordList = (List<RequestDataLoadCSVRecord>)exchange.getIn().getBody();
-        List<List<RequestDataLoadCSVRecord>> partitionedList = Lists.partition(completeRequestDataLoadCSVRecordList, 1000);
-        Map<String, Map<String, List<ItemEntity>>> institutionWiseImsLocBarcodes=new HashMap<>();
+        List<List<RequestDataLoadCSVRecord>> partitionedList = Lists.partition(completeRequestDataLoadCSVRecordList, 10);
         List<ItemEntity> barcodesToIndex=new ArrayList<>();
         List<ItemEntity> barcodesAvailableInLAS=new ArrayList<>();
         int count=0;
@@ -147,21 +146,12 @@ public class RequestInitialDataLoadProcessor {
                     .collect(Collectors.toList());
             restTemplate.postForObject(scsbSolrClientUrl + "/solrIndexer/indexByBibliographicId", bibIdsToIndex, String.class);
         }
-        startFileSystemRoutesForAccessionReconciliation(barcodesAvailableInLAS);
-        if(isSolrIndexRequired) {
-            List<Integer> bibIdsToIndex = barcodesToIndex.stream()
-                    .flatMap(itemEntity -> itemEntity.getBibliographicEntities().stream().map(bibliographicEntity -> bibliographicEntity.getId()).collect(toList()).stream())
-                    .distinct()
-                    .collect(Collectors.toList());
-            restTemplate.postForObject(scsbSolrClientUrl + "/solrIndexer/indexByBibliographicId", bibIdsToIndex, String.class);
-        }
     }
 
     private void startFileSystemRoutesForAccessionReconciliation(List<ItemEntity> barcodesAvailableInLAS) {
         Map<String, Map<String, List<ItemEntity>>> institutionWiseImsLocBarcodes = barcodesAvailableInLAS.stream().collect(Collectors.groupingBy(itemEntity -> itemEntity.getInstitutionEntity().getInstitutionCode(), Collectors.groupingBy(itemEntity -> itemEntity.getImsLocationEntity().getImsLocationCode())));
         try {
             logger.info("{}{}{}", ScsbConstants.STARTING, ScsbConstants.REQUEST_INITIAL_LOAD_FS_ROUTE, institutionCode);
-            camelContext.getRouteController().startRoute(ScsbConstants.REQUEST_INITIAL_LOAD_FS_ROUTE + institutionCode);
             institutionWiseImsLocBarcodes.entrySet().forEach(institutionWiseEntries -> {
                 Map<String, Object> headers = new HashMap<>();
                 headers.put("institutionCode", institutionWiseEntries.getKey());
@@ -172,7 +162,7 @@ public class RequestInitialDataLoadProcessor {
                     producerTemplate.sendBodyAndHeaders(ScsbConstants.DIRECT + ScsbConstants.RIL_DIRECT_BARCODES_AVAILABLE_IN_LAS, barcodes, headers);
                 });
             });
-            camelContext.getRouteController().startRoute(ScsbConstants.REQUEST_INITIAL_LOAD_BARCODES_AVAILABLE_FS_ROUTE);
+            camelContext.getRouteController().startRoute(ScsbConstants.REQUEST_INITIAL_LOAD_FS_ROUTE + institutionCode);
         } catch (Exception e) {
             logger.error(ScsbCommonConstants.LOG_ERROR, e);
         }

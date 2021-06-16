@@ -183,7 +183,6 @@ public final class ScsbConstants {
     public static final String REQUEST_INITIAL_BARCODES_AVAILABLE_IN_LAS = "BarcodesAvailableInLAS";
     public static final String BARCODE_NOT_FOUND_IN_SCSB = "BarcodesNotInSCSB";
     public static final String REQUEST_INITIAL_BARCODES_TO_INDEX = "BarcodesToIndex";
-    public static final String REQUEST_INITIAL_LOAD_BARCODES_AVAILABLE_FS_ROUTE = "requestInitialLoadBarcodesAvailableInLASFsRoute";
 
     protected static final List<String> REQUEST_TYPE_LIST = Arrays.asList(ScsbCommonConstants.RETRIEVAL, ScsbCommonConstants.REQUEST_TYPE_EDD, ScsbCommonConstants.BORROW_DIRECT, ScsbCommonConstants.REQUEST_TYPE_RECALL);
 
