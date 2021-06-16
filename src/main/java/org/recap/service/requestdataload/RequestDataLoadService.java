@@ -218,6 +218,7 @@ public class RequestDataLoadService {
             }
             else {
                 saveItemAsNotAvailable(itemNotAvailableEntity, itemEntity);
+                itemsToIndex.add(itemEntity);
             }
         };
     }
