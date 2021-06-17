@@ -179,6 +179,10 @@ public final class ScsbConstants {
     public static final String CANNOT_REFILE_FIRST_SCAN_REQUEST ="Cannot place recall for requests placed on first scan LAS status";
     public static final String REQUESTS_STUCK_IN_PENDING = "Requests stuck in pending";
     public static final String NO_PENDING_REQUESTS_FOUND = "There are no pending requests or no new pending request";
+    public static final String RIL_DIRECT_BARCODES_AVAILABLE_IN_LAS = "RILDirectRouteForBarcodesAvailableINLAS";
+    public static final String REQUEST_INITIAL_BARCODES_AVAILABLE_IN_LAS = "BarcodesAvailableInLAS";
+    public static final String BARCODE_NOT_FOUND_IN_SCSB = "BarcodesNotInSCSB";
+    public static final String REQUEST_INITIAL_BARCODES_TO_INDEX = "BarcodesToIndex";
 
     protected static final List<String> REQUEST_TYPE_LIST = Arrays.asList(ScsbCommonConstants.RETRIEVAL, ScsbCommonConstants.REQUEST_TYPE_EDD, ScsbCommonConstants.BORROW_DIRECT, ScsbCommonConstants.REQUEST_TYPE_RECALL);
 
