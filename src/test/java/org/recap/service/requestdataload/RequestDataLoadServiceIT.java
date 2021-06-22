@@ -36,7 +36,7 @@ public class RequestDataLoadServiceIT extends BaseTestCase{
         requestDataLoadCSVRecord.setEmail("test@email.com");
         Set<String> barcodeSet = new HashSet<>();
 
-        Set<String> response = requestDataLoadService.process(Arrays.asList(requestDataLoadCSVRecord),barcodeSet);
+        Map<String,Object> response = requestDataLoadService.process(Arrays.asList(requestDataLoadCSVRecord),barcodeSet);
         assertTrue(response.size() == 1);
 
     }
