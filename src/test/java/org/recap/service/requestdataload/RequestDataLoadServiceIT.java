@@ -37,7 +37,7 @@ public class RequestDataLoadServiceIT extends BaseTestCase{
         Set<String> barcodeSet = new HashSet<>();
 
         Map<String,Object> response = requestDataLoadService.process(Arrays.asList(requestDataLoadCSVRecord),barcodeSet);
-        assertTrue(response.size() == 1);
+        assertTrue(response.size() == 3);
 
     }
 
