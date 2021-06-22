@@ -45,7 +45,7 @@ public class RequestDataLoadServiceUT extends BaseTestCaseUT {
         RequestTypeEntity requestTypeEntity = getRequestTypeEntity();
         Mockito.when(itemDetailsRepository.findByBarcodeAndItemStatusEntity_StatusCode(requestDataLoadCSVRecord.getBarcode(), ScsbCommonConstants.NOT_AVAILABLE)).thenReturn(bibliographicEntity.getItemEntities());
         Mockito.when(requestTypeDetailsRepository.findByrequestTypeCode(ScsbCommonConstants.RETRIEVAL)).thenReturn(requestTypeEntity);
-        Set<String> response = requestDataLoadService.process(Arrays.asList(requestDataLoadCSVRecord), barcodeSet);
+        Map<String,Object> response = requestDataLoadService.process(Arrays.asList(requestDataLoadCSVRecord), barcodeSet);
         assertNotNull(response);
     }
 
@@ -55,7 +55,7 @@ public class RequestDataLoadServiceUT extends BaseTestCaseUT {
         RequestDataLoadCSVRecord requestDataLoadCSVRecord = getRequestDataLoadCSVRecord(bibliographicEntity);
         Set<String> barcodeSet = new HashSet<>();
         Mockito.when(itemDetailsRepository.findByBarcodeAndItemStatusEntity_StatusCode(requestDataLoadCSVRecord.getBarcode(), ScsbCommonConstants.NOT_AVAILABLE)).thenReturn(null);
-        Set<String> response = requestDataLoadService.process(Arrays.asList(requestDataLoadCSVRecord), barcodeSet);
+        Map<String,Object> response = requestDataLoadService.process(Arrays.asList(requestDataLoadCSVRecord), barcodeSet);
         assertTrue(response.size() == 1);
     }
 
@@ -65,7 +65,7 @@ public class RequestDataLoadServiceUT extends BaseTestCaseUT {
         RequestDataLoadCSVRecord requestDataLoadCSVRecord = getRequestDataLoadCSVRecord(bibliographicEntity);
         Set<String> barcodeSet = new HashSet<>();
         barcodeSet.add("41234213");
-        Set<String> response = requestDataLoadService.process(Arrays.asList(requestDataLoadCSVRecord), barcodeSet);
+        Map<String,Object> response = requestDataLoadService.process(Arrays.asList(requestDataLoadCSVRecord), barcodeSet);
         assertNotNull(response);
     }
 
