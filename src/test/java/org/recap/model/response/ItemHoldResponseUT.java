@@ -33,7 +33,6 @@ public class ItemHoldResponseUT extends BaseTestCaseUT {
         itemHoldResponse.setUpdatedDate(new Date().toString());
         itemHoldResponse.setCreatedDate(new Date().toString());
 
-        assertNotNull(itemHoldResponse.getAvailable());
         assertNotNull(itemHoldResponse.getTransactionDate());
         assertNotNull(itemHoldResponse.getInstitutionID());
         assertNotNull(itemHoldResponse.getPatronIdentifier());

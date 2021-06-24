@@ -172,13 +172,18 @@ public class RequestItemController {
     public AbstractResponseItem cancelHoldItem(@RequestBody ItemRequestInformation itemRequestInformation, String callInstitution) {
         ItemHoldResponse itemHoldCancelResponse = null;
         String callInst = callingInstitution(callInstitution, itemRequestInformation);
-        if (CollectionUtils.isNotEmpty(itemRequestInformation.getItemBarcodes())) {
+        if (CollectionUtils.isNotEmpty(itemRequestInformation.getItemBarcodes()) && !itemRequestInformation.getItemBarcodes().get(0).equals("string")) {
             String itembarcode = itemRequestInformation.getItemBarcodes().get(0);
             itemHoldCancelResponse = (ItemHoldResponse) ilsProtocolConnectorFactory.getIlsProtocolConnector(callInst).cancelHold(itembarcode, itemRequestInformation.getRequestId(), itemRequestInformation.getPatronBarcode(),
                     itemRequestInformation.getRequestingInstitution(),
                     itemRequestInformation.getExpirationDate(),
                     itemRequestInformation.getBibId(),
                     getPickupLocationDB(itemRequestInformation, callInst), itemRequestInformation.getTrackingId());
+        }
+        else {
+            itemHoldCancelResponse = new ItemHoldResponse();
+            itemHoldCancelResponse.setSuccess(false);
+            itemHoldCancelResponse.setScreenMessage("Please check the Item Barcode provided");
         }
         return itemHoldCancelResponse;
     }
@@ -196,7 +201,7 @@ public class RequestItemController {
         String itemBarcode;
         logger.info("ESIP CALL FOR CREATE BIB -> {}" , callInstitution);
         String callInst = callingInstitution(callInstitution, itemRequestInformation);
-        if (!itemRequestInformation.getItemBarcodes().isEmpty()) {
+        if (!itemRequestInformation.getItemBarcodes().isEmpty() && !itemRequestInformation.getItemBarcodes().get(0).equals("string")) {
             itemBarcode = itemRequestInformation.getItemBarcodes().get(0);
             ItemInformationResponse itemInformation = (ItemInformationResponse) itemInformation(itemRequestInformation, itemRequestInformation.getRequestingInstitution());
             if (itemInformation.getScreenMessage().toUpperCase().contains(ScsbConstants.REQUEST_ITEM_BARCODE_NOT_FOUND)) {
@@ -210,7 +215,9 @@ public class RequestItemController {
             }
         } else {
             itemCreateBibResponse = new ItemCreateBibResponse();
-        }
+            itemCreateBibResponse.setSuccess(false);
+            itemCreateBibResponse.setScreenMessage("Please check the Item Barcode provided");
+       }
         return itemCreateBibResponse;
     }
 

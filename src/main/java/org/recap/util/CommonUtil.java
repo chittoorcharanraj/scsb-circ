@@ -1,5 +1,7 @@
 package org.recap.util;
 
+import org.apache.camel.CamelContext;
+import org.apache.camel.builder.RouteBuilder;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.recap.PropertyKeyConstants;
@@ -297,5 +299,27 @@ public class CommonUtil {
         itemRequestInformation.setItemOwningInstitution(itemEntity.getInstitutionEntity().getInstitutionCode());
         itemRequestInformation.setBibId(itemEntity.getBibliographicEntities().get(0).getOwningInstitutionBibId());
         return itemRequestInformation;
+    }
+
+    /**
+     * This method add routes to the camel context with the passed parameter values
+     * @param camelContext Camel Context
+     * @param uri URI
+     * @param routeId Route Id
+     * @param logMessage Log Message
+     * @param bean bean
+     * @param methodName Method Name
+     * @throws Exception Exception
+     */
+    public void addRoutesToCamelContext(CamelContext camelContext, String uri, String routeId, String logMessage, Object bean, String methodName) throws Exception {
+        camelContext.addRoutes(new RouteBuilder() {
+            @Override
+            public void configure() throws Exception {
+                from(uri)
+                        .routeId(routeId)
+                        .log(logMessage)
+                        .bean(bean, methodName);
+            }
+        });
     }
 }

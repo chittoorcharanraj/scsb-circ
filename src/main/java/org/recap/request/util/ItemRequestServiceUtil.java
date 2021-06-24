@@ -127,19 +127,12 @@ public class ItemRequestServiceUtil {
     public void setEddInfoToGfaRequest(String line, TtitemEDDResponse ttitem001) {
         String[] splitData = line.split(":");
         if (ArrayUtils.isNotEmpty(splitData) && splitData.length > 1) {
-            if ("Start Page".equals(splitData[0])) {
-                ttitem001.setStartPage(splitData[1].trim());
-            } else if ("End Page".equals(splitData[0])) {
-                ttitem001.setEndPage(splitData[1].trim());
-            } else if ("Volume Number".equals(splitData[0])) {
-                ttitem001.setArticleVolume(splitData[1].trim());
-            } else if ("Issue".equals(splitData[0])) {
-                ttitem001.setArticleIssue(splitData[1].trim());
-            } else if ("Article Author".equals(splitData[0])) {
-                ttitem001.setArticleAuthor(splitData[1].trim());
-            } else if ("Article/Chapter Title".equals(splitData[0])) {
-                ttitem001.setArticleTitle(splitData[1].trim());
-            }
+            ttitem001.setStartPage(validateAndSet("Start Page", splitData));
+            ttitem001.setEndPage(validateAndSet("End Page", splitData));
+            ttitem001.setArticleVolume(validateAndSet("Volume Number", splitData));
+            ttitem001.setArticleIssue(validateAndSet("Issue", splitData));
+            ttitem001.setArticleAuthor(validateAndSet("Article Author", splitData));
+            ttitem001.setArticleTitle(validateAndSet("Article/Chapter Title", splitData));
         }
     }
 
@@ -151,22 +144,24 @@ public class ItemRequestServiceUtil {
     public void setEddInfoToScsbRequest(String line, ItemRequestInformation itemRequestInformation) {
         String[] splitData = line.split(":");
         if (ArrayUtils.isNotEmpty(splitData) && splitData.length > 1) {
-            if ("User".equals(splitData[0].trim())) {
-                itemRequestInformation.setRequestNotes(splitData[1].trim());
-            } else if ("Start Page".equals(splitData[0])) {
-                itemRequestInformation.setStartPage(splitData[1].trim());
-            } else if ("End Page".equals(splitData[0])) {
-                itemRequestInformation.setEndPage(splitData[1].trim());
-            } else if ("Volume Number".equals(splitData[0])) {
-                itemRequestInformation.setVolume(splitData[1].trim());
-            } else if ("Issue".equals(splitData[0])) {
-                itemRequestInformation.setIssue(splitData[1].trim());
-            } else if ("Article Author".equals(splitData[0])) {
-                itemRequestInformation.setAuthor(splitData[1].trim());
-            } else if ("Article/Chapter Title".equals(splitData[0])) {
-                itemRequestInformation.setChapterTitle(splitData[1].trim());
-            }
+            itemRequestInformation.setRequestNotes(validateAndSet("User", splitData));
+            itemRequestInformation.setStartPage(validateAndSet("Start Page", splitData));
+            itemRequestInformation.setEndPage(validateAndSet("End Page", splitData));
+            itemRequestInformation.setVolume(validateAndSet("Volume Number", splitData));
+            itemRequestInformation.setIssue(validateAndSet("Issue", splitData));
+            itemRequestInformation.setAuthor(validateAndSet("Article Author", splitData));
+            itemRequestInformation.setChapterTitle(validateAndSet("Article/Chapter Title", splitData));
         }
+    }
+
+    private String validateAndSet(String key, String[] splitData) {
+        if (ArrayUtils.isNotEmpty(splitData)) {
+            String splitDataString = splitData[0];
+            String splitDataValue = splitData[1].trim();
+            if (key.equals(splitDataString))
+                return splitDataValue;
+        }
+        return "";
     }
 
     public String getPatronIdBorrowingInstitution(String requestingInstitution, String owningInstitution, String requestType) {

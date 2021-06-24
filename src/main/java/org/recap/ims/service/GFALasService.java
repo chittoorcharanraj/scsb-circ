@@ -611,6 +611,15 @@ public class GFALasService {
         return gfaItemStatusValue;
     }
 
+    public String getGfaItemStatusInUpperCase(String gfaItemStatus) {
+        if (gfaItemStatus.contains(":")) {
+            gfaItemStatus = gfaItemStatus.substring(0, gfaItemStatus.indexOf(':') + 1).toUpperCase();
+        } else {
+            gfaItemStatus = gfaItemStatus.toUpperCase();
+        }
+        return gfaItemStatus;
+    }
+
     /**
      * For the given item barcodes this method checks status with LAS.
      *

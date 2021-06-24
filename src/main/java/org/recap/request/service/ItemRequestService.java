@@ -414,12 +414,15 @@ public class ItemRequestService {
                         itemRequestInfo.setPatronBarcode(requestItemEntity.getPatronId());
                     }
                     String isRefileForCheckin = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_USE_REFILE_FOR_CHECKIN);
-                    if (Boolean.TRUE.toString().equalsIgnoreCase(isRefileForCheckin)) {
-                        requestItemController.getIlsProtocolConnectorFactory().getIlsProtocolConnector(itemRequestInfo.getRequestingInstitution()).refileItem(itemBarcode);
-                    } else {
-                        requestItemController.checkinItem(itemRequestInfo, itemRequestInfo.getRequestingInstitution());
+                    if(!itemRequestInfo.getRequestType().equalsIgnoreCase(ScsbConstants.EDD_REQUEST)) {
+                        if (Boolean.TRUE.toString().equalsIgnoreCase(isRefileForCheckin)) {
+                            requestItemController.getIlsProtocolConnectorFactory().getIlsProtocolConnector(itemRequestInfo.getRequestingInstitution()).refileItem(itemBarcode);
+                        } else {
+                            requestItemController.checkinItem(itemRequestInfo, itemRequestInfo.getRequestingInstitution());
+                        }
                     }
-                    if (!itemRequestInfo.isOwningInstitutionItem()) {
+                    if (!itemRequestInfo.isOwningInstitutionItem() || ((itemRequestInfo.getRequestType().equalsIgnoreCase(ScsbConstants.EDD_REQUEST))
+                            && itemRequestInfo.isOwningInstitutionItem())) {
                         //TODO - Check if EDD and change Patron accordingly to checkIn in ItemOwningInstitution
                         if(itemRequestInfo.getRequestType().equalsIgnoreCase(ScsbConstants.EDD_REQUEST)){
                             itemRequestInfo.setPatronBarcode(getPatronIDForEDDBorrowingInstitution(itemRequestInfo.getRequestingInstitution(),itemRequestInfo.getItemOwningInstitution()));
@@ -444,11 +447,7 @@ public class ItemRequestService {
                     logger.info("Gfa status received during refile : {}",gfaItemStatus);
                     logger.info("GFA Item Status {} for the barcode {} received on Refile where Request Id : {}", gfaItemStatus, itemEntity.getBarcode(),requestItemEntity.getId());
                     logger.info("Rejecting the Refile for the barcode {} where Request ID : {} and Request Status : {}", itemEntity.getBarcode(), requestItemEntity.getId(), requestItemEntity.getRequestStatusEntity().getRequestStatusCode());
-                    if (gfaItemStatus.contains(":")) {
-                        gfaItemStatus = gfaItemStatus.substring(0, gfaItemStatus.indexOf(':') + 1).toUpperCase();
-                    } else {
-                        gfaItemStatus = gfaItemStatus.toUpperCase();
-                    }
+                    gfaItemStatus = gfaLasService.getGfaItemStatusInUpperCase(gfaItemStatus);
                     logger.info("Gfa status After modifying : {}",gfaItemStatus);
                     boolean isImsItemStatusAvailable = commonUtil.checkIfImsItemStatusIsAvailableOrNotAvailable(itemEntity.getImsLocationEntity().getImsLocationCode(), gfaItemStatus, true);
                     logger.info("Condition satisfied {}", isImsItemStatusAvailable);
@@ -973,7 +972,7 @@ public class ItemRequestService {
         }
 
         String isCheckinInstitution = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_CHECKIN_INSTITUTION);
-        String isEmailOnlyInstitution = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_EMAIL_ONLY_INSTITUTION);
+        String isEmailOnlyInstitution = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.LAS_EXCEPTION_EMAIL_ONLY);
 
         if (Boolean.TRUE.toString().equalsIgnoreCase(isCheckinInstitution) && itemRequestInfo.isOwningInstitutionItem()) {
         //DO NOTHING
@@ -1000,19 +999,24 @@ public class ItemRequestService {
             requestItemController.checkinItem(itemRequestInformation, itemRequestInformation.getRequestingInstitution());
         } else {
             String isCheckinInstitution = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInformation.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_CHECKIN_INSTITUTION);
-            String isEmailOnlyInstitution = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInformation.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_EMAIL_ONLY_INSTITUTION);
+            String isEmailOnlyInstitution = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInformation.getRequestingInstitution(), PropertyKeyConstants.ILS.LAS_EXCEPTION_EMAIL_ONLY);
 
             if (Boolean.TRUE.toString().equalsIgnoreCase(isCheckinInstitution)) {
                 if(!itemRequestInformation.isOwningInstitutionItem()) {
                     if(Boolean.FALSE.toString().equalsIgnoreCase(isEmailOnlyInstitution)) {
                         requestItemController.checkinItem(itemRequestInformation, itemRequestInformation.getRequestingInstitution());
                     }
-                    sendLASExceptionEmail(requestItemEntity.get().getItemEntity().getCustomerCode(), requestItemEntity.get().getItemEntity().getBarcode(), requestItemEntity.get().getPatronId(), requestItemEntity.get().getInstitutionEntity().getInstitutionCode());
+                    if (requestItemEntity.isPresent()) {
+                        sendLASExceptionEmail(requestItemEntity.get().getItemEntity().getCustomerCode(), requestItemEntity.get().getItemEntity().getBarcode(), requestItemEntity.get().getPatronId(), requestItemEntity.get().getInstitutionEntity().getInstitutionCode());
+                    }
+
                 }
             }
             else {
                 requestItemController.cancelHoldItem(itemRequestInformation, itemRequestInformation.getRequestingInstitution());
-                sendLASExceptionEmail(requestItemEntity.get().getItemEntity().getCustomerCode(), requestItemEntity.get().getItemEntity().getBarcode(), requestItemEntity.get().getPatronId(), requestItemEntity.get().getInstitutionEntity().getInstitutionCode());
+                if (requestItemEntity.isPresent()) {
+                    sendLASExceptionEmail(requestItemEntity.get().getItemEntity().getCustomerCode(), requestItemEntity.get().getItemEntity().getBarcode(), requestItemEntity.get().getPatronId(), requestItemEntity.get().getInstitutionEntity().getInstitutionCode());
+                }
             }
         }
         logger.info("Send LAS Status eMail");
@@ -1083,8 +1087,8 @@ public class ItemRequestService {
         emailService.sendLASExceptionEmail(customerCode, itemBarcode, ScsbConstants.ITEM_STATUS_NOT_AVAILABLE, patronBarcode, toInstitution, ScsbConstants.GFA_RETRIVAL_ITEM_NOT_AVAILABLE);
     }
 
-    private String getPickupLocation(Integer InstitutionId, String deliveryLocation) {
-        DeliveryCodeEntity deliveryCodeEntity = deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(deliveryLocation, InstitutionId, 'Y');
+    private String getPickupLocation(Integer institutionId, String deliveryLocation) {
+        DeliveryCodeEntity deliveryCodeEntity = deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(deliveryLocation, institutionId, 'Y');
         return deliveryCodeEntity.getPickupLocation();
     }
 

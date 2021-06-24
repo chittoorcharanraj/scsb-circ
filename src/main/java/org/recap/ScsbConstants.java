@@ -72,6 +72,18 @@ public final class ScsbConstants {
     public static final String EMAIL_Q = "scsbactivemq:queue:CircEmailQ";
     public static final String SCSB_LAS_OUTGOING_QUEUE_PREFIX = "scsbactivemq:queue:scsb";
     public static final String LAS_OUTGOING_QUEUE_PREFIX = "scsbactivemq:queue:las";
+    public static final String SCSB_LAS_OUTGOING_QUEUE_METHOD = "pollLasHeartBeatResponse";
+    public static final String LAS_OUTGOING_QUEUE_METHOD = "gfaItemRequestProcessor";
+    public static final String BULK_REQUEST_ITEM_QUEUE_METHOD = "bulkRequestItemOnMessage";
+    public static final String BULK_REQUEST_ITEM_PROCESSING_QUEUE_METHOD = "bulkRequestProcessItemOnMessage";
+    public static final String REQUEST_ITEM_QUEUE_RETRIEVAL_METHOD = "requestItemOnMessage";
+    public static final String REQUEST_ITEM_QUEUE_EDD_METHOD = "requestItemEDDOnMessage";
+    public static final String REQUEST_ITEM_QUEUE_RECALL_METHOD = "requestItemRecallOnMessage";
+    public static final String LAS_INCOMING_QUEUE_RETRIEVAL_METHOD = "lasResponseRetrievalOnMessage";
+    public static final String LAS_INCOMING_QUEUE_EDD_METHOD = "lasResponseEDDOnMessage";
+    public static final String LAS_INCOMING_QUEUE_PWI_METHOD = "lasResponsePWIOnMessage";
+    public static final String LAS_INCOMING_QUEUE_PWD_METHOD = "lasResponsePWDOnMessage";
+    public static final String REQUEST_ITEM_LAS_ITEM_STATUS_QUEUE_METHOD = "requestItemLasStatusCheckOnMessage";
     public static final String OUTGOING_QUEUE_SUFFIX = "OutgoingQ";
     public static final String SCSB_OUTGOING_QUEUE = "scsbactivemq:queue:scsbOutgoingQ";
     public static final String LAS_OUTGOING_QUEUE = "scsbactivemq:queue:lasOutgoingQ";
@@ -89,6 +101,12 @@ public final class ScsbConstants {
     public static final String LAS_OUTGOING_ROUTE_ID = "LasOutgoingQueueRouteId";
     public static final String LAS_INCOMING_ROUTE_ID = "LasIncomingQueueRouteId";
     public static final String REQUEST_ITEM_LAS_STATUS_CHECK_QUEUE_ROUTEID = "RequestItemLasStatusCheckRouteId";
+    public static final String REQUEST_TOPIC_ROUTE_ID = "RequestTopicRouteId";
+    public static final String EDD_TOPIC_ROUTE_ID = "EDDTopicRouteId";
+    public static final String RECALL_TOPIC_ROUTE_ID = "RecallTopicRouteId";
+    public static final String REQUEST_TOPIC_ROUTE_METHOD = "requestTopicOnMessage";
+    public static final String EDD_TOPIC_ROUTE_METHOD = "eddTopicOnMessage";
+    public static final String RECALL_TOPIC_ROUTE_METHOD = "recallTopicOnMessage";
 
     public static final String REQUEST_ITEM_TOPIC_PREFIX = "RequestItem-";
 
@@ -161,6 +179,10 @@ public final class ScsbConstants {
     public static final String CANNOT_REFILE_FIRST_SCAN_REQUEST ="Cannot place recall for requests placed on first scan LAS status";
     public static final String REQUESTS_STUCK_IN_PENDING = "Requests stuck in pending";
     public static final String NO_PENDING_REQUESTS_FOUND = "There are no pending requests or no new pending request";
+    public static final String RIL_DIRECT_BARCODES_AVAILABLE_IN_LAS = "RILDirectRouteForBarcodesAvailableINLAS";
+    public static final String REQUEST_INITIAL_BARCODES_AVAILABLE_IN_LAS = "BarcodesAvailableInLAS";
+    public static final String BARCODE_NOT_FOUND_IN_SCSB = "BarcodesNotInSCSB";
+    public static final String REQUEST_INITIAL_BARCODES_TO_INDEX = "BarcodesToIndex";
 
     protected static final List<String> REQUEST_TYPE_LIST = Arrays.asList(ScsbCommonConstants.RETRIEVAL, ScsbCommonConstants.REQUEST_TYPE_EDD, ScsbCommonConstants.BORROW_DIRECT, ScsbCommonConstants.REQUEST_TYPE_RECALL);
 

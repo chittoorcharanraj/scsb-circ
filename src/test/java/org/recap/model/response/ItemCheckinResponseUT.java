@@ -2,11 +2,11 @@ package org.recap.model.response;
 
 import org.junit.Test;
 import org.recap.BaseTestCaseUT;
-import org.recap.model.response.ItemCheckinResponse;
 
 import java.util.Date;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by hemalathas on 3/4/17.
@@ -45,7 +45,6 @@ public class ItemCheckinResponseUT extends BaseTestCaseUT {
         itemCheckinResponse.setSecurityInhibit("test");
         itemCheckinResponse.setCurrencyType("test");
 
-        assertNotNull(itemCheckinResponse.getAlert());
         assertNotNull(itemCheckinResponse.getPermanentLocation());
         assertNotNull(itemCheckinResponse.getSortBin());
         assertNotNull(itemCheckinResponse.getCollectionCode());
@@ -54,14 +53,13 @@ public class ItemCheckinResponseUT extends BaseTestCaseUT {
         assertNotNull(itemCheckinResponse.getAlertType());
         assertNotNull(itemCheckinResponse.getHoldPatronId());
         assertNotNull(itemCheckinResponse.getHoldPatronName());
-        assertNotNull(itemCheckinResponse.getMagneticMedia());
-        assertNotNull(itemCheckinResponse.getResensitize());
         assertNotNull(itemCheckinResponse.getTransactionDate());
         assertNotNull(itemCheckinResponse.getInstitutionID());
         assertNotNull(itemCheckinResponse.getPatronIdentifier());
         assertNotNull(itemCheckinResponse.getTitleIdentifier());
         assertNotNull(itemCheckinResponse.getDueDate());
         assertNotNull(itemCheckinResponse.getFeeType());
+        assertTrue(itemCheckinResponse.isProcessed());
         assertNotNull(itemCheckinResponse.getSecurityInhibit());
         assertNotNull(itemCheckinResponse.getCurrencyType());
         assertNotNull(itemCheckinResponse.getFeeAmount());
@@ -70,7 +68,6 @@ public class ItemCheckinResponseUT extends BaseTestCaseUT {
         assertNotNull(itemCheckinResponse.getIsbn());
         assertNotNull(itemCheckinResponse.getLccn());
         assertNotNull(itemCheckinResponse.getJobId());
-        assertNotNull(itemCheckinResponse.isProcessed());
         assertNotNull(itemCheckinResponse.getUpdatedDate());
         assertNotNull(itemCheckinResponse.getCreatedDate());
     }
