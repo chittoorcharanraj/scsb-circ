@@ -500,12 +500,16 @@ public class ItemRequestService {
         }
         else {
             itemRequestInfo.setRequestType(ScsbCommonConstants.RETRIEVAL);
-            InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionCode(itemRequestInfo.getRequestingInstitution());
-            DeliveryCodeEntity deliveryCodeEntity = deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(requestItemEntity.getStopCode(), institutionEntity.getId(), 'Y');
-            DeliveryCodeTranslationEntity deliveryCodeTranslationEntity = deliveryCodeTranslationDetailsRepository.findByRequestingInstitutionandImsLocation(institutionEntity.getId(), deliveryCodeEntity.getId(), itemEntity.getImsLocationEntity().getId());
-            if (deliveryCodeTranslationEntity != null && deliveryCodeTranslationEntity.getImsLocationDeliveryCode() != null) {
-                logger.info("Translation Code >>>> {} "  , deliveryCodeTranslationEntity.getImsLocationDeliveryCode());
-                itemRequestInfo.setTranslatedDeliveryLocation(deliveryCodeTranslationEntity.getImsLocationDeliveryCode());
+            if (null == requestItemEntity.getBulkRequestItemEntity()) {
+                InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionCode(itemRequestInfo.getRequestingInstitution());
+                DeliveryCodeEntity deliveryCodeEntity = deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(requestItemEntity.getStopCode(), institutionEntity.getId(), 'Y');
+                DeliveryCodeTranslationEntity deliveryCodeTranslationEntity = deliveryCodeTranslationDetailsRepository.findByRequestingInstitutionandImsLocation(institutionEntity.getId(), deliveryCodeEntity.getId(), itemEntity.getImsLocationEntity().getId());
+                if (deliveryCodeTranslationEntity != null && deliveryCodeTranslationEntity.getImsLocationDeliveryCode() != null) {
+                    logger.info("Translation Code >>>> {} "  , deliveryCodeTranslationEntity.getImsLocationDeliveryCode());
+                    itemRequestInfo.setTranslatedDeliveryLocation(deliveryCodeTranslationEntity.getImsLocationDeliveryCode());
+                }
+            } else {
+                itemRequestInfo.setTranslatedDeliveryLocation(requestItemEntity.getStopCode());
             }
         }
         itemRequestInfo.setRequestNotes(requestItemEntity.getNotes());
