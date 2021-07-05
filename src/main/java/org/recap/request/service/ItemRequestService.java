@@ -1098,7 +1098,12 @@ public class ItemRequestService {
 
     private String getPickupLocation(Integer institutionId, String deliveryLocation) {
         DeliveryCodeEntity deliveryCodeEntity = deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(deliveryLocation, institutionId, 'Y');
-        return deliveryCodeEntity.getPickupLocation();
+        if (deliveryCodeEntity != null) {
+            return deliveryCodeEntity.getPickupLocation() != null ? deliveryCodeEntity.getPickupLocation() : "";
+        }
+        else {
+            return "";
+       }
     }
 
     /**
