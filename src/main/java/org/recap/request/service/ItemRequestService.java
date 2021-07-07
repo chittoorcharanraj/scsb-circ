@@ -387,13 +387,6 @@ public class ItemRequestService {
                                 itemRequestInfo.setPatronBarcode(itemRequestServiceUtil.getPatronIdBorrowingInstitution(itemRequestInfo.getRequestingInstitution() ,itemRequestInfo.getItemOwningInstitution(), ScsbCommonConstants.REQUEST_TYPE_EDD));
                                 requestItemController.checkoutItem(itemRequestInfo, itemRequestInfo.getItemOwningInstitution());
                             } else {
-                                logger.info("Retrieval Requesting Institution: {}", requestItemEntity.getInstitutionEntity().getInstitutionCode());
-                                logger.info("Retrieval Item Owning Institution: {}", requestItemEntity.getItemEntity().getInstitutionEntity().getInstitutionCode());
-                                logger.info("Retrieval Patron Barcode: {}", requestItemEntity.getPatronId());
-                                logger.info("Recall Requesting Institution: {}", requestItemEntityRecalled.getInstitutionEntity().getInstitutionCode());
-                                logger.info("Recall Item Owning Institution: {}", requestItemEntityRecalled.getItemEntity().getInstitutionEntity().getInstitutionCode());
-                                logger.info("Recall Patron Barcode: {}", requestItemEntityRecalled.getPatronId());
-                                logger.info("ItemRequestInfo - Req Ins - {}, Item Ins - {}, Patron - {}", itemRequestInfo.getRequestingInstitution(), itemRequestInfo.getItemOwningInstitution(), itemRequestInfo.getPatronBarcode());
                                 if (!requestItemEntityRecalled.getInstitutionEntity().getInstitutionCode().equalsIgnoreCase(requestItemEntityRecalled.getItemEntity().getInstitutionEntity().getInstitutionCode())) {
                                     itemRequestInfo.setPatronBarcode(itemRequestServiceUtil.getPatronIdBorrowingInstitution(requestItemEntityRecalled.getInstitutionEntity().getInstitutionCode(), requestItemEntityRecalled.getItemEntity().getInstitutionEntity().getInstitutionCode(), ScsbCommonConstants.REQUEST_TYPE_RETRIEVAL));
                                 } else {
@@ -406,7 +399,6 @@ public class ItemRequestService {
                             ItemInformationResponse itemInformationResponse = new ItemInformationResponse();
                             // Put back the Recall order to LAS. On success from LAS, recall order is updated to retrieval.
                             itemRequestInfo.setImsLocationCode(itemEntity.getImsLocationEntity().getImsLocationCode());
-                            logger.info("ItemRequestInfo Before Sending to GFA - Req Ins - {}, Item Ins - {}, Patron - {}", itemRequestInfo.getRequestingInstitution(), itemRequestInfo.getItemOwningInstitution(), itemRequestInfo.getPatronBarcode());
                             updateScsbAndGfa(itemRequestInfo, itemInformationResponse, itemEntity);
                             itemRefileResponse.setSuccess(true);
                             itemRequestInfo.setRequestingInstitution(requestItemEntity.getInstitutionEntity().getInstitutionCode());
