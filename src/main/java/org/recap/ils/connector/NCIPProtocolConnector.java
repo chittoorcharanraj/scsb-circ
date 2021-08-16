@@ -535,7 +535,9 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
 
                 return patronInformationResponse;
             } else {
-                patronInformationResponse.setPatronName(responseObject.getString("name"));
+                patronInformationResponse.setPatronName(lookupUserResponseData.getUserOptionalFields().getNameInformation().getPersonalNameInformation().getStructuredPersonalUserName().getGivenName()
+                + lookupUserResponseData.getUserOptionalFields().getNameInformation().getPersonalNameInformation().getStructuredPersonalUserName().getSurname()
+                );
                 patronInformationResponse.setSuccess(Boolean.TRUE);
                 patronInformationResponse.setScreenMessage(ScsbCommonConstants.SUCCESS);
                 /*patronInformationResponse.setHomeAddress(lookupUserResponseData.getUserOptionalFields().getUserAddressInformation(0).getPhysicalAddress().getStructuredAddress().getStreet().concat(",").concat(
