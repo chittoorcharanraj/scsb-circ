@@ -540,7 +540,8 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
                 );
                 patronInformationResponse.setSuccess(Boolean.TRUE);
                 patronInformationResponse.setScreenMessage(ScsbCommonConstants.SUCCESS);
-                patronInformationResponse.setEmail(lookupUserResponseData.getUserOptionalFields().getUserAddressInformation(1) != null ? lookupUserResponseData.getUserOptionalFields().getUserAddressInformation(1).getElectronicAddress().getElectronicAddressData():"");
+                patronInformationResponse.setEmail((!lookupUserResponseData.getUserOptionalFields().getUserAddressInformations().isEmpty() && lookupUserResponseData.getUserOptionalFields().getUserAddressInformations().size() > 1)
+                        ? lookupUserResponseData.getUserOptionalFields().getUserAddressInformation(1).getElectronicAddress().getElectronicAddressData():"");
                 patronInformationResponse.setPatronIdentifier(patronIdentifier);
                 log.info("patronInformation Response >>> " + lookupUserResponseData);
                 log.info("patronInformation Response message >>> " + patronInformationResponse.getScreenMessage());
