@@ -535,15 +535,13 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
 
                 return patronInformationResponse;
             } else {
-                patronInformationResponse.setPatronName(responseObject.getString("name"));
+                patronInformationResponse.setPatronName(lookupUserResponseData.getUserOptionalFields().getNameInformation().getPersonalNameInformation().getStructuredPersonalUserName().getGivenName()
+                + lookupUserResponseData.getUserOptionalFields().getNameInformation().getPersonalNameInformation().getStructuredPersonalUserName().getSurname()
+                );
                 patronInformationResponse.setSuccess(Boolean.TRUE);
                 patronInformationResponse.setScreenMessage(ScsbCommonConstants.SUCCESS);
-                /*patronInformationResponse.setHomeAddress(lookupUserResponseData.getUserOptionalFields().getUserAddressInformation(0).getPhysicalAddress().getStructuredAddress().getStreet().concat(",").concat(
-                        lookupUserResponseData.getUserOptionalFields().getUserAddressInformation(0).getPhysicalAddress().getStructuredAddress().getLocality()).concat(",").
-                        concat(lookupUserResponseData.getUserOptionalFields().getUserAddressInformation(0).getPhysicalAddress().getStructuredAddress().getRegion().concat(",").
-                                concat(lookupUserResponseData.getUserOptionalFields().getUserAddressInformation(0).getPhysicalAddress().getStructuredAddress().getPostalCode())));
-                */
-                patronInformationResponse.setEmail(lookupUserResponseData.getUserOptionalFields().getUserAddressInformation(1).getElectronicAddress().getElectronicAddressData());
+                patronInformationResponse.setEmail((!lookupUserResponseData.getUserOptionalFields().getUserAddressInformations().isEmpty() && lookupUserResponseData.getUserOptionalFields().getUserAddressInformations().size() > 1)
+                        ? lookupUserResponseData.getUserOptionalFields().getUserAddressInformation(1).getElectronicAddress().getElectronicAddressData():"");
                 patronInformationResponse.setPatronIdentifier(patronIdentifier);
                 log.info("patronInformation Response >>> " + lookupUserResponseData);
                 log.info("patronInformation Response message >>> " + patronInformationResponse.getScreenMessage());
