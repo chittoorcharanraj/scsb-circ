@@ -1379,13 +1379,13 @@ public class ItemRequestService {
             ObjectMapper objectMapper = new ObjectMapper();
             String json = objectMapper.writeValueAsString(itemRequestInformation);
             String itemStatus = gfaLasService.callGfaItemStatus(requestItemEntity.getItemEntity().getBarcode());
-            if (commonUtil.checkIfImsItemStatusIsAvailableOrNotAvailable(requestItemEntity.getItemEntity().getImsLocationEntity().getImsLocationCode(), itemStatus, true)) {
-                producerTemplate.sendBodyAndHeader(ScsbConstants.REQUEST_ITEM_QUEUE, json, ScsbCommonConstants.REQUEST_TYPE_QUEUE_HEADER, itemRequestInformation.getRequestType());
-            } else if (StringUtils.isNotBlank(itemStatus)) {
+            if (commonUtil.checkIfImsItemStatusIsRequestableNotRetrievable(requestItemEntity.getItemEntity().getImsLocationEntity().getImsLocationCode(), itemStatus)) {
                 RequestStatusEntity requestStatusEntity = requestItemStatusDetailsRepository.findByRequestStatusCode(ScsbConstants.LAS_REFILE_REQUEST_PLACED);
                 requestItemEntity.setRequestStatusEntity(requestStatusEntity);
                 requestItemEntity.setRequestStatusId(requestStatusEntity.getId());
                 requestItemDetailsRepository.save(requestItemEntity);
+            } else if (commonUtil.checkIfImsItemStatusIsAvailableOrNotAvailable(requestItemEntity.getItemEntity().getImsLocationEntity().getImsLocationCode(), itemStatus, true)) {
+                producerTemplate.sendBodyAndHeader(ScsbConstants.REQUEST_ITEM_QUEUE, json, ScsbCommonConstants.REQUEST_TYPE_QUEUE_HEADER, itemRequestInformation.getRequestType());
             }
         } catch (Exception exception) {
             logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, exception);
