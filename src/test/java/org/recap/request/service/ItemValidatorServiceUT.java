@@ -19,6 +19,7 @@ import org.recap.util.PropertyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.*;
 
@@ -278,6 +279,30 @@ public class ItemValidatorServiceUT extends BaseTestCaseUT {
         assertNotNull(responseEntity6);
     }
     @Test
+    public void testValidForRecallAvailableforOwnInst() throws Exception {
+        List<String> itemBarcodes = new ArrayList<>();
+        itemBarcodes.add("10123");
+        ItemRequestInformation itemRequestInformation = getItemRequestInformation(itemBarcodes);
+        itemRequestInformation.setRequestType(ScsbCommonConstants.REQUEST_TYPE_RECALL);
+        ItemEntity itemEntity = getItemEntity();
+        ItemStatusEntity itemStatusEntity = getItemStatusEntity();
+        RequestItemEntity requestItemEntity = getRequestItemEntity();
+        requestItemEntity.setId(0);
+        RequestItemEntity requestItemEntity1 = getRequestItemEntity();
+        Map<String, String> frozenInstitutionPropertyMap = new HashMap<>();
+        Map<String, String> frozenInstitutionMessagesPropertyMap = new HashMap<>();
+        frozenInstitutionMessagesPropertyMap.put(itemEntity.getInstitutionEntity().getInstitutionCode(),"Test");
+        Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_ENABLE_CIRCULATION_FREEZE)).thenReturn(frozenInstitutionPropertyMap);
+        Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_RECALL_FUNCTIONALITY_AVAILABLE)).thenReturn(frozenInstitutionPropertyMap);
+        Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_CIRCULATION_FREEZE_MESSAGE)).thenReturn(frozenInstitutionMessagesPropertyMap);
+        Mockito.when(institutionDetailsRepository.findByInstitutionCode(any())).thenReturn(getInstitutionEntity());
+        Mockito.when(imsLocationDetailsRepository.findById(any())).thenReturn(Optional.of(getImsLocationEntity()));
+        Mockito.when(itemController.findByBarcodeIn(itemBarcodes.toString())).thenReturn(Arrays.asList(itemEntity));
+        Mockito.when(requestItemDetailsRepository.findByItemBarcodeAndRequestStaCode(any(),anyString())).thenReturn(requestItemEntity);
+        ResponseEntity responseEntity6 = itemValidatorService.itemValidation(itemRequestInformation);
+        assertNotNull(responseEntity6);
+    }
+    @Test
     public void testValidMultipleBarcode() throws Exception {
         List<String> itemBarcodes = new ArrayList<>();
         itemBarcodes.add("10123");
@@ -336,8 +361,6 @@ public class ItemValidatorServiceUT extends BaseTestCaseUT {
         String ownerCode = "PA";
         Integer institution = Integer.valueOf(1);
         ItemRequestInformation itemRequestInformation = getItemRequestInformation(Arrays.asList("2456744"));
-        OwnerCodeEntity ownerCodeEntity = getOwnerCodeEntity();
-//        Mockito.when(ownerCodeDetailsRepository.findByOwnerCode(any())).thenReturn(ownerCodeEntity);
         Mockito.when(deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(any(), any(), anyChar())).thenReturn(getDeliveryCodeEntity());
         itemValidatorService.checkDeliveryLocation(ownerCode,institution, itemRequestInformation);
         itemValidatorService.checkDeliveryLocation(ownerCode,institution, itemRequestInformation);
@@ -349,9 +372,7 @@ public class ItemValidatorServiceUT extends BaseTestCaseUT {
         Integer institution = Integer.valueOf(1);
         ItemRequestInformation itemRequestInformation = getItemRequestInformation(Arrays.asList("2456744"));
         itemRequestInformation.setRequestingInstitution("3");
-        OwnerCodeEntity ownerCodeEntity = getOwnerCodeEntity();
         Mockito.when(deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(any(), any(), anyChar())).thenReturn(getDeliveryCodeEntity());
-//        Mockito.when(ownerCodeDetailsRepository.findByOwnerCode(any())).thenReturn(ownerCodeEntity);
         itemValidatorService.checkDeliveryLocation(ownerCode, institution, itemRequestInformation);
     }
     @Test
@@ -392,6 +413,194 @@ public class ItemValidatorServiceUT extends BaseTestCaseUT {
         assertEquals(-1,bSuccess);
     }
 
+    @Test
+    public void multipleRequestItemValidation(){
+        List<ItemEntity> itemEntityList = new ArrayList<>();
+        itemEntityList.add(getItemEntity());
+        Set<Integer> bibliographicIds = new HashSet<>();
+        bibliographicIds.add(2);
+        List<String> itemBarcodes = new ArrayList<>();
+        itemBarcodes.add("87632490");
+        ItemRequestInformation itemRequestInformation = getItemRequestInformation(itemBarcodes);
+        Map<String, String> frozenInstitutionPropertyMap = new HashMap<>();
+        frozenInstitutionPropertyMap.put(getItemEntity().getInstitutionEntity().getInstitutionCode(),Boolean.TRUE.toString());
+        Map<String, String> frozenInstitutionMessagesPropertyMap = new HashMap<>();
+        RequestItemEntity requestItemEntity = getRequestItemEntity();
+        requestItemEntity.setId(0);
+        frozenInstitutionMessagesPropertyMap.put(getItemEntity().getInstitutionEntity().getInstitutionCode(),"Test");
+        Mockito.when(institutionDetailsRepository.findByInstitutionCode(itemRequestInformation.getRequestingInstitution())).thenReturn(getInstitutionEntity());
+        Mockito.when(requestItemDetailsRepository.findByItemBarcodeAndRequestStaCode(getItemEntity().getBarcode(), ScsbCommonConstants.REQUEST_STATUS_INITIAL_LOAD)).thenReturn(requestItemEntity);
+        ReflectionTestUtils.invokeMethod(itemValidatorService,"multipleRequestItemValidation",itemEntityList,bibliographicIds,itemRequestInformation,frozenInstitutionPropertyMap,frozenInstitutionMessagesPropertyMap);
+    }
+
+    @Test
+    public void multipleRequestItemValidationEDD(){
+        List<ItemEntity> itemEntityList = new ArrayList<>();
+        itemEntityList.add(getItemEntity());
+        Set<Integer> bibliographicIds = new HashSet<>();
+        bibliographicIds.add(2);
+        List<String> itemBarcodes = new ArrayList<>();
+        itemBarcodes.add("87632490");
+        ItemRequestInformation itemRequestInformation = getItemRequestInformation(itemBarcodes);
+        itemRequestInformation.setRequestType(ScsbCommonConstants.REQUEST_TYPE_RETRIEVAL);
+        itemRequestInformation.setDeliveryLocation("PA");
+        Map<String, String> frozenInstitutionPropertyMap = new HashMap<>();
+        frozenInstitutionPropertyMap.put(getItemEntity().getInstitutionEntity().getInstitutionCode(),Boolean.FALSE.toString());
+        Map<String, String> frozenInstitutionMessagesPropertyMap = new HashMap<>();
+        RequestItemEntity requestItemEntity = getRequestItemEntity();
+        requestItemEntity.setId(0);
+        List<Object[]> deliveryCodeEntityList = new ArrayList<>();
+        Object[] deliveryCodeEntity = {getDeliveryCodeEntity()};
+        deliveryCodeEntityList.add(deliveryCodeEntity);
+        frozenInstitutionMessagesPropertyMap.put(getItemEntity().getInstitutionEntity().getInstitutionCode(),"Test");
+        Mockito.when(deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(any(), any(), anyChar())).thenReturn(getDeliveryCodeEntity());
+        Mockito.when(ownerCodeDetailsRepository.findByOwnerCodeAndRequestingInstitution(anyInt(), anyInt(), anyString())).thenReturn(deliveryCodeEntityList);
+        Mockito.when(ownerCodeDetailsRepository.findByOwnerCodeAndOwningInstitutionCode(any(), any())).thenReturn(getOwnerCodeEntity());
+        Mockito.when(institutionDetailsRepository.findByInstitutionCode(itemRequestInformation.getRequestingInstitution())).thenReturn(getInstitutionEntity());
+        Mockito.when(requestItemDetailsRepository.findByItemBarcodeAndRequestStaCode(getItemEntity().getBarcode(), ScsbCommonConstants.REQUEST_STATUS_INITIAL_LOAD)).thenReturn(requestItemEntity);
+        ReflectionTestUtils.invokeMethod(itemValidatorService,"multipleRequestItemValidation",itemEntityList,bibliographicIds,itemRequestInformation,frozenInstitutionPropertyMap,frozenInstitutionMessagesPropertyMap);
+    }
+    @Test
+    public void multipleRequestitemValidationItemValidationEDDWithRequestId(){
+        List<ItemEntity> itemEntityList = new ArrayList<>();
+        ItemEntity itemEntity = getItemEntity();
+        itemEntityList.add(itemEntity);
+        Set<Integer> bibliographicIds = new HashSet<>();
+        bibliographicIds.add(2);
+        List<String> itemBarcodes = new ArrayList<>();
+        itemBarcodes.add("87632490");
+        ItemRequestInformation itemRequestInformation = getItemRequestInformation(itemBarcodes);
+        itemRequestInformation.setRequestType(ScsbCommonConstants.REQUEST_TYPE_RETRIEVAL);
+        Map<String, String> frozenInstitutionPropertyMap = new HashMap<>();
+        frozenInstitutionPropertyMap.put(getItemEntity().getInstitutionEntity().getInstitutionCode(),Boolean.FALSE.toString());
+        Map<String, String> frozenInstitutionMessagesPropertyMap = new HashMap<>();
+        RequestItemEntity requestItemEntity = getRequestItemEntity();
+        requestItemEntity.setId(1);
+        frozenInstitutionMessagesPropertyMap.put(getItemEntity().getInstitutionEntity().getInstitutionCode(),"Test");
+        Mockito.when(requestItemDetailsRepository.findByItemBarcodeAndRequestStaCode(getItemEntity().getBarcode(), ScsbCommonConstants.REQUEST_STATUS_INITIAL_LOAD)).thenReturn(requestItemEntity);
+        ReflectionTestUtils.invokeMethod(itemValidatorService,"multipleRequestItemValidation",itemEntityList,bibliographicIds,itemRequestInformation,frozenInstitutionPropertyMap,frozenInstitutionMessagesPropertyMap);
+    }
+    @Test
+    public void multipleRequestItemValidationEDDWithDeliveryCodeTranslator(){
+        List<ItemEntity> itemEntityList = new ArrayList<>();
+        ItemEntity itemEntity = getItemEntity();
+        itemEntityList.add(itemEntity);
+        Set<Integer> bibliographicIds = new HashSet<>();
+        bibliographicIds.add(2);
+        List<String> itemBarcodes = new ArrayList<>();
+        itemBarcodes.add("87632490");
+        ItemRequestInformation itemRequestInformation = getItemRequestInformation(itemBarcodes);
+        itemRequestInformation.setRequestType(ScsbCommonConstants.REQUEST_TYPE_RETRIEVAL);
+        itemRequestInformation.setDeliveryLocation("PA");
+        Map<String, String> frozenInstitutionPropertyMap = new HashMap<>();
+        frozenInstitutionPropertyMap.put(getItemEntity().getInstitutionEntity().getInstitutionCode(),Boolean.FALSE.toString());
+        Map<String, String> frozenInstitutionMessagesPropertyMap = new HashMap<>();
+        RequestItemEntity requestItemEntity = getRequestItemEntity();
+        requestItemEntity.setId(0);
+        List<Object[]> deliveryCodeEntityList = new ArrayList<>();
+        Object[] deliveryCodeEntity = {getDeliveryCodeEntity()};
+        deliveryCodeEntityList.add(deliveryCodeEntity);
+        frozenInstitutionMessagesPropertyMap.put(getItemEntity().getInstitutionEntity().getInstitutionCode(),"Test");
+        Mockito.when(deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(any(), any(), anyChar())).thenReturn(getDeliveryCodeEntity());
+        Mockito.when(deliveryCodeTranslationDetailsRepository.findByRequestingInstitutionandImsLocation(any(), any(), any())).thenReturn(getDeliveryCodeTranslationEntity());
+        Mockito.when(ownerCodeDetailsRepository.findByOwnerCodeAndRequestingInstitution(anyInt(), anyInt(), anyString())).thenReturn(deliveryCodeEntityList);
+        Mockito.when(ownerCodeDetailsRepository.findByOwnerCodeAndOwningInstitutionCode(any(), any())).thenReturn(getOwnerCodeEntity());
+        Mockito.when(institutionDetailsRepository.findByInstitutionCode(itemRequestInformation.getRequestingInstitution())).thenReturn(getInstitutionEntity());
+        Mockito.when(requestItemDetailsRepository.findByItemBarcodeAndRequestStaCode(getItemEntity().getBarcode(), ScsbCommonConstants.REQUEST_STATUS_INITIAL_LOAD)).thenReturn(requestItemEntity);
+        ReflectionTestUtils.invokeMethod(itemValidatorService,"multipleRequestItemValidation",itemEntityList,bibliographicIds,itemRequestInformation,frozenInstitutionPropertyMap,frozenInstitutionMessagesPropertyMap);
+    }
+    @Test
+    public void multipleRequestItemValidationEDDWithDeliveryCodeTranslatorWithoutbibId(){
+        List<ItemEntity> itemEntityList = new ArrayList<>();
+        ItemEntity itemEntity = getItemEntity();
+        BibliographicEntity bibliographicEntity = getBibliographicEntity(1,"PUL");
+        bibliographicEntity.setId(2);
+        itemEntity.setBibliographicEntities(Arrays.asList(bibliographicEntity));
+        itemEntityList.add(itemEntity);
+        Set<Integer> bibliographicIds = new HashSet<>();
+        bibliographicIds.add(2);
+        List<String> itemBarcodes = new ArrayList<>();
+        itemBarcodes.add("87632490");
+        ItemRequestInformation itemRequestInformation = getItemRequestInformation(itemBarcodes);
+        itemRequestInformation.setRequestType(ScsbCommonConstants.REQUEST_TYPE_RETRIEVAL);
+        itemRequestInformation.setDeliveryLocation("PA");
+        Map<String, String> frozenInstitutionPropertyMap = new HashMap<>();
+        frozenInstitutionPropertyMap.put(getItemEntity().getInstitutionEntity().getInstitutionCode(),Boolean.FALSE.toString());
+        Map<String, String> frozenInstitutionMessagesPropertyMap = new HashMap<>();
+        RequestItemEntity requestItemEntity = getRequestItemEntity();
+        requestItemEntity.setId(0);
+        List<Object[]> deliveryCodeEntityList = new ArrayList<>();
+        Object[] deliveryCodeEntity = {getDeliveryCodeEntity()};
+        deliveryCodeEntityList.add(deliveryCodeEntity);
+        frozenInstitutionMessagesPropertyMap.put(getItemEntity().getInstitutionEntity().getInstitutionCode(),"Test");
+        Mockito.when(deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(any(), any(), anyChar())).thenReturn(getDeliveryCodeEntity());
+        Mockito.when(deliveryCodeTranslationDetailsRepository.findByRequestingInstitutionandImsLocation(any(), any(), any())).thenReturn(getDeliveryCodeTranslationEntity());
+        Mockito.when(ownerCodeDetailsRepository.findByOwnerCodeAndRequestingInstitution(anyInt(), anyInt(), anyString())).thenReturn(deliveryCodeEntityList);
+        Mockito.when(ownerCodeDetailsRepository.findByOwnerCodeAndOwningInstitutionCode(any(), any())).thenReturn(getOwnerCodeEntity());
+        Mockito.when(institutionDetailsRepository.findByInstitutionCode(itemRequestInformation.getRequestingInstitution())).thenReturn(getInstitutionEntity());
+        Mockito.when(requestItemDetailsRepository.findByItemBarcodeAndRequestStaCode(getItemEntity().getBarcode(), ScsbCommonConstants.REQUEST_STATUS_INITIAL_LOAD)).thenReturn(requestItemEntity);
+        ReflectionTestUtils.invokeMethod(itemValidatorService,"multipleRequestItemValidation",itemEntityList,bibliographicIds,itemRequestInformation,frozenInstitutionPropertyMap,frozenInstitutionMessagesPropertyMap);
+    }
+    @Test
+    public void multipleRequestItemValidationEDDWithOutDeliveryCodeTranslator(){
+        List<ItemEntity> itemEntityList = new ArrayList<>();
+        ItemEntity itemEntity = getItemEntity();
+        BibliographicEntity bibliographicEntity = getBibliographicEntity(1,"PUL");
+        bibliographicEntity.setId(2);
+        itemEntity.setBibliographicEntities(Arrays.asList(bibliographicEntity));
+        itemEntityList.add(itemEntity);
+        Set<Integer> bibliographicIds = new HashSet<>();
+        bibliographicIds.add(2);
+        List<String> itemBarcodes = new ArrayList<>();
+        itemBarcodes.add("87632490");
+        ItemRequestInformation itemRequestInformation = getItemRequestInformation(itemBarcodes);
+        itemRequestInformation.setRequestType(ScsbCommonConstants.REQUEST_TYPE_RETRIEVAL);
+        itemRequestInformation.setDeliveryLocation("PA");
+        Map<String, String> frozenInstitutionPropertyMap = new HashMap<>();
+        frozenInstitutionPropertyMap.put(getItemEntity().getInstitutionEntity().getInstitutionCode(),Boolean.FALSE.toString());
+        Map<String, String> frozenInstitutionMessagesPropertyMap = new HashMap<>();
+        RequestItemEntity requestItemEntity = getRequestItemEntity();
+        requestItemEntity.setId(0);
+        List<Object[]> deliveryCodeEntityList = new ArrayList<>();
+        Object[] deliveryCodeEntity = {getDeliveryCodeEntity()};
+        deliveryCodeEntityList.add(deliveryCodeEntity);
+        frozenInstitutionMessagesPropertyMap.put(getItemEntity().getInstitutionEntity().getInstitutionCode(),"Test");
+        Mockito.when(deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(any(), any(), anyChar())).thenReturn(getDeliveryCodeEntity());
+        Mockito.when(ownerCodeDetailsRepository.findByOwnerCodeAndRequestingInstitution(anyInt(), anyInt(), anyString())).thenReturn(new ArrayList<>());
+        Mockito.when(ownerCodeDetailsRepository.findByOwnerCodeAndOwningInstitutionCode(any(), any())).thenReturn(getOwnerCodeEntity());
+        Mockito.when(institutionDetailsRepository.findByInstitutionCode(itemRequestInformation.getRequestingInstitution())).thenReturn(getInstitutionEntity());
+        Mockito.when(requestItemDetailsRepository.findByItemBarcodeAndRequestStaCode(getItemEntity().getBarcode(), ScsbCommonConstants.REQUEST_STATUS_INITIAL_LOAD)).thenReturn(requestItemEntity);
+        ReflectionTestUtils.invokeMethod(itemValidatorService,"multipleRequestItemValidation",itemEntityList,bibliographicIds,itemRequestInformation,frozenInstitutionPropertyMap,frozenInstitutionMessagesPropertyMap);
+    }
+    @Test
+    public void multipleRequestItemValidationEDDWithInstitutionEntity(){
+        List<ItemEntity> itemEntityList = new ArrayList<>();
+        ItemEntity itemEntity = getItemEntity();
+        BibliographicEntity bibliographicEntity = getBibliographicEntity(1,"PUL");
+        bibliographicEntity.setId(2);
+        itemEntity.setBibliographicEntities(Arrays.asList(bibliographicEntity));
+        itemEntityList.add(itemEntity);
+        Set<Integer> bibliographicIds = new HashSet<>();
+        bibliographicIds.add(2);
+        List<String> itemBarcodes = new ArrayList<>();
+        itemBarcodes.add("87632490");
+        ItemRequestInformation itemRequestInformation = getItemRequestInformation(itemBarcodes);
+        itemRequestInformation.setRequestType(ScsbCommonConstants.REQUEST_TYPE_RETRIEVAL);
+        itemRequestInformation.setDeliveryLocation("PA");
+        Map<String, String> frozenInstitutionPropertyMap = new HashMap<>();
+        frozenInstitutionPropertyMap.put(getItemEntity().getInstitutionEntity().getInstitutionCode(),Boolean.FALSE.toString());
+        Map<String, String> frozenInstitutionMessagesPropertyMap = new HashMap<>();
+        RequestItemEntity requestItemEntity = getRequestItemEntity();
+        requestItemEntity.setId(0);
+        List<Object[]> deliveryCodeEntityList = new ArrayList<>();
+        Object[] deliveryCodeEntity = {getDeliveryCodeEntity()};
+        deliveryCodeEntityList.add(deliveryCodeEntity);
+        frozenInstitutionMessagesPropertyMap.put(getItemEntity().getInstitutionEntity().getInstitutionCode(),"Test");
+        Mockito.when(deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(any(), any(), anyChar())).thenReturn(null);
+        Mockito.when(institutionDetailsRepository.findByInstitutionCode(itemRequestInformation.getRequestingInstitution())).thenReturn(getInstitutionEntity());
+        Mockito.when(requestItemDetailsRepository.findByItemBarcodeAndRequestStaCode(getItemEntity().getBarcode(), ScsbCommonConstants.REQUEST_STATUS_INITIAL_LOAD)).thenReturn(requestItemEntity);
+        ReflectionTestUtils.invokeMethod(itemValidatorService,"multipleRequestItemValidation",itemEntityList,bibliographicIds,itemRequestInformation,frozenInstitutionPropertyMap,frozenInstitutionMessagesPropertyMap);
+    }
     private ItemRequestInformation getItemRequestInformation(List<String> itemBarcodes) {
         ItemRequestInformation itemRequestInformation = new ItemRequestInformation();
         itemRequestInformation.setItemBarcodes(itemBarcodes);
