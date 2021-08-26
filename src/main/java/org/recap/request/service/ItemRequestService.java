@@ -1347,6 +1347,7 @@ public class ItemRequestService {
         itemRequestInformation.setItemOwningInstitution(itemEntity.getInstitutionEntity().getInstitutionCode());
         itemRequestInformation.setRequestType(requestItemEntity.getRequestTypeEntity().getRequestTypeCode());
         itemRequestInformation.setDeliveryLocation(requestItemEntity.getStopCode());
+        itemRequestInformation.setTranslatedDeliveryLocation(requestItemEntity.getStopCode());
         String imsLocationCode = commonUtil.getImsLocationCodeByItemBarcode(requestItemEntity.getItemEntity().getBarcode());
         itemRequestInformation.setImsLocationCode(imsLocationCode);
 
