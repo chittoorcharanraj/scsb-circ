@@ -31,6 +31,7 @@ import static org.mockito.ArgumentMatchers.*;
 /**
  * Created by hemalathas on 11/11/16.
  */
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ItemValidatorServiceUT extends BaseTestCaseUT {
 
     @InjectMocks
