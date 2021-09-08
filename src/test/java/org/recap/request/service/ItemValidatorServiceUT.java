@@ -31,6 +31,7 @@ import static org.mockito.ArgumentMatchers.*;
 /**
  * Created by hemalathas on 11/11/16.
  */
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ItemValidatorServiceUT extends BaseTestCaseUT {
 
     @InjectMocks
@@ -257,6 +258,41 @@ public class ItemValidatorServiceUT extends BaseTestCaseUT {
         assertNotNull(responseEntity5);
     }
     @Test
+    public void testValidItemStatusRecallDelivery() throws Exception {
+        List<String> itemBarcodes = new ArrayList<>();
+        itemBarcodes.add("10123");
+        ItemRequestInformation itemRequestInformation = getItemRequestInformation(itemBarcodes);
+        itemRequestInformation.setRequestType(ScsbCommonConstants.REQUEST_TYPE_RECALL);
+        ItemEntity itemEntity = getItemEntity();
+        ItemStatusEntity itemStatusEntity = getItemStatusEntity();
+        RequestItemEntity requestItemEntity = getRequestItemEntity();
+        requestItemEntity.setId(0);
+        RequestItemEntity requestItemEntity1 = getRequestItemEntity();
+        Map<String, String> frozenInstitutionPropertyMap = new HashMap<>();
+        Map<String, String> recallAvailablePropertyMap = new HashMap<>();
+        Map<String, String> frozenInstitutionMessagesPropertyMap = new HashMap<>();
+        frozenInstitutionMessagesPropertyMap.put(itemEntity.getInstitutionEntity().getInstitutionCode(),"Test");
+        recallAvailablePropertyMap.put(itemEntity.getInstitutionEntity().getInstitutionCode(),Boolean.TRUE.toString());
+        List<Object[]> deliveryCodeEntityList = new ArrayList<>();
+        Object[] deliveryCodeEntity = {getDeliveryCodeEntity()};
+        deliveryCodeEntityList.add(deliveryCodeEntity);
+        frozenInstitutionMessagesPropertyMap.put(getItemEntity().getInstitutionEntity().getInstitutionCode(),"Test");
+        Mockito.when(deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(any(), any(), anyChar())).thenReturn(getDeliveryCodeEntity());
+        Mockito.when(deliveryCodeTranslationDetailsRepository.findByRequestingInstitutionandImsLocation(any(), any(), any())).thenReturn(getDeliveryCodeTranslationEntity());
+        Mockito.when(ownerCodeDetailsRepository.findByOwnerCodeAndRequestingInstitution(anyInt(), anyInt(), anyString())).thenReturn(deliveryCodeEntityList);
+        Mockito.when(ownerCodeDetailsRepository.findByOwnerCodeAndOwningInstitutionCode(any(), any())).thenReturn(getOwnerCodeEntity());
+        Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_ENABLE_CIRCULATION_FREEZE)).thenReturn(frozenInstitutionPropertyMap);
+        Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_RECALL_FUNCTIONALITY_AVAILABLE)).thenReturn(recallAvailablePropertyMap);
+        Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_CIRCULATION_FREEZE_MESSAGE)).thenReturn(frozenInstitutionMessagesPropertyMap);
+        Mockito.when(institutionDetailsRepository.findByInstitutionCode(any())).thenReturn(getInstitutionEntity());
+        Mockito.when(imsLocationDetailsRepository.findById(any())).thenReturn(Optional.of(getImsLocationEntity()));
+        Mockito.when(itemController.findByBarcodeIn(itemBarcodes.toString())).thenReturn(Arrays.asList(itemEntity));
+
+        Mockito.when(requestItemDetailsRepository.findByItemBarcodeAndRequestStaCode(any(),anyString())).thenReturn(requestItemEntity);
+        ResponseEntity responseEntity6 = itemValidatorService.itemValidation(itemRequestInformation);
+        assertNotNull(responseEntity6);
+    }
+    @Test
     public void testValidEDD() throws Exception {
         List<String> itemBarcodes = new ArrayList<>();
         itemBarcodes.add("10123");
@@ -290,10 +326,12 @@ public class ItemValidatorServiceUT extends BaseTestCaseUT {
         requestItemEntity.setId(0);
         RequestItemEntity requestItemEntity1 = getRequestItemEntity();
         Map<String, String> frozenInstitutionPropertyMap = new HashMap<>();
+        Map<String, String> recallAvailablePropertyMap = new HashMap<>();
         Map<String, String> frozenInstitutionMessagesPropertyMap = new HashMap<>();
         frozenInstitutionMessagesPropertyMap.put(itemEntity.getInstitutionEntity().getInstitutionCode(),"Test");
+        recallAvailablePropertyMap.put(itemEntity.getInstitutionEntity().getInstitutionCode(),Boolean.TRUE.toString());
         Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_ENABLE_CIRCULATION_FREEZE)).thenReturn(frozenInstitutionPropertyMap);
-        Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_RECALL_FUNCTIONALITY_AVAILABLE)).thenReturn(frozenInstitutionPropertyMap);
+        Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_RECALL_FUNCTIONALITY_AVAILABLE)).thenReturn(recallAvailablePropertyMap);
         Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_CIRCULATION_FREEZE_MESSAGE)).thenReturn(frozenInstitutionMessagesPropertyMap);
         Mockito.when(institutionDetailsRepository.findByInstitutionCode(any())).thenReturn(getInstitutionEntity());
         Mockito.when(imsLocationDetailsRepository.findById(any())).thenReturn(Optional.of(getImsLocationEntity()));
@@ -302,6 +340,152 @@ public class ItemValidatorServiceUT extends BaseTestCaseUT {
         ResponseEntity responseEntity6 = itemValidatorService.itemValidation(itemRequestInformation);
         assertNotNull(responseEntity6);
     }
+
+    @Test
+    public void testValidForRecallNotAvailableforOwnInst() throws Exception {
+        List<String> itemBarcodes = new ArrayList<>();
+        itemBarcodes.add("10123");
+        ItemRequestInformation itemRequestInformation = getItemRequestInformation(itemBarcodes);
+        itemRequestInformation.setRequestType(ScsbCommonConstants.REQUEST_TYPE_RECALL);
+        itemRequestInformation.setItemOwningInstitution("CUL");
+        itemRequestInformation.setRequestingInstitution("PUL");
+        ItemEntity itemEntity = getItemEntity();
+        ItemStatusEntity itemStatusEntity = getItemStatusEntity();
+        RequestItemEntity requestItemEntity = getRequestItemEntity();
+        requestItemEntity.setId(0);
+        RequestItemEntity requestItemEntity1 = getRequestItemEntity();
+        Map<String, String> frozenInstitutionPropertyMap = new HashMap<>();
+        Map<String, String> recallAvailablePropertyMap = new HashMap<>();
+        Map<String, String> frozenInstitutionMessagesPropertyMap = new HashMap<>();
+        InstitutionEntity institutionEntity = getInstitutionEntity();
+        institutionEntity.setInstitutionCode("CUL");
+        frozenInstitutionMessagesPropertyMap.put(itemEntity.getInstitutionEntity().getInstitutionCode(),"Test");
+        recallAvailablePropertyMap.put(itemEntity.getInstitutionEntity().getInstitutionCode(),Boolean.TRUE.toString());
+        Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_ENABLE_CIRCULATION_FREEZE)).thenReturn(frozenInstitutionPropertyMap);
+        Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_RECALL_FUNCTIONALITY_AVAILABLE)).thenReturn(recallAvailablePropertyMap);
+        Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_CIRCULATION_FREEZE_MESSAGE)).thenReturn(frozenInstitutionMessagesPropertyMap);
+        Mockito.when(institutionDetailsRepository.findByInstitutionCode(itemRequestInformation.getRequestingInstitution())).thenReturn(getInstitutionEntity());
+        Mockito.when(institutionDetailsRepository.findByInstitutionCode(itemRequestInformation.getItemOwningInstitution())).thenReturn(institutionEntity);
+        Mockito.when(imsLocationDetailsRepository.findById(any())).thenReturn(Optional.of(getImsLocationEntity()));
+        Mockito.when(itemController.findByBarcodeIn(itemBarcodes.toString())).thenReturn(Arrays.asList(itemEntity));
+        Mockito.when(requestItemDetailsRepository.findByItemBarcodeAndRequestStaCode(any(),anyString())).thenReturn(requestItemEntity);
+        ResponseEntity responseEntity6 = itemValidatorService.itemValidation(itemRequestInformation);
+        assertNotNull(responseEntity6);
+    }
+
+    @Test
+    public void testValidForRequestItemStatus() throws Exception {
+        List<String> itemBarcodes = new ArrayList<>();
+        itemBarcodes.add("10123");
+        ItemRequestInformation itemRequestInformation = getItemRequestInformation(itemBarcodes);
+        itemRequestInformation.setRequestType(ScsbCommonConstants.REQUEST_TYPE_RECALL);
+        ItemEntity itemEntity = getItemEntity();
+        ItemStatusEntity itemStatusEntity = getItemStatusEntity();
+        RequestItemEntity requestItemEntity = getRequestItemEntity();
+        requestItemEntity.setId(0);
+        RequestItemEntity requestItemEntity1 = getRequestItemEntity();
+        Map<String, String> frozenInstitutionPropertyMap = new HashMap<>();
+        Map<String, String> recallAvailablePropertyMap = new HashMap<>();
+        Map<String, String> frozenInstitutionMessagesPropertyMap = new HashMap<>();
+        frozenInstitutionMessagesPropertyMap.put(itemEntity.getInstitutionEntity().getInstitutionCode(),"Test");
+        recallAvailablePropertyMap.put(itemEntity.getInstitutionEntity().getInstitutionCode(),Boolean.TRUE.toString());
+        Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_ENABLE_CIRCULATION_FREEZE)).thenReturn(frozenInstitutionPropertyMap);
+        Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_RECALL_FUNCTIONALITY_AVAILABLE)).thenReturn(recallAvailablePropertyMap);
+        Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_CIRCULATION_FREEZE_MESSAGE)).thenReturn(frozenInstitutionMessagesPropertyMap);
+        Mockito.when(institutionDetailsRepository.findByInstitutionCode(any())).thenReturn(getInstitutionEntity());
+        Mockito.when(imsLocationDetailsRepository.findById(any())).thenReturn(Optional.of(getImsLocationEntity()));
+        Mockito.when(itemController.findByBarcodeIn(itemBarcodes.toString())).thenReturn(Arrays.asList(itemEntity));
+        Mockito.when(requestItemDetailsRepository.findByItemBarcodeAndRequestStaCode(any(),anyString())).thenReturn(requestItemEntity);
+        Mockito.when(requestItemDetailsRepository.findByItemBarcodeAndRequestStaCode(itemEntity.getBarcode(), ScsbCommonConstants.REQUEST_STATUS_INITIAL_LOAD)).thenReturn(requestItemEntity);
+        Mockito.when(requestItemDetailsRepository.findByItemBarcodeAndRequestStaCode(itemEntity.getBarcode(), ScsbCommonConstants.REQUEST_STATUS_EDD)).thenReturn(requestItemEntity1);
+        ResponseEntity responseEntity6 = itemValidatorService.itemValidation(itemRequestInformation);
+        assertNotNull(responseEntity6);
+    }
+
+    @Test
+    public void testValidForRequestItemStatusCanceled() throws Exception {
+        List<String> itemBarcodes = new ArrayList<>();
+        itemBarcodes.add("10123");
+        ItemRequestInformation itemRequestInformation = getItemRequestInformation(itemBarcodes);
+        itemRequestInformation.setRequestType(ScsbCommonConstants.REQUEST_TYPE_RECALL);
+        ItemEntity itemEntity = getItemEntity();
+        ItemStatusEntity itemStatusEntity = getItemStatusEntity();
+        RequestItemEntity requestItemEntity = getRequestItemEntity();
+        requestItemEntity.setId(0);
+        RequestItemEntity requestItemEntity1 = getRequestItemEntity();
+        Map<String, String> frozenInstitutionPropertyMap = new HashMap<>();
+        Map<String, String> recallAvailablePropertyMap = new HashMap<>();
+        Map<String, String> frozenInstitutionMessagesPropertyMap = new HashMap<>();
+        frozenInstitutionMessagesPropertyMap.put(itemEntity.getInstitutionEntity().getInstitutionCode(),"Test");
+        recallAvailablePropertyMap.put(itemEntity.getInstitutionEntity().getInstitutionCode(),Boolean.TRUE.toString());
+        Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_ENABLE_CIRCULATION_FREEZE)).thenReturn(frozenInstitutionPropertyMap);
+        Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_RECALL_FUNCTIONALITY_AVAILABLE)).thenReturn(recallAvailablePropertyMap);
+        Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_CIRCULATION_FREEZE_MESSAGE)).thenReturn(frozenInstitutionMessagesPropertyMap);
+        Mockito.when(institutionDetailsRepository.findByInstitutionCode(any())).thenReturn(getInstitutionEntity());
+        Mockito.when(imsLocationDetailsRepository.findById(any())).thenReturn(Optional.of(getImsLocationEntity()));
+        Mockito.when(itemController.findByBarcodeIn(itemBarcodes.toString())).thenReturn(Arrays.asList(itemEntity));
+        Mockito.when(requestItemDetailsRepository.findByItemBarcodeAndRequestStaCode(any(),anyString())).thenReturn(requestItemEntity);
+        Mockito.when(requestItemDetailsRepository.findByItemBarcodeAndRequestStaCode(itemEntity.getBarcode(), ScsbCommonConstants.REQUEST_STATUS_INITIAL_LOAD)).thenReturn(requestItemEntity);
+        Mockito.when(requestItemDetailsRepository.findByItemBarcodeAndRequestStaCode(itemEntity.getBarcode(), ScsbCommonConstants.REQUEST_STATUS_CANCELED)).thenReturn(requestItemEntity1);
+        ResponseEntity responseEntity6 = itemValidatorService.itemValidation(itemRequestInformation);
+        assertNotNull(responseEntity6);
+    }
+
+    @Test
+    public void testValidForRequestItemStatusRecalled() throws Exception {
+        List<String> itemBarcodes = new ArrayList<>();
+        itemBarcodes.add("10123");
+        ItemRequestInformation itemRequestInformation = getItemRequestInformation(itemBarcodes);
+        itemRequestInformation.setRequestType(ScsbCommonConstants.REQUEST_TYPE_RECALL);
+        ItemEntity itemEntity = getItemEntity();
+        ItemStatusEntity itemStatusEntity = getItemStatusEntity();
+        RequestItemEntity requestItemEntity = getRequestItemEntity();
+        requestItemEntity.setId(0);
+        RequestItemEntity requestItemEntity1 = getRequestItemEntity();
+        Map<String, String> frozenInstitutionPropertyMap = new HashMap<>();
+        Map<String, String> recallAvailablePropertyMap = new HashMap<>();
+        Map<String, String> frozenInstitutionMessagesPropertyMap = new HashMap<>();
+        frozenInstitutionMessagesPropertyMap.put(itemEntity.getInstitutionEntity().getInstitutionCode(),"Test");
+        recallAvailablePropertyMap.put(itemEntity.getInstitutionEntity().getInstitutionCode(),Boolean.TRUE.toString());
+        Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_ENABLE_CIRCULATION_FREEZE)).thenReturn(frozenInstitutionPropertyMap);
+        Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_RECALL_FUNCTIONALITY_AVAILABLE)).thenReturn(recallAvailablePropertyMap);
+        Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_CIRCULATION_FREEZE_MESSAGE)).thenReturn(frozenInstitutionMessagesPropertyMap);
+        Mockito.when(institutionDetailsRepository.findByInstitutionCode(any())).thenReturn(getInstitutionEntity());
+        Mockito.when(imsLocationDetailsRepository.findById(any())).thenReturn(Optional.of(getImsLocationEntity()));
+        Mockito.when(itemController.findByBarcodeIn(itemBarcodes.toString())).thenReturn(Arrays.asList(itemEntity));
+        Mockito.when(requestItemDetailsRepository.findByItemBarcodeAndRequestStaCode(any(),anyString())).thenReturn(requestItemEntity);
+        Mockito.when(requestItemDetailsRepository.findByItemBarcodeAndRequestStaCode(itemEntity.getBarcode(), ScsbCommonConstants.REQUEST_STATUS_INITIAL_LOAD)).thenReturn(requestItemEntity);
+        Mockito.when(requestItemDetailsRepository.findByItemBarcodeAndRequestStaCode(itemEntity.getBarcode(), ScsbCommonConstants.REQUEST_STATUS_RECALLED)).thenReturn(requestItemEntity1);
+        ResponseEntity responseEntity6 = itemValidatorService.itemValidation(itemRequestInformation);
+        assertNotNull(responseEntity6);
+    }
+
+    @Test
+    public void testValidForEddAvailableforOwnInst() throws Exception {
+        List<String> itemBarcodes = new ArrayList<>();
+        itemBarcodes.add("10123");
+        ItemRequestInformation itemRequestInformation = getItemRequestInformation(itemBarcodes);
+        itemRequestInformation.setRequestType(ScsbCommonConstants.REQUEST_TYPE_EDD);
+        ItemEntity itemEntity = getItemEntity();
+        RequestItemEntity requestItemEntity = getRequestItemEntity();
+        requestItemEntity.setId(0);
+        Map<String, String> frozenInstitutionPropertyMap = new HashMap<>();
+        Map<String, String> recallAvailablePropertyMap = new HashMap<>();
+        Map<String, String> frozenInstitutionMessagesPropertyMap = new HashMap<>();
+        frozenInstitutionMessagesPropertyMap.put(itemEntity.getInstitutionEntity().getInstitutionCode(),"Test");
+        recallAvailablePropertyMap.put(itemEntity.getInstitutionEntity().getInstitutionCode(),Boolean.TRUE.toString());
+        Mockito.when(ownerCodeDetailsRepository.findByOwnerCodeAndRecapDeliveryRestrictionLikeEDD(any(), anyInt())).thenReturn(getOwnerCodeEntity());
+        Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_ENABLE_CIRCULATION_FREEZE)).thenReturn(frozenInstitutionPropertyMap);
+        Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_RECALL_FUNCTIONALITY_AVAILABLE)).thenReturn(recallAvailablePropertyMap);
+        Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_CIRCULATION_FREEZE_MESSAGE)).thenReturn(frozenInstitutionMessagesPropertyMap);
+        Mockito.when(institutionDetailsRepository.findByInstitutionCode(any())).thenReturn(getInstitutionEntity());
+        Mockito.when(imsLocationDetailsRepository.findById(any())).thenReturn(Optional.of(getImsLocationEntity()));
+        Mockito.when(itemController.findByBarcodeIn(itemBarcodes.toString())).thenReturn(Arrays.asList(itemEntity));
+        Mockito.when(requestItemDetailsRepository.findByItemBarcodeAndRequestStaCode(any(),anyString())).thenReturn(requestItemEntity);
+        ResponseEntity responseEntity6 = itemValidatorService.itemValidation(itemRequestInformation);
+        assertNotNull(responseEntity6);
+    }
+
     @Test
     public void testValidMultipleBarcode() throws Exception {
         List<String> itemBarcodes = new ArrayList<>();
