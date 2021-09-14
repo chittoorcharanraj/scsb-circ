@@ -34,5 +34,7 @@ public class EmailPayLoadUT extends BaseTestCaseUT {
         emailPayLoad.setBulkRequestStatus("test");
         emailPayLoad.getBulkRequestCsvFileData();
         emailPayLoad.setBulkRequestCsvFileData("test");
+        emailPayLoad.setCc("test");
+        emailPayLoad.getCc();
     }
 }
