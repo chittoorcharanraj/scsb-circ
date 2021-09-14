@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import java.util.*;
 
 import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
 
 public class CommonUtilUT extends BaseTestCaseUT {
     @InjectMocks
@@ -205,6 +206,16 @@ public class CommonUtilUT extends BaseTestCaseUT {
         Mockito.when(itemDetailsRepository.findByBarcode(itemBarcode)).thenReturn(getBibliographicEntity().getItemEntities());
         String imsLocationCode = commonUtil.getImsLocationCodeByItemBarcode(itemBarcode);
         assertNotNull(imsLocationCode);
+    }
+
+    @Test
+    public void checkIfImsItemStatusIsRequestableNotRetrievable(){
+        String imsLocationCode = "HD";
+        String imsItemStatus = "IN";
+        Mockito.when(propertyUtil.getPropertyByImsLocationAndKey(any(), any())).thenReturn("test");
+        Boolean result = commonUtil.checkIfImsItemStatusIsRequestableNotRetrievable(imsLocationCode,imsItemStatus);
+        assertFalse(result);
+
     }
 
     /*@Test

@@ -12,15 +12,24 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.recap.ScsbCommonConstants;
+import org.recap.ScsbConstants;
 import org.recap.camel.requestinitialdataload.RequestDataLoadCSVRecord;
+import org.recap.model.jpa.BibliographicEntity;
+import org.recap.model.jpa.ImsLocationEntity;
+import org.recap.model.jpa.InstitutionEntity;
+import org.recap.model.jpa.ItemEntity;
 import org.recap.service.requestdataload.RequestDataLoadService;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.text.ParseException;
 import java.util.*;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RequestInitialDataLoadProcessorUT {
@@ -52,30 +61,13 @@ public class RequestInitialDataLoadProcessorUT {
     public void setup() {
         MockitoAnnotations.initMocks(this);
     }
-
     @Test
     public void testBefore() {
         requestInitialDataLoadProcessor = new RequestInitialDataLoadProcessor("CUL");
         requestInitialDataLoadProcessor1 = new RequestInitialDataLoadProcessor("PUL");
         requestInitialDataLoadProcessor2 = new RequestInitialDataLoadProcessor("NYPL");
-        RequestDataLoadCSVRecord requestDataLoadCSVRecord = new RequestDataLoadCSVRecord();
-        RequestDataLoadCSVRecord requestDataLoadCSVRecord1 = new RequestDataLoadCSVRecord();
-        requestDataLoadCSVRecord.setBarcode("332456456456745");
-        requestDataLoadCSVRecord.setCustomerCode("PB");
-        requestDataLoadCSVRecord.setDeliveryMethod("Test");
-        requestDataLoadCSVRecord.setCreatedDate(new Date().toString());
-        requestDataLoadCSVRecord.setLastUpdatedDate(new Date().toString());
-        requestDataLoadCSVRecord.setPatronId("0000000");
-        requestDataLoadCSVRecord.setStopCode("AD");
-        requestDataLoadCSVRecord.setEmail("test@email.com");
-        requestDataLoadCSVRecord1.setBarcode("332456456456745");
-        requestDataLoadCSVRecord1.setCustomerCode("PB");
-        requestDataLoadCSVRecord1.setDeliveryMethod("Test");
-        requestDataLoadCSVRecord1.setCreatedDate(new Date().toString());
-        requestDataLoadCSVRecord1.setLastUpdatedDate(new Date().toString());
-        requestDataLoadCSVRecord1.setPatronId("0000000");
-        requestDataLoadCSVRecord1.setStopCode("AD");
-        requestDataLoadCSVRecord1.setEmail("test@email.com");
+        RequestDataLoadCSVRecord requestDataLoadCSVRecord = getDataLoadCSVRecord();
+        RequestDataLoadCSVRecord requestDataLoadCSVRecord1 = getLoadCSVRecord();
         List<RequestDataLoadCSVRecord> requestDataLoadCSVRecordList = new ArrayList<>();
         requestDataLoadCSVRecordList.add(requestDataLoadCSVRecord);
         requestDataLoadCSVRecordList.add(requestDataLoadCSVRecord1);
@@ -101,11 +93,37 @@ public class RequestInitialDataLoadProcessorUT {
         assertTrue(true);
     }
 
+    private RequestDataLoadCSVRecord getLoadCSVRecord() {
+        RequestDataLoadCSVRecord requestDataLoadCSVRecord1 = new RequestDataLoadCSVRecord();
+        requestDataLoadCSVRecord1.setBarcode("332456456456745");
+        requestDataLoadCSVRecord1.setCustomerCode("PB");
+        requestDataLoadCSVRecord1.setDeliveryMethod("Test");
+        requestDataLoadCSVRecord1.setCreatedDate(new Date().toString());
+        requestDataLoadCSVRecord1.setLastUpdatedDate(new Date().toString());
+        requestDataLoadCSVRecord1.setPatronId("0000000");
+        requestDataLoadCSVRecord1.setStopCode("AD");
+        requestDataLoadCSVRecord1.setEmail("test@email.com");
+        return requestDataLoadCSVRecord1;
+    }
+
+    private RequestDataLoadCSVRecord getDataLoadCSVRecord() {
+        RequestDataLoadCSVRecord requestDataLoadCSVRecord = new RequestDataLoadCSVRecord();
+        requestDataLoadCSVRecord.setBarcode("332456456456745");
+        requestDataLoadCSVRecord.setCustomerCode("PB");
+        requestDataLoadCSVRecord.setDeliveryMethod("Test");
+        requestDataLoadCSVRecord.setCreatedDate(new Date().toString());
+        requestDataLoadCSVRecord.setLastUpdatedDate(new Date().toString());
+        requestDataLoadCSVRecord.setPatronId("0000000");
+        requestDataLoadCSVRecord.setStopCode("AD");
+        requestDataLoadCSVRecord.setEmail("test@email.com");
+        return requestDataLoadCSVRecord;
+    }
+
     @Test
     public void processInput() throws ParseException {
         barcodeSet.add("123456");
-        RequestDataLoadCSVRecord requestDataLoadCSVRecord = getRequestDataLoadCSVRecord();
-        RequestDataLoadCSVRecord requestDataLoadCSVRecord1 = getRequestDataLoadCSVRecord();
+        RequestDataLoadCSVRecord requestDataLoadCSVRecord = getLoadCSVRecord();
+        RequestDataLoadCSVRecord requestDataLoadCSVRecord1 = getDataLoadCSVRecord();
         requestDataLoadCSVRecord.setBarcode("123456");
         List<RequestDataLoadCSVRecord> requestDataLoadCSVRecordList = new ArrayList<>();
         requestDataLoadCSVRecordList.add(requestDataLoadCSVRecord);
@@ -121,22 +139,56 @@ public class RequestInitialDataLoadProcessorUT {
         exchange.setProperty("CamelSplitComplete", true);
         Set<String> stringSet = new HashSet<>();
         stringSet.add("test");
-        //Mockito.when(awsS3Client.doesObjectExist(any(), any())).thenReturn(true);
-        requestInitialDataLoadProcessor.processInput(exchange);
-
+        Set<String> barcodesNotInSCSB = new HashSet<>();
+        List<ItemEntity> itemEntityList = Arrays.asList(getItemEntity());
+        List<ItemEntity> itemsToIndex =  Arrays.asList(getItemEntity());
+        try {
+            Map<String, Object> barcodesMap = new HashMap<>();
+            barcodesMap.put(ScsbConstants.BARCODE_NOT_FOUND_IN_SCSB, barcodesNotInSCSB);
+            barcodesMap.put(ScsbConstants.REQUEST_INITIAL_BARCODES_AVAILABLE_IN_LAS, itemEntityList);
+            barcodesMap.put(ScsbConstants.REQUEST_INITIAL_BARCODES_TO_INDEX, itemsToIndex);
+            ReflectionTestUtils.setField(requestInitialDataLoadProcessor, "isSolrIndexRequired", Boolean.TRUE);
+            //Mockito.when(awsS3Client.doesObjectExist(any(), any())).thenReturn(true);
+            Mockito.when(requestDataLoadService.process(any(), any())).thenReturn(barcodesMap);
+            requestInitialDataLoadProcessor.processInput(exchange);
+        }catch (Exception e){}
     }
 
-    private RequestDataLoadCSVRecord getRequestDataLoadCSVRecord() {
-        RequestDataLoadCSVRecord requestDataLoadCSVRecord = new RequestDataLoadCSVRecord();
-        requestDataLoadCSVRecord.setBarcode("332456456456745");
-        requestDataLoadCSVRecord.setCustomerCode("PB");
-        requestDataLoadCSVRecord.setDeliveryMethod("Test");
-        requestDataLoadCSVRecord.setCreatedDate(new Date().toString());
-        requestDataLoadCSVRecord.setLastUpdatedDate(new Date().toString());
-        requestDataLoadCSVRecord.setPatronId("0000000");
-        requestDataLoadCSVRecord.setStopCode("AD");
-        requestDataLoadCSVRecord.setEmail("test@email.com");
-        return requestDataLoadCSVRecord;
-
+    private ItemEntity getItemEntity(){
+        ItemEntity itemEntity = new ItemEntity();
+        itemEntity.setLastUpdatedDate(new Date());
+        itemEntity.setOwningInstitutionItemId("1");
+        itemEntity.setOwningInstitutionId(1);
+        itemEntity.setBarcode("7020");
+        itemEntity.setCallNumber("x.12321");
+        itemEntity.setCollectionGroupId(1);
+        itemEntity.setCallNumberType("1");
+        itemEntity.setCustomerCode("PB");
+        itemEntity.setCreatedDate(new Date());
+        itemEntity.setCreatedBy("tst");
+        itemEntity.setLastUpdatedBy("tst");
+        itemEntity.setItemAvailabilityStatusId(1);
+        itemEntity.setCatalogingStatus(ScsbCommonConstants.COMPLETE_STATUS);
+        InstitutionEntity institutionEntity = new InstitutionEntity();
+        institutionEntity.setId(1);
+        institutionEntity.setInstitutionCode("PUL");
+        institutionEntity.setInstitutionName("PUL");
+        itemEntity.setInstitutionEntity(institutionEntity);
+        itemEntity.setImsLocationEntity(getImsLocationEntity());
+        return itemEntity;
     }
+
+    private ImsLocationEntity getImsLocationEntity() {
+        ImsLocationEntity imsLocationEntity = new ImsLocationEntity();
+        imsLocationEntity.setImsLocationCode("1");
+        imsLocationEntity.setImsLocationName("test");
+        imsLocationEntity.setCreatedBy("test");
+        imsLocationEntity.setCreatedDate(new Date());
+        imsLocationEntity.setActive(true);
+        imsLocationEntity.setDescription("test");
+        imsLocationEntity.setUpdatedBy("test");
+        imsLocationEntity.setUpdatedDate(new Date());
+        return imsLocationEntity;
+    }
+
 }
