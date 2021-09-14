@@ -473,7 +473,20 @@ public class GFALasServiceUT extends BaseTestCaseUT{
         GFAItemStatusCheckResponse gfaItemStatusCheckResponse = getGfaItemStatusCheckResponse();
         Mockito.when(abstractLASImsLocationConnector.itemStatusCheck(any())).thenReturn(gfaItemStatusCheckResponse);
         Mockito.when(commonUtil.getImsLocationCodeByItemBarcode(any())).thenReturn("test");
+        Mockito.when(commonUtil.checkIfImsItemStatusIsRequestableNotRetrievable(any(), any())).thenReturn(Boolean.TRUE);
         Mockito.when(requestItemStatusDetailsRepository.findByRequestStatusCode(ScsbConstants.LAS_REFILE_REQUEST_PLACED)).thenReturn(requestItemEntity.getRequestStatusEntity());
+        String result = gfaLasService.buildRequestInfoAndReplaceToLAS(requestItemEntity);
+        assertNotNull(result);
+    }
+    @Test
+    public void buildRequestInfoAndReplaceToLASForRETRIEVALAvailable(){
+        RequestItemEntity requestItemEntity = getRequestItemEntity();
+        requestItemEntity.getRequestTypeEntity().setRequestTypeCode("RETRIEVAL");
+        GFAItemStatusCheckResponse gfaItemStatusCheckResponse = getGfaItemStatusCheckResponse();
+        Mockito.when(abstractLASImsLocationConnector.itemStatusCheck(any())).thenReturn(gfaItemStatusCheckResponse);
+        Mockito.when(commonUtil.getImsLocationCodeByItemBarcode(any())).thenReturn("test");
+        Mockito.when(commonUtil.checkIfImsItemStatusIsRequestableNotRetrievable(any(), any())).thenReturn(Boolean.FALSE);
+        Mockito.when(commonUtil.checkIfImsItemStatusIsAvailableOrNotAvailable(any(), any(), anyBoolean())).thenReturn(Boolean.TRUE);
         String result = gfaLasService.buildRequestInfoAndReplaceToLAS(requestItemEntity);
         assertNotNull(result);
     }
