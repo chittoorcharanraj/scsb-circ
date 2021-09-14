@@ -148,7 +148,6 @@ public class ItemValidatorServiceUT extends BaseTestCaseUT {
         itemStatusEntity.setStatusCode(ScsbConstants.ITEM_STATUS_AVAILABLE);
         RequestItemEntity requestItemEntity = getRequestItemEntity();
         requestItemEntity.setId(0);
-        ImsLocationEntity imsLocationEntity = getImsLocationEntity();
         Map<String, String> frozenInstitutionPropertyMap = new HashMap<>();
         frozenInstitutionPropertyMap.put(itemEntity.getInstitutionEntity().getInstitutionCode(),"FALSE");
         Map<String, String> frozenInstitutionMessagesPropertyMap = new HashMap<>();
@@ -528,11 +527,8 @@ public class ItemValidatorServiceUT extends BaseTestCaseUT {
         Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_CIRCULATION_FREEZE_MESSAGE)).thenReturn(frozenInstitutionMessagesPropertyMap);
         Mockito.when(propertyUtil.getPropertyByKeyForAllInstitutions(PropertyKeyConstants.ILS.ILS_RECALL_FUNCTIONALITY_AVAILABLE)).thenReturn(frozenInstitutionMessagesPropertyMap);
         Mockito.when(itemController.findByBarcodeIn(itemBarcodes.toString())).thenReturn(Arrays.asList(itemEntity));
-//        Mockito.when(ownerCodeDetailsRepository.findByOwnerCodeAndOwningInstitutionCode(any(),any())).thenReturn(ownerCodeEntity);
-//        Mockito.when(ownerCodeDetailsRepository.findByOwnerCodeAndRequestingInstitution(any(),any(),anyString())).thenReturn(Collections.EMPTY_LIST);
         itemValidatorService.itemValidation(itemRequestInformation);
         Mockito.when(institutionDetailsRepository.findByInstitutionCode(any())).thenReturn(getInstitutionEntity());
-//        Mockito.when(deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(any(), any(), anyChar())).thenReturn(getDeliveryCodeEntity());
         Mockito.when(imsLocationDetailsRepository.findById(any())).thenReturn(Optional.of(imsLocationEntity));
         itemValidatorService.itemValidation(itemRequestInformation);
         ItemRequestInformation itemRequestInformation1 = getItemRequestInformation(itemBarcodes);

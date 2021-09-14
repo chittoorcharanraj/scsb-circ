@@ -7,10 +7,12 @@ import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.support.DefaultExchange;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.recap.BaseTestCaseUT;
 import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
@@ -56,7 +58,7 @@ import java.util.*;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
-
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class ItemRequestServiceUT extends BaseTestCaseUT {
 
 
@@ -100,10 +102,10 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
 
     @Mock
     private RequestItemDetailsRepository mockedRequestItemDetailsRepository;
-    
+
     @Mock
     private InstitutionDetailsRepository institutionDetailsRepository;
-    
+
     @Mock
     private DeliveryCodeDetailsRepository deliveryCodeDetailsRepository;
 
@@ -194,7 +196,7 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
         Mockito.when(deliveryCodeTranslationDetailsRepository.findByRequestingInstitutionandImsLocation(any(),any(), any())).thenReturn(deliveryCodeTranslationEntity);
         Mockito.when(mockedRequestItemController.holdItem(any(), any())).thenReturn(itemHoldResponse);
         Mockito.when(mockedItemDetailsRepository.findByBarcodeIn(any())).thenReturn(Arrays.asList(itemEntity));
-      //  Mockito.when(mockedOwnerCodeDetailsRepository.findByOwnerCode(itemRequestInfo.getDeliveryLocation())).thenReturn(ownerCodeEntity);
+        //  Mockito.when(mockedOwnerCodeDetailsRepository.findByOwnerCode(itemRequestInfo.getDeliveryLocation())).thenReturn(ownerCodeEntity);
         Mockito.when(mockedItemStatusDetailsRepository.findByStatusCode(ScsbCommonConstants.NOT_AVAILABLE)).thenReturn(itemStatusEntity);
         Mockito.when(mockedItemDetailsRepository.findById(itemEntity.getId())).thenReturn(Optional.of(itemEntity));
         Mockito.doNothing().when(mockedItemRequestDBService).updateItemAvailabilityStatus(Arrays.asList(itemEntity), itemRequestInfo.getUsername());
