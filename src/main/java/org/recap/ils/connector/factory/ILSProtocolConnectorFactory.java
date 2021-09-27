@@ -36,9 +36,9 @@ public class ILSProtocolConnectorFactory extends BaseILSProtocolConnectorFactory
         } else {
             if (ScsbConstants.SIP2_PROTOCOL.equalsIgnoreCase(protocol)) {
                 connector = applicationContext.getBean(SIPProtocolConnector.class);
-            } else if (ScsbConstants.NCIP_PROTOCOL.equalsIgnoreCase(protocol)) {
-                connector = applicationContext.getBean(RestProtocolConnector.class);
             } else if (ScsbConstants.REST_PROTOCOL.equalsIgnoreCase(protocol)) {
+                connector = applicationContext.getBean(RestProtocolConnector.class);
+            } else if (ScsbConstants.NCIP_PROTOCOL.equalsIgnoreCase(protocol)) {
                 connector = applicationContext.getBean(NCIPProtocolConnector.class);
             }
             protocolConnectorsMap.put(institution, connector);
