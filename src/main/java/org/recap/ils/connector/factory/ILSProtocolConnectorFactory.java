@@ -33,6 +33,10 @@ public class ILSProtocolConnectorFactory extends BaseILSProtocolConnectorFactory
         String protocol = ilsConfigProperties.getProtocol();
         if (protocolConnectorsMap.containsKey(institution)) {
             connector = protocolConnectorsMap.get(institution);
+            if (connector != null){
+                connector.setInstitution(institution);
+                connector.setIlsConfigProperties(ilsConfigProperties);
+            }
         } else {
             if (ScsbConstants.SIP2_PROTOCOL.equalsIgnoreCase(protocol)) {
                 connector = applicationContext.getBean(SIPProtocolConnector.class);
@@ -41,11 +45,11 @@ public class ILSProtocolConnectorFactory extends BaseILSProtocolConnectorFactory
             } else if (ScsbConstants.NCIP_PROTOCOL.equalsIgnoreCase(protocol)) {
                 connector = applicationContext.getBean(NCIPProtocolConnector.class);
             }
-            protocolConnectorsMap.put(institution, connector);
-        }
-        if (connector != null){
-            connector.setInstitution(institution);
-            connector.setIlsConfigProperties(ilsConfigProperties);
+            if (connector != null){
+                connector.setInstitution(institution);
+                connector.setIlsConfigProperties(ilsConfigProperties);
+                protocolConnectorsMap.put(institution, connector);
+            }
         }
         return connector;
     }
