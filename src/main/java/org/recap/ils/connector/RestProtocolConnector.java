@@ -539,7 +539,7 @@ public class RestProtocolConnector extends AbstractProtocolConnector {
         RestHoldRequest restHoldRequest = new RestHoldRequest();
         restHoldRequest.setRecord(restApiResponseUtil.getNormalizedItemIdForRestProtocolApi(itemIdentifier));
         restHoldRequest.setPatron(getPatronIdByPatronBarcode(patronIdentifier));
-        restHoldRequest.setNyplSource(restSource);
+        restHoldRequest.setSource(restSource);
         restHoldRequest.setRecordType(ScsbConstants.REST_RECORD_TYPE);
         restHoldRequest.setPickupLocation("");
         restHoldRequest.setDeliveryLocation(deliveryLocation);
