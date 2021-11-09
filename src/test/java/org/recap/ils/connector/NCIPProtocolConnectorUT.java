@@ -11,6 +11,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.recap.BaseTestCaseUT;
+import org.recap.PropertyKeyConstants;
+import org.recap.ils.protocol.ncip.CheckinItem;
 import org.recap.ils.protocol.rest.model.BibLookupData;
 import org.recap.ils.protocol.rest.model.ItemLookupData;
 import org.recap.ils.protocol.rest.model.response.ItemLookupResponse;
@@ -20,6 +22,7 @@ import org.recap.ils.protocol.rest.util.RestApiResponseUtil;
 import org.recap.model.AbstractResponseItem;
 import org.recap.model.ILSConfigProperties;
 import org.recap.model.request.ItemRequestInformation;
+import org.recap.model.response.PatronInformationResponse;
 import org.recap.repository.jpa.ItemDetailsRepository;
 import org.recap.util.PropertyUtil;
 import org.springframework.http.HttpStatus;
@@ -78,6 +81,9 @@ public class NCIPProtocolConnectorUT extends BaseTestCaseUT {
     StatusLine statusLine;
 
     @Mock
+    AbstractResponseItem abstractResponseItem;
+
+    @Mock
     RestTemplate restTemplate;
 
     @Mock
@@ -85,6 +91,9 @@ public class NCIPProtocolConnectorUT extends BaseTestCaseUT {
 
     @Mock
     ItemDetailsRepository itemDetailsRepository;
+
+    @Mock
+    CheckinItem checkinItem;
 
     @Test
     public void checkGetters(){
@@ -209,7 +218,7 @@ public class NCIPProtocolConnectorUT extends BaseTestCaseUT {
 //        Mockito.when(itemDetailsRepository.findByBarcode(itemIdentifier)).thenReturn(Arrays.asList(getItemEntity()));
         Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(any(), anyString())).thenReturn("TRUE");
         Mockito.when(propertyUtil.getPropertyByInstitutionAndLocationAndKey(any(), any(),anyString())).thenReturn("test");
-        Mockito.when(ncipProtocolConnector.getCheckinResponse(any(), any())).thenReturn(getCheckInItemResponseData());
+        Mockito.doReturn(getCheckInItemResponseData()).when(ncipProtocolConnector).getCheckinResponse(any(), any());
         Object result = ncipProtocolConnector.checkInItem(getItemRequestInformation(), patronIdentifier);
         assertNotNull(result);
     }
@@ -238,7 +247,7 @@ public class NCIPProtocolConnectorUT extends BaseTestCaseUT {
 //        Mockito.when(statusLine.getStatusCode()).thenReturn(200);
         Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(any(), anyString())).thenReturn("TRUE");
 //        Mockito.when(itemDetailsRepository.findByBarcode(itemIdentifier)).thenReturn(Arrays.asList(getItemEntity()));
-        Mockito.when(ncipProtocolConnector.getCheckinResponse(any(), any())).thenReturn(getCheckInItemResponseData());
+        Mockito.doReturn(getCheckInItemResponseData()).when(ncipProtocolConnector).getCheckinResponse(any(), any());
         Object result = ncipProtocolConnector.checkInItem(itemRequestInformation, patronIdentifier);
         assertNotNull(result);
     }
@@ -260,6 +269,52 @@ public class NCIPProtocolConnectorUT extends BaseTestCaseUT {
         assertNotNull(result);
     }
 
+    @Test
+    public void getCheckinResponse() throws Exception{
+        CheckinItem checkInItem = new CheckinItem();
+        CheckInItemInitiationData checkInItemInitiationData = new CheckInItemInitiationData();
+        getMockedResponse();
+        Mockito.when(statusLine.getStatusCode()).thenReturn(400);
+        Mockito.when(checkinItem.getRequestBody(any(),any())).thenReturn(checkInItem.toString());
+        ncipProtocolConnector.getCheckinResponse(checkinItem,checkInItemInitiationData);
+    }
+
+    @Test
+    public void acceptItem() throws IOException {
+        String itemIdentifier = "223467";
+        Integer requestId = 1;
+        String patronIdentifier = "2234567";
+        String callInstitutionId = "1";
+        String itemInstitutionId = "24";
+        String pickupLocation = "PA";
+        String title = "Y90223";
+        String author = "john";
+        String callNumber = "54956";
+        getMockedResponse();
+        Mockito.when(itemDetailsRepository.findByBarcode(any())).thenReturn(Arrays.asList(getItemEntity()));
+        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(any(),any())).thenReturn("1");
+        ReflectionTestUtils.invokeMethod(ncipProtocolConnector,"acceptItem",itemIdentifier,requestId,patronIdentifier,callInstitutionId,itemInstitutionId,pickupLocation,title,author,callNumber);
+    }
+
+    @Test
+    public void acceptItemException() throws IOException {
+        String itemIdentifier = "223467";
+        Integer requestId = 1;
+        String patronIdentifier = "2234567";
+        String callInstitutionId = "1";
+        String itemInstitutionId = "24";
+        String pickupLocation = "PA";
+        String title = "Y90223";
+        String author = "john";
+        String callNumber = "54956";
+        ItemEntity itemEntity = getItemEntity();
+        itemEntity.setUseRestrictions("1");
+        getMockedResponse();
+        Mockito.when(statusLine.getStatusCode()).thenReturn(400);
+        Mockito.when(itemDetailsRepository.findByBarcode(any())).thenReturn(Arrays.asList(itemEntity));
+        Mockito.when(propertyUtil.getPropertyByInstitutionAndKey(any(),any())).thenReturn("1");
+        ReflectionTestUtils.invokeMethod(ncipProtocolConnector,"acceptItem",itemIdentifier,requestId,patronIdentifier,callInstitutionId,itemInstitutionId,pickupLocation,title,author,callNumber);
+    }
 
     @Test
     public void placeHold() throws IOException {
@@ -275,8 +330,11 @@ public class NCIPProtocolConnectorUT extends BaseTestCaseUT {
         String author = "john";
         String callNumber = "54956";
         Integer requestId = 2;
+        PatronInformationResponse patronInformationResponse = new PatronInformationResponse();
+        patronInformationResponse.setSuccess(Boolean.TRUE);
         getMockedResponse();
         Mockito.when(statusLine.getStatusCode()).thenReturn(200);
+        Mockito.doReturn(patronInformationResponse).when(ncipProtocolConnector).lookupPatron(patronIdentifier);
         Object result = ncipProtocolConnector.placeHold(itemIdentifier, requestId, patronIdentifier, callInstitutionId, itemInstitutionId, expirationDate, bibId, pickupLocation, trackingId, title, author, callNumber);
         assertNotNull(result);
     }
@@ -287,6 +345,28 @@ public class NCIPProtocolConnectorUT extends BaseTestCaseUT {
         String patronIdentifier = "2234567";
         String callInstitutionId = "1";
         String itemInstitutionId = "1";
+        String expirationDate = new Date().toString();
+        String bibId = "357221";
+        String pickupLocation = "PA";
+        String trackingId = "67878890";
+        String title = "Y90223";
+        String author = "john";
+        String callNumber = "54956";
+        Integer requestId = 2;
+        PatronInformationResponse patronInformationResponse = new PatronInformationResponse();
+        patronInformationResponse.setSuccess(Boolean.TRUE);
+        getMockedResponse();
+        Mockito.doReturn(patronInformationResponse).when(ncipProtocolConnector).lookupPatron(patronIdentifier);
+        Object result = ncipProtocolConnector.placeHold(itemIdentifier, requestId, patronIdentifier, callInstitutionId, itemInstitutionId, expirationDate, bibId, pickupLocation, trackingId, title, author, callNumber);
+        assertNotNull(result);
+    }
+
+    @Test
+    public void placeHoldDifferentInstitution() throws IOException {
+        String itemIdentifier = "223467";
+        String patronIdentifier = "2234567";
+        String callInstitutionId = "1";
+        String itemInstitutionId = "4";
         String expirationDate = new Date().toString();
         String bibId = "357221";
         String pickupLocation = "PA";
