@@ -48,16 +48,6 @@ public class SIPProtocolConnectorIT extends BaseTestCase {
     }
 
     @Test
-    public void testGetSocketConnection() {
-        SIPProtocolConnector sipProtocolConnector = new SIPProtocolConnector();
-        ILSConfigProperties ilsConfigProperties = getIlsConfigProperties("CUL");
-        sipProtocolConnector.setInstitution("CUL");
-        sipProtocolConnector.setIlsConfigProperties(ilsConfigProperties);
-        boolean connected = sipProtocolConnector.checkSocketConnection();
-        assertTrue(connected);
-    }
-
-    @Test
     public void jSIPLogin() throws IOException {
         SIPProtocolConnector sipProtocolConnector = new SIPProtocolConnector();
         sipProtocolConnector.setInstitution("CUL");
