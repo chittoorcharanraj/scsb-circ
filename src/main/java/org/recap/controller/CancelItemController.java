@@ -1,5 +1,6 @@
 package org.recap.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.recap.PropertyKeyConstants;
 import org.recap.ScsbConstants;
@@ -17,8 +18,6 @@ import org.recap.request.service.ItemRequestService;
 import org.recap.util.CommonUtil;
 import org.recap.request.util.ItemRequestServiceUtil;
 import org.recap.util.PropertyUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,11 +34,12 @@ import java.util.Optional;
 /**
  * Created by sudhishk on 31/01/17.
  */
+@Slf4j
 @RestController
 @RequestMapping("/cancelRequest")
 public class CancelItemController {
 
-    private static final Logger logger = LoggerFactory.getLogger(CancelItemController.class);
+
 
     @Autowired
     private RequestItemController requestItemController;
@@ -113,7 +113,7 @@ public class CancelItemController {
             itemCancelHoldResponse = new ItemHoldResponse();
             itemCancelHoldResponse.setSuccess(false);
             itemCancelHoldResponse.setScreenMessage(e.getMessage());
-            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
+            log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
         } finally {
             if (itemCancelHoldResponse == null) {
                 itemCancelHoldResponse = new ItemHoldResponse();
@@ -206,9 +206,9 @@ public class CancelItemController {
         saveRequestAndChangeLog(requestItemEntity);
         itemCancelHoldResponse.setSuccess(true);
         itemCancelHoldResponse.setScreenMessage(ScsbConstants.REQUEST_CANCELLATION_SUCCCESS);
-        logger.info("Send Mail");
+        log.info("Send Mail");
         sendEmail(requestItemEntity.getItemEntity().getCustomerCode(), requestItemEntity.getItemEntity().getBarcode(), requestItemEntity.getItemEntity().getImsLocationEntity().getImsLocationCode(), requestItemEntity.getPatronId());
-        logger.info("Send Mail Done");
+        log.info("Send Mail Done");
     }
 
     private void changeRecallToCancelStatus(RequestItemEntity requestItemEntity, ItemHoldResponse itemCancelHoldResponse) {

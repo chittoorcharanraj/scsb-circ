@@ -1,5 +1,6 @@
 package org.recap.request.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.recap.ScsbConstants;
@@ -17,8 +18,6 @@ import org.recap.repository.jpa.BulkRequestItemDetailsRepository;
 import org.recap.repository.jpa.ItemDetailsRepository;
 import org.recap.util.CommonUtil;
 import org.recap.request.util.ItemRequestServiceUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,10 +30,11 @@ import java.util.Optional;
 /**
  * Created by rajeshbabuk on 10/10/17.
  */
+@Slf4j
 @Component
 public class BulkItemRequestProcessService {
 
-    private final Logger logger = LoggerFactory.getLogger(BulkItemRequestProcessService.class);
+
 
     @Autowired
     private BulkRequestItemDetailsRepository bulkRequestItemDetailsRepository;
@@ -69,7 +69,7 @@ public class BulkItemRequestProcessService {
             try {
                 Thread.sleep(5000);
             } catch (InterruptedException e) {
-                logger.error("Interrupted Exception {0}", e);
+                log.error("Interrupted Exception {0}", e);
                 Thread.currentThread().interrupt();
             }
             bulkRequestItemEntity = bulkRequestItemDetailsRepository.findById(bulkRequestId);
@@ -97,7 +97,7 @@ public class BulkItemRequestProcessService {
                     itemRequestServiceUtil.updateStatusToBarcodes(bulkRequestItems, savedBulkRequestItemEntity);
                 }
                 itemRequestServiceUtil.generateReportAndSendEmail(bulkRequestId);
-                logger.info("Bulk request processing completed for bulk request id : {}", bulkRequestId);
+                log.info("Bulk request processing completed for bulk request id : {}", bulkRequestId);
             }
         } else {
             bulkRequestItemEntity.ifPresent(requestItemEntity -> processBulkRequestForBarcode(itemBarcode, requestItemEntity));
@@ -131,7 +131,7 @@ public class BulkItemRequestProcessService {
                 itemInformationResponse.setRequestId(requestId);
                 itemInformationResponse = gfaLasService.executeRetrieveOrder(itemRequestInformation, itemInformationResponse);
                 if (itemInformationResponse.isRequestTypeForScheduledOnWO()) {
-                    logger.info("Bulk Request : Request received on first scan");
+                    log.info("Bulk Request : Request received on first scan");
                     itemRequestDBService.updateRecapRequestItem(itemRequestInformation, itemEntity, ScsbConstants.LAS_REFILE_REQUEST_PLACED, bulkRequestItemEntity);
                 } else if (itemInformationResponse.isSuccess()) {
                     itemInformationResponse.setScreenMessage(ScsbConstants.SUCCESSFULLY_PROCESSED_REQUEST_ITEM);
@@ -151,9 +151,9 @@ public class BulkItemRequestProcessService {
                 itemRequestDBService.updateRecapRequestItem(itemRequestInformation, itemEntity, ScsbConstants.REQUEST_STATUS_EXCEPTION, bulkRequestItemEntity);
             }
             itemRequestServiceUtil.updateSolrIndex(itemEntity);
-            logger.info("Request processing completed for barcode : {}", itemBarcode);
+            log.info("Request processing completed for barcode : {}", itemBarcode);
         } catch (Exception ex) {
-            logger.error(ScsbCommonConstants.LOG_ERROR, itemBarcode);
+            log.error(ScsbCommonConstants.LOG_ERROR, itemBarcode);
         }
     }
 

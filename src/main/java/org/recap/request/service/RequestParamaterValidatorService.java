@@ -1,6 +1,7 @@
 package org.recap.request.service;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.recap.PropertyKeyConstants;
 import org.recap.ScsbConstants;
 import org.recap.ScsbCommonConstants;
@@ -8,8 +9,6 @@ import org.recap.controller.ItemController;
 import org.recap.model.request.ItemRequestInformation;
 import org.recap.repository.jpa.InstitutionDetailsRepository;
 import org.recap.util.CommonUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -29,10 +28,10 @@ import java.util.regex.Pattern;
 /**
  * Created by hemalathas on 3/11/16.
  */
+@Slf4j
 @Component
 public class RequestParamaterValidatorService {
 
-    private static final Logger logger = LoggerFactory.getLogger(RequestParamaterValidatorService.class);
 
     /**
      * The Scsb solr client url.
@@ -123,7 +122,7 @@ public class RequestParamaterValidatorService {
                 bSuccess = true;
             }
         } catch (Exception e) {
-            logger.error(ScsbCommonConstants.LOG_ERROR,e);
+            log.error(ScsbCommonConstants.LOG_ERROR,e);
         }
         return bSuccess;
     }

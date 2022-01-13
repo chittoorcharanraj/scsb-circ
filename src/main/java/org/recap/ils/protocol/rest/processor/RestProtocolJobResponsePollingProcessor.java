@@ -1,5 +1,6 @@
 package org.recap.ils.protocol.rest.processor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.ils.protocol.rest.callable.RestJobResponsePollingCallable;
@@ -9,8 +10,6 @@ import org.recap.ils.protocol.rest.model.response.JobResponse;
 import org.recap.ils.protocol.rest.util.RestApiResponseUtil;
 import org.recap.model.ILSConfigProperties;
 import org.recap.util.PropertyUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,10 +18,10 @@ import java.util.concurrent.*;
 /**
  * Created by rajeshbabuk on 08/Jan/2021
  */
+@Slf4j
 @Component
 public class RestProtocolJobResponsePollingProcessor {
 
-    private static final Logger logger = LoggerFactory.getLogger(RestProtocolJobResponsePollingProcessor.class);
 
     private Integer pollingMaxTimeOut;
     private Integer pollingTimeInterval;
@@ -62,7 +61,7 @@ public class RestProtocolJobResponsePollingProcessor {
             restProtocolConnector.setInstitution(institution);
             restProtocolConnector.setIlsConfigProperties(ilsConfigProperties);
             Future<JobResponse> future = executor.submit(new RestJobResponsePollingCallable(jobId, pollingTimeInterval, restProtocolConnector));
-            logger.info("Polling on job id {} started", jobId);
+            log.info("Polling on job id {} started", jobId);
             jobResponse = future.get(pollingMaxTimeOut, TimeUnit.SECONDS);
             JobData jobData = jobResponse.getData();
             if (null != jobData) {
@@ -71,27 +70,27 @@ public class RestProtocolJobResponsePollingProcessor {
             executor.shutdown();
             return jobResponse;
         } catch (InterruptedException e) {
-            logger.error("{} job response interrupted for job id -> {} ", institution, jobId);
-            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
+            log.error("{} job response interrupted for job id -> {} ", institution, jobId);
+            log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
             Thread.currentThread().interrupt();
             executor.shutdownNow();
             jobResponse.setStatusMessage(institution + " job response interrupted : " + e.getMessage());
             return jobResponse;
         } catch (ExecutionException e) {
-            logger.error("{} job response execution failed for job id -> {} ", institution, jobId);
-            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
+            log.error("{} job response execution failed for job id -> {} ", institution, jobId);
+            log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
             executor.shutdownNow();
             jobResponse.setStatusMessage(institution + " job response execution failed : " + e.getMessage());
             return jobResponse;
         } catch (TimeoutException e) {
-            logger.error("{} job response polling timed out for job id -> {} ",institution, jobId);
-            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
+            log.error("{} job response polling timed out for job id -> {} ",institution, jobId);
+            log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
             executor.shutdownNow();
             jobResponse.setStatusMessage(institution + " job response polling timed out : " + e.getMessage());
             return jobResponse;
         } catch (Exception e) {
-            logger.error("{} job response polling failed for job id -> {} ", institution, jobId);
-            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
+            log.error("{} job response polling failed for job id -> {} ", institution, jobId);
+            log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
             executor.shutdownNow();
             jobResponse.setStatusMessage(institution + " job response polling failed : " + e.getMessage());
             return jobResponse;

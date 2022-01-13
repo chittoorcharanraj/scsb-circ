@@ -1,20 +1,19 @@
 package org.recap.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.beans.factory.annotation.Value;
 import java.util.Map;
-
+@Slf4j
 @RefreshScope
 @RestController
 class MessageRestController {
 
-    private static final Logger logger = LoggerFactory.getLogger(MessageRestController.class);
+
 
 
     /* This class is for testing the spring cloud config properties */
@@ -40,13 +39,13 @@ class MessageRestController {
     @GetMapping("/ins")
     public Map<String, Object> getInsData() {
         JSONObject json = new JSONObject(institution);
-        logger.info(json.toString());
+        log.info(json.toString());
         return json.toMap();
     }
     @GetMapping("/imsLocation")
     public Map<String, Object> getLocationData() {
         JSONObject json = new JSONObject(imsLocation);
-        logger.info(json.toString());
+        log.info(json.toString());
         return json.toMap();
     }
 }

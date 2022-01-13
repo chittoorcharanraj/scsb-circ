@@ -1,22 +1,19 @@
 package org.recap.ils.protocol.ncip;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.extensiblecatalog.ncip.v2.service.*;
 import org.json.JSONObject;
 import org.recap.ScsbConstants;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
+
 import java.util.HashMap;
 
 @Slf4j
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper=false)
 public class AcceptItem extends ScsbNCIP {
 
     private String requestIdString;

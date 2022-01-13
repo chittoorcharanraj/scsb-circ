@@ -1,13 +1,12 @@
 package org.recap.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
 import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
 import org.recap.camel.requestinitialdataload.RequestInitialLoadRouteBuilder;
 import org.recap.repository.jpa.InstitutionDetailsRepository;
 import org.recap.util.CommonUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -20,11 +19,11 @@ import java.util.List;
 /**
  * Created by hemalathas on 16/6/17.
  */
+@Slf4j
 @RestController
 @RequestMapping("/requestInitialDataLoad")
 public class RequestDataLoadController {
 
-    private static final Logger logger = LoggerFactory.getLogger(RequestDataLoadController.class);
 
     @Autowired
     CommonUtil commonUtil;
@@ -49,7 +48,7 @@ public class RequestDataLoadController {
 
     @PostMapping(value = "/startRequestInitialLoad")
     public String startAccessionReconciliation() throws Exception{
-        logger.info("Request Initial DataLoad Starting.....");
+        log.info("Request Initial DataLoad Starting.....");
         List<String> allInstitutionCodesExceptSupportInstitution = commonUtil.findAllInstitutionCodesExceptSupportInstitution();
         for (String institution : allInstitutionCodesExceptSupportInstitution) {
             camelContext.addRoutes(new RequestInitialLoadRouteBuilder(camelContext, applicationContext, commonUtil,
@@ -58,7 +57,7 @@ public class RequestDataLoadController {
         for (String institution : allInstitutionCodesExceptSupportInstitution) {
             camelContext.getRouteController().startRoute(ScsbConstants.REQUEST_INITIAL_LOAD_FTP_ROUTE+institution);
         }
-        logger.info("After Request Initial DataLoad process : {}", camelContext.getRoutes().size());
+        log.info("After Request Initial DataLoad process : {}", camelContext.getRoutes().size());
         return ScsbCommonConstants.SUCCESS;
     }
 }

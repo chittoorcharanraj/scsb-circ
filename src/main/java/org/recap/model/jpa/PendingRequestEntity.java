@@ -1,7 +1,7 @@
 package org.recap.model.jpa;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.CascadeType;
@@ -14,8 +14,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.util.Date;
 
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper=false)
 @Entity
 @Table(name = "PENDING_REQUEST_T", catalog = "")
 @AttributeOverride(name = "id", column = @Column(name = "PENDING_ID"))

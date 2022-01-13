@@ -13,16 +13,16 @@ import com.pkrete.jsip2.variables.CurrencyTypeFactory;
 import com.pkrete.jsip2.variables.FeeTypeFactory;
 import com.pkrete.jsip2.variables.MediaTypeFactory;
 import com.pkrete.jsip2.variables.SecurityMarkerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.recap.ScsbCommonConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 /**
  * The type Sip 2 item information response parser.
  */
+@Slf4j
 public class SIP2ItemInformationResponseParser extends SIP2ResponseParser {
 
-    private static final Logger logger = LoggerFactory.getLogger(SIP2ItemInformationResponseParser.class);
 
     @Override
     public SIP2ItemInformationResponse parse(String data) throws InvalidSIP2ResponseValueException, InvalidSIP2ResponseException {
@@ -65,7 +65,7 @@ public class SIP2ItemInformationResponseParser extends SIP2ResponseParser {
             response.setCheckSum(this.parseChecksum(data));
             return response;
         } catch (InvalidSIP2ResponseValueException var4) {
-            logger.error(ScsbCommonConstants.LOG_ERROR,var4);
+            log.error(ScsbCommonConstants.LOG_ERROR,var4);
             throw new InvalidSIP2ResponseValueException(var4.getMessage() + " Response message string: \"" + data + "\"");
         }
     }

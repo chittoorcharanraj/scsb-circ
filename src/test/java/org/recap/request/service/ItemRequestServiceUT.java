@@ -1,5 +1,6 @@
 package org.recap.request.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
@@ -38,8 +39,6 @@ import org.recap.util.CommonUtil;
 import org.recap.request.util.ItemRequestServiceUtil;
 import org.recap.util.PropertyUtil;
 import org.recap.util.SecurityUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -58,6 +57,7 @@ import java.util.*;
 
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
+@Slf4j
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class ItemRequestServiceUT extends BaseTestCaseUT {
 
@@ -65,9 +65,9 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
     /**
      * Created by hemalathas on 20/3/17.
      */
+
     private String scsbSolrClientUrl = "http://localhost:8161/jmxrmi";
 
-    private static final Logger logger = LoggerFactory.getLogger(ItemRequestServiceUT.class);
 
     @InjectMocks
     @Spy
@@ -1833,26 +1833,26 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
     @Test
     public void removeDia() {
         String input = "[No Restrictions] Afghānistān / |c nivīsandah, Aḥmad Shāh Farzān [RECAP] أَبَنَ فُلانًا: عَابَه ورَمَاه بخَلَّة سَوء.";
-        logger.info(input);
+        log.info(input);
 
-        logger.info(input.replaceAll("[^\\p{ASCII}]", ""));
+        log.info(input.replaceAll("[^\\p{ASCII}]", ""));
 
-        logger.info(input.replaceAll("[^\\u0000-\\uFFFF]", ""));
-        logger.info(input.replaceAll("[^\\x20-\\x7e]", ""));
+        log.info(input.replaceAll("[^\\u0000-\\uFFFF]", ""));
+        log.info(input.replaceAll("[^\\x20-\\x7e]", ""));
 
         String normailzed = Normalizer.normalize(input, Normalizer.Form.NFD);
 
-        logger.info("Normailzed : " + normailzed);
-        logger.info(normailzed.replaceAll("\\p{InCombiningDiacriticalMarks}+", ""));
+        log.info("Normailzed : " + normailzed);
+        log.info(normailzed.replaceAll("\\p{InCombiningDiacriticalMarks}+", ""));
 
         normailzed = Normalizer.normalize(input, Normalizer.Form.NFKD);
-        logger.info(normailzed.replaceAll("\\p{InCombiningDiacriticalMarks}+", ""));
+        log.info(normailzed.replaceAll("\\p{InCombiningDiacriticalMarks}+", ""));
 
-        logger.info(normailzed.replaceAll("[^\\x20-\\x7e]", ""));
+        log.info(normailzed.replaceAll("[^\\x20-\\x7e]", ""));
 
         // logger.info("removeDiacritical: " + itemRequestService.removeDiacritical(input));
 
-        logger.info(Normalizer.normalize(input, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", ""));
+        log.info(Normalizer.normalize(input, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", ""));
 
 
     }

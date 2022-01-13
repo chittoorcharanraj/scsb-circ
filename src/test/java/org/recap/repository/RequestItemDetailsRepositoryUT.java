@@ -1,5 +1,6 @@
 package org.recap.repository;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.recap.BaseTestCase;
@@ -8,8 +9,6 @@ import org.recap.repository.jpa.InstitutionDetailsRepository;
 import org.recap.repository.jpa.RequestItemDetailsRepository;
 import org.recap.repository.jpa.RequestItemStatusDetailsRepository;
 import org.recap.repository.jpa.RequestTypeDetailsRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,10 +26,11 @@ import static org.junit.Assert.assertTrue;
 /**
  * Created by sudhishk on 20/1/17.
  */
+@Slf4j
 @Ignore
 public class RequestItemDetailsRepositoryUT extends BaseTestCase {
 
-    private static final Logger logger = LoggerFactory.getLogger(RequestItemDetailsRepositoryUT.class);
+
     @Autowired
     RequestTypeDetailsRepository requestTypeDetailsRepository;
     @Autowired
@@ -47,10 +47,10 @@ public class RequestItemDetailsRepositoryUT extends BaseTestCase {
         Pageable pageable = PageRequest.of(0, 1);
         Page<RequestItemEntity> requestItemEntities = requestItemDetailsRepository.findByItemBarcode(pageable, "PULTST54333");
         if (requestItemEntities.iterator().hasNext()) {
-            logger.info(requestItemEntities.iterator().next().getRequestTypeEntity().getRequestTypeDesc());
-            logger.info(requestItemEntities.iterator().next().getRequestStatusEntity().getRequestStatusCode());
+            log.info(requestItemEntities.iterator().next().getRequestTypeEntity().getRequestTypeDesc());
+            log.info(requestItemEntities.iterator().next().getRequestStatusEntity().getRequestStatusCode());
         } else {
-            logger.info("No Value");
+            log.info("No Value");
         }
     }
 

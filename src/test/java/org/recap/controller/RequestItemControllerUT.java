@@ -34,7 +34,6 @@ import static org.mockito.ArgumentMatchers.any;
 public class RequestItemControllerUT extends BaseTestCaseUT {
 
 
-    private static final Logger logger = LoggerFactory.getLogger(RequestItemControllerUT.class);
 
     @InjectMocks
     RequestItemController mockedRequestItemController;

@@ -1,5 +1,6 @@
 package org.recap.routebuilder;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
 import org.recap.PropertyKeyConstants;
@@ -15,8 +16,6 @@ import org.recap.request.service.ItemEDDRequestService;
 import org.recap.request.service.ItemRequestService;
 import org.recap.util.CommonUtil;
 import org.recap.util.PropertyUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -25,10 +24,11 @@ import org.springframework.stereotype.Component;
 /**
  * Created by sudhishk on 2/12/16.
  */
+@Slf4j
 @Component
 public class RequestItemRouteBuilder {
 
-    private static final Logger logger = LoggerFactory.getLogger(RequestItemRouteBuilder.class);
+
 
     /**
      * Instantiates a new Request item route builder.
@@ -109,7 +109,7 @@ public class RequestItemRouteBuilder {
             }
 
         } catch (Exception e) {
-            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
+            log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
         }
     }
 

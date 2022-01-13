@@ -1,7 +1,8 @@
 package org.recap.model.response;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+
+import lombok.EqualsAndHashCode;
 import org.recap.model.AbstractResponseItem;
 
 import java.util.List;
@@ -9,8 +10,8 @@ import java.util.List;
 /**
  * Created by sudhishk on 26/12/16.
  */
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper=false)
 public class PatronInformationResponse extends AbstractResponseItem {
     String patronIdentifier = "";
     String patronName = "";

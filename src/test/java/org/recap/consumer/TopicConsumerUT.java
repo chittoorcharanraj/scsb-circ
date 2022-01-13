@@ -1,10 +1,8 @@
 package org.recap.consumer;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.recap.BaseTestCaseUT;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.jms.*;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -16,9 +14,10 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Created by sudhishk on 12/1/17.
  */
+@Slf4j
 public class TopicConsumerUT extends BaseTestCaseUT {
 
-    private final static Logger logger = LoggerFactory.getLogger(TopicConsumerUT.class);
+
 
     private final String topicName = "PUL.RequestT";
     private final String initialContextFactory = "test.activemq";
@@ -87,11 +86,11 @@ public class TopicConsumerUT extends BaseTestCaseUT {
     public void ztestStringEncoding() {
         String name = "procès Laval | gri︠a︡dushchee : poluvekovai︠a︡ paradigma poėtiki Serebri︠a︡nogo Kikhneĭ, I. Erokhinoĭ]. Mikhaĭlovskoe čeká kat. Vilém  Soi︠u︡za preobrazovanni︠k︡h";
         String encoded = "";
-        logger.info(name);
+        log.info(name);
         encoded = new String(name.getBytes(), StandardCharsets.ISO_8859_1);
         String resultString = name.replaceAll("[^\\x00-\\x7F]", "?");
-        logger.info(encoded);
-        logger.info(resultString);
+        log.info(encoded);
+        log.info(resultString);
         assertNotNull(name);
     }
 

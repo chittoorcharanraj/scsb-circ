@@ -1,5 +1,6 @@
 package org.recap.ils.protocol.rest.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -46,10 +47,10 @@ import java.util.List;
 /**
  * Created by rajeshbabuk on 20/12/16.
  */
+@Slf4j
 @Service
 public class RestApiResponseUtil {
 
-    private static final Logger logger = LoggerFactory.getLogger(RestApiResponseUtil.class);
 
     @Autowired
     private PropertyUtil propertyUtil;
@@ -316,7 +317,7 @@ public class RestApiResponseUtil {
                 reformattedStr = requiredFormat.format(sipFormat.parse(sipDate));
             }
         } catch (ParseException e) {
-            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
+            log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
         }
         return reformattedStr;
     }

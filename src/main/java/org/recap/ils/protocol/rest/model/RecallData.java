@@ -3,8 +3,7 @@ package org.recap.ils.protocol.rest.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 /**
  * Created by rajeshbabuk on 23/6/17.
@@ -18,8 +17,7 @@ import lombok.Setter;
         "owningInstitutionId",
         "itemBarcode"
 })
-@Getter
-@Setter
+@Data
 public class RecallData {
     @JsonProperty("id")
     private Integer id;

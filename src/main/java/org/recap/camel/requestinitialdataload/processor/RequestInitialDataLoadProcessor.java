@@ -2,6 +2,7 @@ package org.recap.camel.requestinitialdataload.processor;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
@@ -12,8 +13,6 @@ import org.recap.camel.requestinitialdataload.RequestDataLoadCSVRecord;
 import org.recap.model.jpa.ItemEntity;
 import org.recap.model.report.RequestInitialLoadBarcodesInLAS;
 import org.recap.service.requestdataload.RequestDataLoadService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
@@ -40,11 +39,11 @@ import static java.util.stream.Collectors.toList;
 /**
  * Created by hemalathas on 3/5/17.
  */
+@Slf4j
 @Service
 @Scope("prototype")
 public class RequestInitialDataLoadProcessor {
 
-    private static final Logger logger = LoggerFactory.getLogger(RequestInitialDataLoadProcessor.class);
 
     @Autowired
     private RequestDataLoadService requestDataLoadService;
@@ -109,7 +108,7 @@ public class RequestInitialDataLoadProcessor {
                 if (!filePath.toFile().exists()) {
                     Files.createDirectories(filePath.getParent());
                     Files.createFile(filePath);
-                    logger.info("Request Initial Load File Created--->{}",filePath);
+                    log.info("Request Initial Load File Created--->{}",filePath);
                 }
                 if(count == 0){
                     Set<String> headerSet = new HashSet<>();
@@ -122,11 +121,11 @@ public class RequestInitialDataLoadProcessor {
             catch (Exception e){
                 barcodeSet.clear();
                 totalCount=0;
-                logger.error(ScsbCommonConstants.LOG_ERROR,e);
+                log.error(ScsbCommonConstants.LOG_ERROR,e);
             }
             barcodeSet.clear();
             totalCount = totalCount + requestDataLoadCSVRecordList.size();
-            logger.info("Total count from las report---->{}",totalCount);
+            log.info("Total count from las report---->{}",totalCount);
             totalCount = 0;
             String xmlFileName = exchange.getIn().getHeader("CamelAwsS3Key").toString();
             String bucketName = exchange.getIn().getHeader("CamelAwsS3BucketName").toString();
@@ -151,7 +150,7 @@ public class RequestInitialDataLoadProcessor {
     private void startFileSystemRoutesForAccessionReconciliation(List<ItemEntity> barcodesAvailableInLAS) {
         Map<String, Map<String, List<ItemEntity>>> institutionWiseImsLocBarcodes = barcodesAvailableInLAS.stream().collect(Collectors.groupingBy(itemEntity -> itemEntity.getInstitutionEntity().getInstitutionCode(), Collectors.groupingBy(itemEntity -> itemEntity.getImsLocationEntity().getImsLocationCode())));
         try {
-            logger.info("{}{}{}", ScsbConstants.STARTING, ScsbConstants.REQUEST_INITIAL_LOAD_FS_ROUTE, institutionCode);
+            log.info("{}{}{}", ScsbConstants.STARTING, ScsbConstants.REQUEST_INITIAL_LOAD_FS_ROUTE, institutionCode);
             institutionWiseImsLocBarcodes.entrySet().forEach(institutionWiseEntries -> {
                 Map<String, Object> headers = new HashMap<>();
                 headers.put("institutionCode", institutionWiseEntries.getKey());
@@ -164,7 +163,7 @@ public class RequestInitialDataLoadProcessor {
             });
             camelContext.getRouteController().startRoute(ScsbConstants.REQUEST_INITIAL_LOAD_FS_ROUTE + institutionCode);
         } catch (Exception e) {
-            logger.error(ScsbCommonConstants.LOG_ERROR, e);
+            log.error(ScsbCommonConstants.LOG_ERROR, e);
         }
     }
 

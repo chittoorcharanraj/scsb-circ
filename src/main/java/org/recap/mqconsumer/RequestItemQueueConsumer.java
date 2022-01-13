@@ -1,6 +1,7 @@
 package org.recap.mqconsumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Body;
 import org.apache.camel.Exchange;
 import org.apache.commons.lang3.StringUtils;
@@ -14,16 +15,16 @@ import org.recap.request.service.BulkItemRequestService;
 import org.recap.request.service.ItemEDDRequestService;
 import org.recap.request.service.ItemRequestService;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import java.io.IOException;
 
 /**
  * Created by sudhishk on 29/11/16.
  */
+@Slf4j
 public class RequestItemQueueConsumer {
 
-    private static final Logger logger = LoggerFactory.getLogger(RequestItemQueueConsumer.class);
 
     private ItemRequestService itemRequestService;
     private ItemEDDRequestService itemEDDRequestService;
@@ -151,7 +152,7 @@ public class RequestItemQueueConsumer {
      * @return the logger
      */
     public Logger getLogger() {
-        return logger;
+        return log;
     }
 
 
@@ -213,10 +214,10 @@ public class RequestItemQueueConsumer {
         ObjectMapper om = new ObjectMapper();
         RequestInformation requestInformation = null;
         try {
-            logger.info(body);
+            log.info(body);
             requestInformation = om.readValue(body, RequestInformation.class);
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
         }
         if (requestInformation != null) {
             getItemRequestService().executeLasitemCheck(requestInformation.getItemRequestInfo(), requestInformation.getItemResponseInformation());
@@ -352,7 +353,7 @@ public class RequestItemQueueConsumer {
                     getItemRequestService().updateChangesToDb(itemInformationResponse, operationType);
                 }
             } catch (Exception e) {
-                logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
+                log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
             }
         }
     }

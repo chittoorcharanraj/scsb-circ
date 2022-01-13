@@ -1,5 +1,6 @@
 package org.recap.camel;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -9,8 +10,6 @@ import org.apache.commons.io.FileUtils;
 import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.ScsbConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -22,10 +21,10 @@ import java.nio.charset.StandardCharsets;
 /**
  * Created by chenchulakshmig on 13/9/16.
  */
+@Slf4j
 @Component
 public class EmailRouteBuilder {
 
-    private static final Logger logger = LoggerFactory.getLogger(EmailRouteBuilder.class);
 
     private String emailBodyLasStatus;
     private String emailBodyRecall;
@@ -179,7 +178,7 @@ public class EmailRouteBuilder {
                                             EmailPayLoad emailPayLoad = (EmailPayLoad) in.getHeader("emailPayLoad");
                                             in.addAttachment("Results_" + emailPayLoad.getBulkRequestFileName(), new DataHandler(emailPayLoad.getBulkRequestCsvFileData(), "text/csv"));
                                         } catch (Exception ex) {
-                                            logger.info(ScsbCommonConstants.LOG_ERROR , ex);
+                                            log.info(ScsbCommonConstants.LOG_ERROR , ex);
                                         }
                                         }
                                     })
@@ -212,7 +211,7 @@ public class EmailRouteBuilder {
                         try {
                             emailPassword = FileUtils.readFileToString(file, StandardCharsets.UTF_8).trim();
                         } catch (IOException e) {
-                            logger.error(ScsbCommonConstants.LOG_ERROR,e);
+                            log.error(ScsbCommonConstants.LOG_ERROR,e);
                         }
                     }
                 }
@@ -238,13 +237,13 @@ public class EmailRouteBuilder {
                             out.append("\n");
                         }
                     } catch (IOException e) {
-                        logger.error(ScsbCommonConstants.LOG_ERROR, e);
+                        log.error(ScsbCommonConstants.LOG_ERROR, e);
                     }
                     return out;
                 }
             });
         } catch (Exception e) {
-            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION,e);
+            log.error(ScsbCommonConstants.REQUEST_EXCEPTION,e);
         }
     }
 }

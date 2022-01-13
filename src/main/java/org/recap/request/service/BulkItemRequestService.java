@@ -1,5 +1,6 @@
 package org.recap.request.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
 import org.apache.commons.collections.CollectionUtils;
 import org.recap.PropertyKeyConstants;
@@ -11,8 +12,6 @@ import org.recap.model.jpa.ItemEntity;
 import org.recap.repository.jpa.BulkRequestItemDetailsRepository;
 import org.recap.repository.jpa.ItemDetailsRepository;
 import org.recap.request.util.ItemRequestServiceUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -29,10 +28,10 @@ import java.util.Set;
 /**
  * Created by rajeshbabuk on 10/10/17.
  */
+@Slf4j
 @Component
 public class BulkItemRequestService {
 
-    private final Logger logger = LoggerFactory.getLogger(BulkItemRequestService.class);
 
     @Value("${" + PropertyKeyConstants.BULK_REQUEST_ITEM_COUNT_LIMIT + "}")
     private Integer bulkRequestItemCountLimit;
@@ -63,9 +62,9 @@ public class BulkItemRequestService {
             bulkRequestItemBarcodeList.remove(0);
         }
         Integer bulkRequestItemBarcodeCount = bulkRequestItemBarcodeList.size();
-        logger.info("Total number of barcodes received for bulk request with id {} is - {}", bulkRequestId, bulkRequestItemBarcodeCount);
+        log.info("Total number of barcodes received for bulk request with id {} is - {}", bulkRequestId, bulkRequestItemBarcodeCount);
         Set<String> nonDuplicateBarcodeList = removeDuplicates(bulkRequestItemBarcodeList);
-        logger.info("Duplicate barcodes count : {}", bulkRequestItemBarcodeCount - nonDuplicateBarcodeList.size());
+        log.info("Duplicate barcodes count : {}", bulkRequestItemBarcodeCount - nonDuplicateBarcodeList.size());
         bulkRequestItemBarcodeList.clear();
         bulkRequestItemBarcodeList.addAll(nonDuplicateBarcodeList);
         List<String> bulkRequestItemBarcodeLimitedList = new ArrayList<>();

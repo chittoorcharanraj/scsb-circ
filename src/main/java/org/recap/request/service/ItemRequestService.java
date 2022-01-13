@@ -2,6 +2,7 @@ package org.recap.request.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.FluentProducerTemplate;
 import org.apache.camel.ProducerTemplate;
@@ -29,8 +30,6 @@ import org.recap.util.CommonUtil;
 import org.recap.request.util.ItemRequestServiceUtil;
 import org.recap.util.PropertyUtil;
 import org.recap.util.SecurityUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -60,11 +59,10 @@ import java.util.Optional;
  * Class for Request Item Service
  * Created by sudhishk on 1/12/16.
  */
+@Slf4j
 @Component
 public class ItemRequestService {
 
-
-    private static final Logger logger = LoggerFactory.getLogger(ItemRequestService.class);
 
     @Value("${" + PropertyKeyConstants.SCSB_SOLR_DOC_URL + "}")
     private String scsbSolrClientUrl;
@@ -190,13 +188,13 @@ public class ItemRequestService {
 
                 DeliveryCodeTranslationEntity deliveryCodeTranslationEntity = deliveryCodeTranslationDetailsRepository.findByRequestingInstitutionandImsLocation(institutionEntity.getId(), deliveryCodeEntity.getId(), itemEntity.getImsLocationEntity().getId());
                 if (deliveryCodeTranslationEntity != null && deliveryCodeTranslationEntity.getImsLocationDeliveryCode() != null) {
-                    logger.info("Translation Code >>>> {} "  , deliveryCodeTranslationEntity.getImsLocationDeliveryCode());
+                    log.info("Translation Code >>>> {} "  , deliveryCodeTranslationEntity.getImsLocationDeliveryCode());
                     itemRequestInfo.setTranslatedDeliveryLocation(deliveryCodeTranslationEntity.getImsLocationDeliveryCode());
                 } else {
                     itemResponseInformation.setScreenMessage(ScsbConstants.REQUEST_SCSB_EXCEPTION + ScsbConstants.INVALID_TRANSLATED_CODE);
                     itemResponseInformation.setSuccess(false);
                 }
-                logger.info("itemEntity.getImsLocationEntity().getImsLocationCode() >>>> {} "  , itemEntity.getImsLocationEntity().getImsLocationCode());
+                log.info("itemEntity.getImsLocationEntity().getImsLocationCode() >>>> {} "  , itemEntity.getImsLocationEntity().getImsLocationCode());
                 SearchResultRow searchResultRow = searchRecords(itemEntity); //Solr
 
                 itemRequestInfo.setTitleIdentifier(getTitle(itemRequestInfo.getTitleIdentifier(), itemEntity, searchResultRow));
@@ -233,7 +231,7 @@ public class ItemRequestService {
                 itemResponseInformation.setSuccess(false);
             }
             setItemResponseInformation(itemRequestInfo, itemResponseInformation);
-            logger.info("itemRequestInfo.getImsLocationCode() before LAS Call >>>> {} "  , itemRequestInfo.getImsLocationCode());
+            log.info("itemRequestInfo.getImsLocationCode() before LAS Call >>>> {} "  , itemRequestInfo.getImsLocationCode());
             if (isUseQueueLasCall(itemRequestInfo.getImsLocationCode()) && (StringUtils.containsIgnoreCase(itemResponseInformation.getScreenMessage(), ScsbConstants.REQUEST_ILS_EXCEPTION)
                     || StringUtils.containsIgnoreCase(itemResponseInformation.getScreenMessage(), ScsbConstants.REQUEST_SCSB_EXCEPTION)
                     || StringUtils.containsIgnoreCase(itemResponseInformation.getScreenMessage(), ScsbConstants.REQUEST_LAS_EXCEPTION))) {
@@ -241,11 +239,11 @@ public class ItemRequestService {
             }
             // Update Topics
             sendMessageToTopic(itemRequestInfo.getRequestingInstitution(), itemRequestInfo.getRequestType(), itemResponseInformation, exchange);
-            logger.info(ScsbConstants.FINISH_PROCESSING);
+            log.info(ScsbConstants.FINISH_PROCESSING);
         } catch (RestClientException ex) {
-            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION_REST, ex);
+            log.error(ScsbCommonConstants.REQUEST_EXCEPTION_REST, ex);
         } catch (Exception ex) {
-            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, ex);
+            log.error(ScsbCommonConstants.REQUEST_EXCEPTION, ex);
         }
         return itemResponseInformation;
     }
@@ -309,7 +307,7 @@ public class ItemRequestService {
                 itemResponseInformation.setScreenMessage(ScsbConstants.REQUEST_SCSB_EXCEPTION + ScsbConstants.CANNOT_REFILE_FIRST_SCAN_REQUEST);
                 itemResponseInformation.setSuccess(false);
             }
-            logger.info(ScsbConstants.FINISH_PROCESSING);
+            log.info(ScsbConstants.FINISH_PROCESSING);
             setItemResponseInformation(itemRequestInfo, itemResponseInformation);
 
             if (isUseQueueLasCall(itemRequestInfo.getImsLocationCode())) {
@@ -318,11 +316,11 @@ public class ItemRequestService {
             // Update Topics
             sendMessageToTopic(itemRequestInfo.getItemOwningInstitution(), itemRequestInfo.getRequestType(), itemResponseInformation, exchange);
         } catch (RestClientException ex) {
-            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION_REST, ex);
+            log.error(ScsbCommonConstants.REQUEST_EXCEPTION_REST, ex);
             itemResponseInformation.setScreenMessage(ScsbConstants.REQUEST_SCSB_EXCEPTION + ScsbConstants.INTERNAL_ERROR_DURING_REQUEST);
             itemResponseInformation.setSuccess(false);
         } catch (Exception ex) {
-            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, ex);
+            log.error(ScsbCommonConstants.REQUEST_EXCEPTION, ex);
             itemResponseInformation.setScreenMessage(ScsbConstants.REQUEST_SCSB_EXCEPTION + ScsbConstants.INTERNAL_ERROR_DURING_REQUEST);
             itemResponseInformation.setSuccess(false);
         }
@@ -337,8 +335,8 @@ public class ItemRequestService {
      */
     public ItemRefileResponse reFileItem(ItemRefileRequest itemRefileRequest, ItemRefileResponse itemRefileResponse) {
 
-        logger.info("Processing received Refile request");
-        logger.info("Refile Request Information : Barcodes {} , Request Id's : {}", itemRefileRequest.getItemBarcodes(), itemRefileRequest.getRequestIds());
+        log.info("Processing received Refile request");
+        log.info("Refile Request Information : Barcodes {} , Request Id's : {}", itemRefileRequest.getItemBarcodes(), itemRefileRequest.getRequestIds());
         // Change Response for this Method
         String itemBarcode;
         ItemEntity itemEntity;
@@ -350,7 +348,7 @@ public class ItemRequestService {
                 itemEntity = requestItemEntity.getItemEntity();
                 RequestStatusEntity requestStatusEntity = requestItemStatusDetailsRepository.findByRequestStatusCode(ScsbCommonConstants.REQUEST_STATUS_REFILED);
                 String gfaItemStatus = gfaLasService.callGfaItemStatus(itemEntity.getBarcode());
-                logger.info("GFA Item Status {} for the barcode {} received on Refile", gfaItemStatus, itemEntity.getBarcode());
+                log.info("GFA Item Status {} for the barcode {} received on Refile", gfaItemStatus, itemEntity.getBarcode());
                 if (itemEntity.getItemAvailabilityStatusId() == 2) { // Only Item Not Availability, Status is Processed
                     itemBarcode = itemEntity.getBarcode();
                     ItemRequestInformation itemRequestInfo = new ItemRequestInformation();
@@ -404,7 +402,7 @@ public class ItemRequestService {
                             itemRequestInfo.setRequestingInstitution(requestItemEntity.getInstitutionEntity().getInstitutionCode());
                         }
                     }
-                    logger.info("Refile Request Id = {} Refile Barcode = {}", requestItemEntity.getId(), itemBarcode);
+                    log.info("Refile Request Id = {} Refile Barcode = {}", requestItemEntity.getId(), itemBarcode);
                     //TODO - Check if EDD and change Patron accordingly to checkIn in RequestingInstitution
                     if(itemRequestInfo.getRequestType().equalsIgnoreCase(ScsbConstants.EDD_REQUEST)){
                         if(itemRequestInfo.isOwningInstitutionItem()) {
@@ -448,13 +446,13 @@ public class ItemRequestService {
                     itemEntity = requestItemEntity.getItemEntity();
                     itemBarcode = itemEntity.getBarcode();
                     String gfaItemStatus = gfaLasService.callGfaItemStatus(itemBarcode);
-                    logger.info("Gfa status received during refile : {}",gfaItemStatus);
-                    logger.info("GFA Item Status {} for the barcode {} received on Refile where Request Id : {}", gfaItemStatus, itemEntity.getBarcode(),requestItemEntity.getId());
-                    logger.info("Rejecting the Refile for the barcode {} where Request ID : {} and Request Status : {}", itemEntity.getBarcode(), requestItemEntity.getId(), requestItemEntity.getRequestStatusEntity().getRequestStatusCode());
+                    log.info("Gfa status received during refile : {}",gfaItemStatus);
+                    log.info("GFA Item Status {} for the barcode {} received on Refile where Request Id : {}", gfaItemStatus, itemEntity.getBarcode(),requestItemEntity.getId());
+                    log.info("Rejecting the Refile for the barcode {} where Request ID : {} and Request Status : {}", itemEntity.getBarcode(), requestItemEntity.getId(), requestItemEntity.getRequestStatusEntity().getRequestStatusCode());
                     gfaItemStatus = gfaLasService.getGfaItemStatusInUpperCase(gfaItemStatus);
-                    logger.info("Gfa status After modifying : {}",gfaItemStatus);
+                    log.info("Gfa status After modifying : {}",gfaItemStatus);
                     boolean isImsItemStatusAvailable = commonUtil.checkIfImsItemStatusIsAvailableOrNotAvailable(itemEntity.getImsLocationEntity().getImsLocationCode(), gfaItemStatus, true);
-                    logger.info("Condition satisfied {}", isImsItemStatusAvailable);
+                    log.info("Condition satisfied {}", isImsItemStatusAvailable);
                     if (isImsItemStatusAvailable) {
                         itemRequestInfo.setItemBarcodes(Collections.singletonList(itemBarcode));
                         itemRequestInfo.setItemOwningInstitution(requestItemEntity.getItemEntity().getInstitutionEntity().getInstitutionCode());
@@ -464,13 +462,13 @@ public class ItemRequestService {
                         ItemInformationResponse itemInformationResponse = new ItemInformationResponse();
                         itemRequestInfo.setImsLocationCode(itemEntity.getImsLocationEntity().getImsLocationCode());
                         updateScsbAndGfa(itemRequestInfo, itemInformationResponse, itemEntity);
-                        logger.info("Successfully placed the request to Queue");
+                        log.info("Successfully placed the request to Queue");
                         requestItemDetailsRepository.save(requestItemEntity);
                         itemRefileResponse.setSuccess(false);
                         itemRefileResponse.setScreenMessage("Refile ignored as request is placed after first scan and successfully placed request to queue");
                     }
                     else {
-                        logger.info("Cannot Refile. LAS status is Not Available");
+                        log.info("Cannot Refile. LAS status is Not Available");
                     }
                 }
             }
@@ -511,7 +509,7 @@ public class ItemRequestService {
                 DeliveryCodeEntity deliveryCodeEntity = deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(requestItemEntity.getStopCode(), institutionEntity.getId(), 'Y');
                 DeliveryCodeTranslationEntity deliveryCodeTranslationEntity = deliveryCodeTranslationDetailsRepository.findByRequestingInstitutionandImsLocation(institutionEntity.getId(), deliveryCodeEntity.getId(), itemEntity.getImsLocationEntity().getId());
                 if (deliveryCodeTranslationEntity != null && deliveryCodeTranslationEntity.getImsLocationDeliveryCode() != null) {
-                    logger.info("Translation Code >>>> {} "  , deliveryCodeTranslationEntity.getImsLocationDeliveryCode());
+                    log.info("Translation Code >>>> {} "  , deliveryCodeTranslationEntity.getImsLocationDeliveryCode());
                     itemRequestInfo.setTranslatedDeliveryLocation(deliveryCodeTranslationEntity.getImsLocationDeliveryCode());
                 }
             } else {
@@ -575,9 +573,9 @@ public class ItemRequestService {
         String json = "";
         try {
             json = objectMapper.writeValueAsString(itemResponseInfo);
-            logger.info("Topic logs : {}" , json);
+            log.info("Topic logs : {}" , json);
         } catch (JsonProcessingException e) {
-            logger.error(ScsbConstants.REQUEST_PARSE_EXCEPTION, e);
+            log.error(ScsbConstants.REQUEST_PARSE_EXCEPTION, e);
         }
         FluentProducerTemplate fluentProducerTemplate = DefaultFluentProducerTemplate.on(exchange.getContext());
         fluentProducerTemplate
@@ -644,7 +642,7 @@ public class ItemRequestService {
             Optional<ItemEntity> optionalItemEntity = itemDetailsRepository.findById(itemEntity.getId());
              if(optionalItemEntity.isPresent()) {
                  ItemEntity itemEntityByItemId = optionalItemEntity.get();
-                 logger.info("Item status : {}", itemEntityByItemId.getItemStatusEntity().getStatusCode());
+                 log.info("Item status : {}", itemEntityByItemId.getItemStatusEntity().getStatusCode());
                  if (itemStatusEntity.getId().equals(itemEntityByItemId.getItemAvailabilityStatusId())) {  //Condition should be checked with equals not == ?
                      return false;
                  }
@@ -699,7 +697,7 @@ public class ItemRequestService {
         } catch (Exception e) {
             itemResponseInformation.setSuccess(false);
             itemResponseInformation.setScreenMessage(ScsbConstants.REQUEST_SCSB_EXCEPTION + e.getMessage());
-            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
+            log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
         }
         return itemResponseInformation;
     }
@@ -729,7 +727,7 @@ public class ItemRequestService {
                 }
             }
         } catch (Exception e) {
-            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
+            log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
             itemResponseInformation.setScreenMessage(ScsbConstants.REQUEST_SCSB_EXCEPTION + e.getMessage());
             itemResponseInformation.setSuccess(false);
             saveItemChangeLogEntity(itemEntity.getId(), getUser(itemRequestInfo.getUsername()), ScsbConstants.REQUEST_ITEM_ITEM_CHANGE_LOG_EXCEPTION, itemRequestInfo.getItemBarcodes() + " - " + e.getMessage());
@@ -742,7 +740,7 @@ public class ItemRequestService {
             itemResponseInformation = updateScsbAndGfa(itemRequestInfo, itemResponseInformation, itemEntity);
         } else { // Item does not belong to requesting Institute
             itemResponseInformation = updateScsbAndGfa(itemRequestInfo, itemResponseInformation, itemEntity);
-            logger.info("GFA Response for Retrieval request : {}",itemResponseInformation.isSuccess());
+            log.info("GFA Response for Retrieval request : {}",itemResponseInformation.isSuccess());
             if(itemResponseInformation.isSuccess()){
                 try {
                     String useGenericPatronRetrievalForCross = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_USE_GENERIC_PATRON_RETRIEVAL_CROSS);
@@ -750,15 +748,15 @@ public class ItemRequestService {
                         try {
                             itemRequestInfo.setPatronBarcode(itemRequestServiceUtil.getPatronIdBorrowingInstitution(itemRequestInfo.getRequestingInstitution(), itemRequestInfo.getItemOwningInstitution(), ScsbCommonConstants.REQUEST_TYPE_RETRIEVAL));
                         } catch (Exception e) {
-                            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
+                            log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
                             itemRequestInfo.setPatronBarcode("");
                         }
                     }
-                    logger.info("Performing CheckOut using the generic patron : {} in Owning Institution : {}",itemRequestInfo.getPatronBarcode(), itemRequestInfo.getItemOwningInstitution());
+                    log.info("Performing CheckOut using the generic patron : {} in Owning Institution : {}",itemRequestInfo.getPatronBarcode(), itemRequestInfo.getItemOwningInstitution());
                     requestItemController.checkoutItem(itemRequestInfo, itemRequestInfo.getItemOwningInstitution());
                 } catch (Exception e) {
-                    logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
-                    logger.error("Cross Partner Request Item Checkout Failed. Own Ins: {}, Req Ins: {}, Cross PatronId: {}", itemResponseInformation.getItemOwningInstitution(), itemRequestInfo.getRequestingInstitution(), itemRequestInfo.getPatronBarcode());
+                    log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
+                    log.error("Cross Partner Request Item Checkout Failed. Own Ins: {}, Req Ins: {}, Cross PatronId: {}", itemResponseInformation.getItemOwningInstitution(), itemRequestInfo.getRequestingInstitution(), itemRequestInfo.getPatronBarcode());
                 }
             }
         }
@@ -791,9 +789,9 @@ public class ItemRequestService {
         itemResponseInformation.setRequestId(requestId);
         itemResponseInformation = updateGFA(itemRequestInfo, itemResponseInformation);
         if(itemResponseInformation.isRequestTypeForScheduledOnWO()){
-            logger.info("Request Received on first scan");
+            log.info("Request Received on first scan");
             requestId = updateRecapRequestItem(itemRequestInfo, itemEntity, ScsbConstants.LAS_REFILE_REQUEST_PLACED);
-            logger.info("Updated the request id {} on first scan",requestId);
+            log.info("Updated the request id {} on first scan",requestId);
         }
         if (itemResponseInformation.isSuccess()) {
             itemResponseInformation.setScreenMessage(ScsbConstants.SUCCESSFULLY_PROCESSED_REQUEST_ITEM);
@@ -807,9 +805,9 @@ public class ItemRequestService {
         String messagePublish;
         boolean bsuccess;
         RequestItemEntity requestItemEntity = requestItemDetailsRepository.findByItemBarcodeAndRequestStaCode(itemRequestInfo.getItemBarcodes().get(0), ScsbCommonConstants.REQUEST_STATUS_RETRIEVAL_ORDER_PLACED);
-        logger.info("Owning     Inst = {}" , requestItemEntity.getItemEntity().getInstitutionEntity().getInstitutionCode());
-        logger.info("Borrowed   Inst = {}" , requestItemEntity.getInstitutionEntity().getInstitutionCode());
-        logger.info("Requesting Inst = {}" , itemRequestInfo.getRequestingInstitution());
+        log.info("Owning     Inst = {}" , requestItemEntity.getItemEntity().getInstitutionEntity().getInstitutionCode());
+        log.info("Borrowed   Inst = {}" , requestItemEntity.getInstitutionEntity().getInstitutionCode());
+        log.info("Requesting Inst = {}" , itemRequestInfo.getRequestingInstitution());
         String instToGetItemInfo = requestItemEntity.getInstitutionEntity().getInstitutionCode();
         ItemInformationResponse itemInformation = (ItemInformationResponse) requestItemController.itemInformation(itemRequestInfo, instToGetItemInfo);
         String checkedOutCirculationStatuses = propertyUtil.getPropertyByInstitutionAndKey(instToGetItemInfo, PropertyKeyConstants.ILS.ILS_CHECKEDOUT_CIRCULATION_STATUS);
@@ -841,7 +839,7 @@ public class ItemRequestService {
                             itemRequestInfo.setBibId(itemInformation.getBibID());
                             itemRecallResponse = (ItemRecallResponse) requestItemController.recallItem(itemRequestInfo, requestItemEntity.getInstitutionEntity().getInstitutionCode());
                         } catch (Exception e) {
-                            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
+                            log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
                             itemRecallResponse.setSuccess(false);
                             itemRecallResponse.setScreenMessage(ScsbConstants.GENERIC_PATRON_NOT_FOUND_ERROR);
                         }
@@ -881,7 +879,7 @@ public class ItemRequestService {
 
     private String getPatronIDForEDDBorrowingInstitution(String requestingInstitution, String owningInstitution) {
         GenericPatronEntity genericPatronEntity = genericPatronDetailsRepository.findByRequestingInstitutionCodeAndItemOwningInstitutionCode(requestingInstitution, owningInstitution);
-        logger.info(genericPatronEntity.getEddGenericPatron());
+        log.info(genericPatronEntity.getEddGenericPatron());
         return genericPatronEntity.getEddGenericPatron();
     }
 
@@ -929,7 +927,7 @@ public class ItemRequestService {
                 searchResultRow = statusResponse.get(0);
             }
         } catch (Exception e) {
-            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
+            log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
         }
         return searchResultRow;
     }
@@ -973,9 +971,9 @@ public class ItemRequestService {
                 titleIdentifier = String.format("[%s] %s [%s]", useRestrictions, lTitle.toUpperCase(), imsLocationCode);
             }
             returnTitle = removeDiacritical(titleIdentifier);
-            logger.info(returnTitle);
+            log.info(returnTitle);
         } catch (Exception e) {
-            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
+            log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
         }
         return returnTitle;
     }
@@ -1034,8 +1032,8 @@ public class ItemRequestService {
                 }
             }
         }
-        logger.info("Send LAS Status eMail");
-        logger.info("Send LAS Status eMail Done");
+        log.info("Send LAS Status eMail");
+        log.info("Send LAS Status eMail Done");
  }
 
     /**
@@ -1125,7 +1123,7 @@ public class ItemRequestService {
         RequestStatusEntity requestStatusEntity = null;
         Optional<RequestItemEntity> requestItemEntity = requestItemDetailsRepository.findById(itemRequestInfo.getRequestId());
         itemResponseInformation = gfaLasService.executeRetrieveOrder(itemRequestInfo, itemResponseInformation);
-        logger.info("itemResponseInformation-> {}" , itemResponseInformation.isSuccess());
+        log.info("itemResponseInformation-> {}" , itemResponseInformation.isSuccess());
         if (itemResponseInformation.isSuccess()) {
             requestStatusEntity = requestItemStatusDetailsRepository.findByRequestStatusCode(ScsbConstants.REQUEST_STATUS_PENDING);
             if(requestItemEntity.isPresent()) {
@@ -1154,7 +1152,7 @@ public class ItemRequestService {
                 resultMap.put(ScsbCommonConstants.INVALID_REQUEST, ScsbConstants.REQUEST_REPLACE_BY_TYPE_NOT_SELECTED);
             }
         } catch (Exception exception) {
-            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, exception);
+            log.error(ScsbCommonConstants.REQUEST_EXCEPTION, exception);
             resultMap.put(ScsbCommonConstants.FAILURE, exception.getMessage());
         }
         return resultMap;
@@ -1389,7 +1387,7 @@ public class ItemRequestService {
                 producerTemplate.sendBodyAndHeader(ScsbConstants.REQUEST_ITEM_QUEUE, json, ScsbCommonConstants.REQUEST_TYPE_QUEUE_HEADER, itemRequestInformation.getRequestType());
             }
         } catch (Exception exception) {
-            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, exception);
+            log.error(ScsbCommonConstants.REQUEST_EXCEPTION, exception);
             return ScsbCommonConstants.FAILURE + ":" + exception.getMessage();
         }
         return ScsbCommonConstants.SUCCESS + " : " + ScsbCommonConstants.REQUEST_MESSAGE_RECEVIED;
