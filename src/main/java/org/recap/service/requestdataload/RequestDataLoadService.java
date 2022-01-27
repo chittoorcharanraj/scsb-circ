@@ -1,5 +1,6 @@
 package org.recap.service.requestdataload;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.recap.PropertyKeyConstants;
 import org.recap.ScsbConstants;
@@ -15,8 +16,6 @@ import org.recap.repository.jpa.ItemStatusDetailsRepository;
 import org.recap.repository.jpa.RequestItemDetailsRepository;
 import org.recap.repository.jpa.RequestTypeDetailsRepository;
 import org.recap.util.CommonUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -42,10 +41,11 @@ import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 /**
  * Created by hemalathas on 4/5/17.
  */
+@Slf4j
 @Service
 public class RequestDataLoadService {
 
-    private static final Logger logger = LoggerFactory.getLogger(RequestDataLoadService.class);
+
 
     @Value("${" + PropertyKeyConstants.IS_GFA_CHECK_REQ_FOR_REQUEST_INITIAL_LOAD + "}")
     private boolean requestInitialLoadGfaCheck;
@@ -93,7 +93,7 @@ public class RequestDataLoadService {
             requestItemEntity = new RequestItemEntity();
             if(!barcodeSet.add(requestDataLoadCSVRecord.getBarcode())){
                 duplicateBarcodes.add(requestDataLoadCSVRecord.getBarcode());
-                logger.info("Barcodes duplicated in the incoming record {}",requestDataLoadCSVRecord.getBarcode());
+                log.info("Barcodes duplicated in the incoming record {}",requestDataLoadCSVRecord.getBarcode());
                 continue;
             }
             Map<String,Object> itemInfo = getItemInfo(requestDataLoadCSVRecord.getBarcode(),itemNotAvailableEntity);
@@ -117,8 +117,8 @@ public class RequestDataLoadService {
             }
         }
         savingRequestItemEntities(requestItemEntityList);
-        logger.info("Total request item count not in db {}" ,barcodesNotInScsb.size());
-        logger.info("Total duplicate barcodes from las report{}", duplicateBarcodes.size());
+        log.info("Total request item count not in db {}" ,barcodesNotInScsb.size());
+        log.info("Total duplicate barcodes from las report{}", duplicateBarcodes.size());
         Map<String, Object> resultMap=new HashMap<>();
         resultMap.put(ScsbConstants.BARCODE_NOT_FOUND_IN_SCSB,barcodesNotInScsb);
         resultMap.put(ScsbConstants.REQUEST_INITIAL_BARCODES_AVAILABLE_IN_LAS,barcodesAvailableInLAS);
@@ -154,7 +154,7 @@ public class RequestDataLoadService {
         if (!CollectionUtils.isEmpty(requestItemEntityList)){
             List<RequestItemEntity> savedRequestItemEntities = requestItemDetailsRepository.saveAll(requestItemEntityList);
             requestItemDetailsRepository.flush();
-            logger.info("Total request item count saved in db {}", savedRequestItemEntities.size());
+            log.info("Total request item count saved in db {}", savedRequestItemEntities.size());
         }
     }
 
@@ -186,7 +186,7 @@ public class RequestDataLoadService {
                     itemId = itemEntityList.get(0).getId();
                     owningInstitutionId = itemEntityList.get(0).getOwningInstitutionId();
                 }else{
-                    logger.info("Barcodes duplicated in database with different institution {}",barcode);
+                    log.info("Barcodes duplicated in database with different institution {}",barcode);
                     return itemInfo;
                 }
             }
@@ -213,7 +213,7 @@ public class RequestDataLoadService {
                     }
                 }
                 catch (Exception exception){
-                    logger.info("Exception Occurred while checking status for {} in LAS",itemEntity.getBarcode());
+                    log.info("Exception Occurred while checking status for {} in LAS",itemEntity.getBarcode());
                     itemListAvailableInLAS.add(itemEntity);
                 }
             }

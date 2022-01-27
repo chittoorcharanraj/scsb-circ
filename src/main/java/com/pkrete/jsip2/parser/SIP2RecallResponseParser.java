@@ -4,16 +4,16 @@ import com.pkrete.jsip2.exceptions.InvalidSIP2ResponseException;
 import com.pkrete.jsip2.exceptions.InvalidSIP2ResponseValueException;
 import com.pkrete.jsip2.messages.SIP2MessageResponse;
 import com.pkrete.jsip2.messages.responses.SIP2RecallResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.recap.ScsbCommonConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 /**
  * Created by sudhishk on 9/11/16.
  */
+@Slf4j
 public class SIP2RecallResponseParser extends  SIP2ResponseParser{
 
-    private static final Logger logger = LoggerFactory.getLogger(SIP2RecallResponseParser.class);
 
     @Override
     public SIP2MessageResponse parse(String data) throws InvalidSIP2ResponseValueException, InvalidSIP2ResponseException {
@@ -36,7 +36,7 @@ public class SIP2RecallResponseParser extends  SIP2ResponseParser{
 
             response.setCheckSum(this.parseChecksum(data));
         } catch (InvalidSIP2ResponseValueException e) {
-            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION,e);
+            log.error(ScsbCommonConstants.REQUEST_EXCEPTION,e);
         }
         return response;
     }

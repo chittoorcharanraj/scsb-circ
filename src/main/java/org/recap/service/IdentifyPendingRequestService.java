@@ -1,5 +1,6 @@
 package org.recap.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
 import org.recap.PropertyKeyConstants;
 import org.recap.ScsbConstants;
@@ -9,8 +10,6 @@ import org.recap.model.jpa.RequestItemEntity;
 import org.recap.repository.jpa.PendingRequestDetailsRespository;
 import org.recap.repository.jpa.RequestItemDetailsRepository;
 import org.recap.repository.jpa.RequestItemStatusDetailsRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,10 +23,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-
+@Slf4j
 @Service
 public class IdentifyPendingRequestService {
-    private static final Logger logger = LoggerFactory.getLogger(IdentifyPendingRequestService.class);
+
 
     @Autowired
     RequestItemDetailsRepository requestItemDetailsRepository;
@@ -64,7 +63,7 @@ public class IdentifyPendingRequestService {
             }
         });
         if(!pendingRequestEntityList.isEmpty()) {
-            logger.info("Identified requests stuck in PENDING/LAS");
+            log.info("Identified requests stuck in PENDING/LAS");
             saveRequestPendingLASEntity(pendingRequestEntityList);
             sendEmailAndSaveList(requestItemEntitiesInPendingList, requestItemEntitiesInLASList);
             return true;

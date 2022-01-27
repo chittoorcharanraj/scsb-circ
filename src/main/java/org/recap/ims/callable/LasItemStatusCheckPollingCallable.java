@@ -1,21 +1,21 @@
 package org.recap.ims.callable;
 
+import lombok.extern.slf4j.Slf4j;
 import org.recap.ScsbConstants;
 import org.recap.ims.connector.factory.LASImsLocationConnectorFactory;
 import org.recap.ims.model.GFAItemStatus;
 import org.recap.ims.model.GFAItemStatusCheckRequest;
 import org.recap.model.gfa.GFAItemStatusCheckResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-
+@Slf4j
 public class LasItemStatusCheckPollingCallable implements Callable {
 
-    private static final Logger logger = LoggerFactory.getLogger(LasItemStatusCheckPollingCallable.class);
+
 
     private static String barcode;
     private String imsLocationCode;
@@ -46,15 +46,15 @@ public class LasItemStatusCheckPollingCallable implements Callable {
         gfaItemStatusCheckRequest.setItemStatus(gfaItemStatuses);
         try {
             gfaItemStatusCheckResponse = lasImsLocationConnectorFactory.getLasImsLocationConnector(imsLocationCode).itemStatusCheck(gfaItemStatusCheckRequest);
-            logger.info("Item Status Check Polling -> {}", gfaItemStatusCheckResponse);
+            log.info("Item Status Check Polling -> {}", gfaItemStatusCheckResponse);
             if (gfaItemStatusCheckResponse == null) {
                 Thread.sleep(pollingTimeInterval);
-                logger.info("LAS Item Status Check Polling");
+                log.info("LAS Item Status Check Polling");
                 gfaItemStatusCheckResponse = poll();
             }
             ScsbConstants.LAS_ITEM_STATUS_REST_SERVICE_STATUS = 0;
         } catch (Exception e) {
-            logger.error("", e);
+            log.error("", e);
         }
         return gfaItemStatusCheckResponse;
     }

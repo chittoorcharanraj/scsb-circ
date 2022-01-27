@@ -1,5 +1,6 @@
 package org.recap.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.recap.PropertyKeyConstants;
@@ -22,7 +23,6 @@ import org.recap.model.request.ReplaceRequest;
 import org.recap.request.service.ItemRequestService;
 import org.recap.util.PropertyUtil;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,11 +37,12 @@ import java.util.Map;
  * Created by sudhishk on 16/11/16.
  * Class for all service part of Requesting Item Functionality
  */
+@Slf4j
 @RestController
 @RequestMapping("/requestItem")
 public class RequestItemController {
 
-    private static final Logger logger = LoggerFactory.getLogger(RequestItemController.class);
+
 
     @Autowired
     private ItemRequestService itemRequestService;
@@ -93,7 +94,7 @@ public class RequestItemController {
         } catch (Exception e) {
             itemCheckoutResponse.setSuccess(false);
             itemCheckoutResponse.setScreenMessage(e.getMessage());
-            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
+            log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
         }
         return itemCheckoutResponse;
     }
@@ -111,9 +112,9 @@ public class RequestItemController {
         try {
             String callInst = callingInstitution(callInstitution, itemRequestInformation);
             if (!itemRequestInformation.getItemBarcodes().isEmpty()) {
-                logger.info("Patron barcode and Institution info before CheckIn call : patron - {} , institution - {} ",itemRequestInformation.getPatronBarcode(),callInstitution);
+                log.info("Patron barcode and Institution info before CheckIn call : patron - {} , institution - {} ",itemRequestInformation.getPatronBarcode(),callInstitution);
                 itemCheckinResponse = (ItemCheckinResponse) ilsProtocolConnectorFactory.getIlsProtocolConnector(callInst).checkInItem(itemRequestInformation, itemRequestInformation.getPatronBarcode());
-                logger.info("CheckIn Response Message : {}",itemCheckinResponse.getScreenMessage());
+                log.info("CheckIn Response Message : {}",itemCheckinResponse.getScreenMessage());
             } else {
                 itemCheckinResponse = new ItemCheckinResponse();
                 itemCheckinResponse.setSuccess(false);
@@ -123,7 +124,7 @@ public class RequestItemController {
             itemCheckinResponse = new ItemCheckinResponse();
             itemCheckinResponse.setSuccess(false);
             itemCheckinResponse.setScreenMessage(e.getMessage());
-            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
+            log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
         }
         return itemCheckinResponse;
     }
@@ -154,7 +155,7 @@ public class RequestItemController {
                     itemRequestInformation.getCallNumber());
 
         } catch (Exception e) {
-            logger.info(ScsbCommonConstants.REQUEST_EXCEPTION, e);
+            log.info(ScsbCommonConstants.REQUEST_EXCEPTION, e);
             itemHoldResponse.setSuccess(false);
             itemHoldResponse.setScreenMessage("ILS returned a invalid response");
         }
@@ -199,7 +200,7 @@ public class RequestItemController {
     public AbstractResponseItem createBibliogrphicItem(@RequestBody ItemRequestInformation itemRequestInformation, String callInstitution) {
         ItemCreateBibResponse itemCreateBibResponse;
         String itemBarcode;
-        logger.info("ESIP CALL FOR CREATE BIB -> {}" , callInstitution);
+        log.info("ESIP CALL FOR CREATE BIB -> {}" , callInstitution);
         String callInst = callingInstitution(callInstitution, itemRequestInformation);
         if (!itemRequestInformation.getItemBarcodes().isEmpty() && !itemRequestInformation.getItemBarcodes().get(0).equals("string")) {
             itemBarcode = itemRequestInformation.getItemBarcodes().get(0);
@@ -247,7 +248,7 @@ public class RequestItemController {
     @PostMapping(value = "/recallItem", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public AbstractResponseItem recallItem(@RequestBody ItemRequestInformation itemRequestInformation, String callInstitution) {
         ItemRecallResponse itemRecallResponse;
-        logger.info("ESIP CALL FOR RECALL ITEM -> {}" , callInstitution);
+        log.info("ESIP CALL FOR RECALL ITEM -> {}" , callInstitution);
         String callInst = callingInstitution(callInstitution, itemRequestInformation);
         String itembarcode = itemRequestInformation.getItemBarcodes().get(0);
         itemRecallResponse = (ItemRecallResponse) ilsProtocolConnectorFactory.getIlsProtocolConnector(callInst).recallItem(itembarcode, itemRequestInformation.getPatronBarcode(),
@@ -291,7 +292,7 @@ public class RequestItemController {
                 itemRefileResponse.setScreenMessage("Cannot process Refile request");
             }
         }
-        logger.info("Refile Response: {}",itemRefileResponse.getScreenMessage());
+        log.info("Refile Response: {}",itemRefileResponse.getScreenMessage());
         return itemRefileResponse;
     }
 
@@ -326,7 +327,7 @@ public class RequestItemController {
             itemRefileResponse = new ItemRefileResponse();
             itemRefileResponse.setSuccess(false);
             itemRefileResponse.setScreenMessage(e.getMessage());
-            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
+            log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
         }
         return itemRefileResponse;
     }

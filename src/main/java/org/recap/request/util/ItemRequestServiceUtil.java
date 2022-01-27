@@ -1,5 +1,6 @@
 package org.recap.request.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.recap.PropertyKeyConstants;
@@ -14,8 +15,6 @@ import org.recap.repository.jpa.GenericPatronDetailsRepository;
 import org.recap.request.service.EmailService;
 import org.recap.service.RestHeaderService;
 import org.recap.util.PropertyUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -31,10 +30,10 @@ import java.util.Optional;
 /**
  * Created by rajeshbabuk on 10/10/17.
  */
+@Slf4j
 @Service
 public class ItemRequestServiceUtil {
 
-    private final Logger logger = LoggerFactory.getLogger(ItemRequestServiceUtil.class);
 
     @Value("${" + PropertyKeyConstants.SCSB_SOLR_DOC_URL + "}")
     private String scsbSolrClientUrl;
@@ -69,9 +68,9 @@ public class ItemRequestServiceUtil {
             HttpEntity requestEntity = new HttpEntity<>(getRestHeaderService().getHttpHeaders());
             UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(scsbSolrClientUrl + ScsbConstants.UPDATE_ITEM_STATUS_SOLR).queryParam(ScsbConstants.UPDATE_ITEM_STATUS_SOLR_PARAM_ITEM_ID, itemEntity.getBarcode());
             ResponseEntity<String> responseEntity = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, String.class);
-            logger.info(responseEntity.getBody());
+            log.info(responseEntity.getBody());
         } catch (Exception e) {
-            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
+            log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
         }
     }
 
@@ -174,7 +173,7 @@ public class ItemRequestServiceUtil {
                 patronId = genericPatronEntity.getRetrievalGenericPatron();
             }
         }
-        logger.info("Own Ins: {}, Req Ins: {}, Cross PatronId: {}", owningInstitution, requestingInstitution, patronId);
+        log.info("Own Ins: {}, Req Ins: {}, Cross PatronId: {}", owningInstitution, requestingInstitution, patronId);
         return patronId;
     }
 }

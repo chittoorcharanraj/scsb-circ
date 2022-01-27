@@ -43,8 +43,8 @@ import com.pkrete.jsip2.parser.SIP2RecallResponseParser;
 import com.pkrete.jsip2.parser.SIP2RenewAllResponseParser;
 import com.pkrete.jsip2.parser.SIP2RenewResponseParser;
 import com.pkrete.jsip2.parser.SIP2ResponseParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+
 
 /**
  * This class generates SIP2MessageResponse objects based on the data
@@ -55,9 +55,9 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Petteri Kivimäki
  */
+@Slf4j
 public class SIP2ResponseFactory {
 
-    private static final Logger logger= LoggerFactory.getLogger(SIP2ResponseFactory.class);
     /**
      * Reference to the singleton object.
      */
@@ -103,7 +103,7 @@ public class SIP2ResponseFactory {
         SIP2ResponseParser parser;
         // Get the command identifier
         String code = data.substring(0, 2);
-        logger.info(data);
+        log.info(data);
         switch (code) {
             case "94":
                 parser = new SIP2LoginResponseParser();

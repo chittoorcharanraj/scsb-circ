@@ -3,8 +3,8 @@ package org.recap.ils.protocol.rest.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+
 
 /**
  * Created by rajeshbabuk on 9/1/17.
@@ -19,8 +19,7 @@ import lombok.Setter;
         "numberOfCopies",
         "neededBy"
 })
-@Getter
-@Setter
+@Data
 public class RestHoldRequest {
     @JsonProperty("patron")
     private String patron;

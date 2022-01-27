@@ -1,7 +1,7 @@
 package org.recap.model.search;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -9,8 +9,7 @@ import io.swagger.annotations.ApiModelProperty;
 /**
  * Created by rajesh on 18-Jul-16.
  */
-@Getter
-@Setter
+@Data
 @ApiModel(value="SearchItemResultRow", description="Model for Displaying Item Result")
 public class SearchItemResultRow extends AbstractSearchItemResultRow implements Comparable<SearchItemResultRow> {
 

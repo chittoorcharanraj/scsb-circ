@@ -1,16 +1,15 @@
 package org.recap.model.jpa;
 
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+
 
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
 @Table(name = "generic_patron_t", catalog = "")
-@Getter
-@Setter
+@Data
 @EqualsAndHashCode(callSuper = false)
 public class GenericPatronEntity {
 

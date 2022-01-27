@@ -1,5 +1,6 @@
 package org.recap.service.deaccession;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jettison.json.JSONException;
@@ -59,8 +60,6 @@ import org.recap.service.RestHeaderService;
 import org.recap.util.CommonUtil;
 import org.recap.request.util.ItemRequestServiceUtil;
 import org.recap.util.PropertyUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -85,10 +84,11 @@ import java.util.stream.Collectors;
 /**
  * Created by chenchulakshmig on 28/9/16.
  */
+@Slf4j
 @Component
 public class DeAccessionService {
 
-    private static final Logger logger = LoggerFactory.getLogger(DeAccessionService.class);
+
 
     private static final String EXCEPTION_CONSTANT = "Exception :";
 
@@ -344,7 +344,7 @@ public class DeAccessionService {
     private void checkGfaItemStatus(List<DeAccessionItem> deAccessionItems, List<DeAccessionDBResponseEntity> deAccessionDBResponseEntities, Map<String, String> barcodeAndStopCodeMap) {
         try {
             for (DeAccessionItem deAccessionItem : deAccessionItems) {
-                logger.info("Deaccession Item Barcode = {} Delivery Location = {}", deAccessionItem.getItemBarcode(), deAccessionItem.getDeliveryLocation());
+                log.info("Deaccession Item Barcode = {} Delivery Location = {}", deAccessionItem.getItemBarcode(), deAccessionItem.getDeliveryLocation());
                 String itemBarcode = deAccessionItem.getItemBarcode();
                 if (StringUtils.isNotBlank(itemBarcode)) {
                     List<ItemEntity> itemEntities = itemDetailsRepository.findByBarcode(itemBarcode.trim());
@@ -357,13 +357,13 @@ public class DeAccessionService {
                         } else {
                             String scsbItemStatus = itemEntity.getItemStatusEntity().getStatusCode();
                             String recapAssistanceEmailTo = getRecapAssistanceEmailTo(itemEntity.getImsLocationEntity().getImsLocationCode());
-                            logger.info("SCSB Item Status : {}", scsbItemStatus);
+                            log.info("SCSB Item Status : {}", scsbItemStatus);
                             String gfaItemStatus = gfaLasService.callGfaItemStatus(itemBarcode);
-                            logger.info("GFA Item Status : {}", gfaItemStatus);
+                            log.info("GFA Item Status : {}", gfaItemStatus);
                             if (StringUtils.isNotBlank(gfaItemStatus)) {
                                 gfaItemStatus = gfaItemStatus.toUpperCase();
                                 gfaItemStatus = gfaItemStatus.contains(":") ? gfaItemStatus.substring(0, gfaItemStatus.indexOf(':') + 1) : gfaItemStatus;
-                                logger.info("GFA Item Status after trimming : {}", gfaItemStatus);
+                                log.info("GFA Item Status after trimming : {}", gfaItemStatus);
                                 if ((StringUtils.isNotBlank(gfaItemStatus) && commonUtil.checkIfImsItemStatusIsRequestableNotRetrievable(itemEntity.getImsLocationEntity().getImsLocationCode(), gfaItemStatus))) {
                                     deAccessionDBResponseEntities.add(prepareFailureResponse(itemBarcode, deAccessionItem.getDeliveryLocation(), "Cannot Deaccession as Item is awaiting for Refile.Please try again later or contact ReCAP staff for further assistance.", itemEntity));
                                 }
@@ -388,7 +388,7 @@ public class DeAccessionService {
                 }
             }
         } catch (Exception e) {
-            logger.error(EXCEPTION_CONSTANT, e);
+            log.error(EXCEPTION_CONSTANT, e);
         }
     }
 
@@ -400,7 +400,7 @@ public class DeAccessionService {
                     try {
                         recapAssistanceEmailTo = getRecapAssistanceEmailTo(deAccessionDBResponseEntity.getImsLocationCode());
                     } catch (Exception e) {
-                        logger.info("Exception occurred while pulling recap assistance email to: {}", e.getMessage());
+                        log.info("Exception occurred while pulling recap assistance email to: {}", e.getMessage());
                     }
                 }
                 if (ScsbCommonConstants.SUCCESS.equalsIgnoreCase(deAccessionDBResponseEntity.getStatus()) && ScsbCommonConstants.AVAILABLE.equalsIgnoreCase(deAccessionDBResponseEntity.getItemStatus())) {
@@ -414,7 +414,7 @@ public class DeAccessionService {
                     ImsLocationEntity imsLocationEntity = imsLocationDetailsRepository.findByImsLocationCode(deAccessionDBResponseEntity.getImsLocationCode());
                     if (deliveryCodeEntity != null && institutionEntity != null && imsLocationEntity != null) {
                         DeliveryCodeTranslationEntity deliveryCodeTranslationEntity = deliveryCodeTranslationDetailsRepository.findByRequestingInstitutionandImsLocation(institutionEntity.getId(), deliveryCodeEntity.getId(), imsLocationEntity.getId());
-                        logger.info("Deaccession Process - Translated Code From {} >>>> {} ", deAccessionDBResponseEntity.getDeliveryLocation(), deliveryCodeTranslationEntity.getImsLocationDeliveryCode());
+                        log.info("Deaccession Process - Translated Code From {} >>>> {} ", deAccessionDBResponseEntity.getDeliveryLocation(), deliveryCodeTranslationEntity.getImsLocationDeliveryCode());
                         gfaPwdTtItemRequest.setDestination(deliveryCodeTranslationEntity.getImsLocationDeliveryCode());
                     } else {
                         gfaPwdTtItemRequest.setDestination(deAccessionDBResponseEntity.getDeliveryLocation());
@@ -560,7 +560,7 @@ public class DeAccessionService {
                     }
                 } catch (Exception e) {
                     deAccessionDBResponseEntities.add(prepareFailureResponse(itemBarcode, deliveryLocation, ScsbCommonConstants.FAILURE + " - " + e, null));
-                    logger.error(EXCEPTION_CONSTANT, e);
+                    log.error(EXCEPTION_CONSTANT, e);
                 }
             }
         }
@@ -599,7 +599,7 @@ public class DeAccessionService {
         ItemRequestInformation itemRequestInformation = getItemRequestInformation(requestItemEntity);
         itemRequestInformation.setUsername(username);
         ItemHoldResponse itemCancelHoldResponse = (ItemHoldResponse) requestItemController.cancelHoldItem(itemRequestInformation, itemRequestInformation.getRequestingInstitution());
-        logger.info("Deaccession Item - Cancel request status : {}", itemCancelHoldResponse.getScreenMessage());
+        log.info("Deaccession Item - Cancel request status : {}", itemCancelHoldResponse.getScreenMessage());
         if (itemCancelHoldResponse.isSuccess()) {
             updateRequestAsCanceled(requestItemEntity, username);
             itemCancelHoldResponse.setSuccess(true);
@@ -687,13 +687,13 @@ public class DeAccessionService {
                     deAccessionDBResponseEntity = prepareSuccessResponse(barcode, deliveryLocation, itemEntity, holdingsIds, bibliographicIds);
                     deAccessionDBResponseEntities.add(deAccessionDBResponseEntity);
                 } catch (Exception ex) {
-                    logger.error(ScsbCommonConstants.LOG_ERROR, ex);
+                    log.error(ScsbCommonConstants.LOG_ERROR, ex);
                     deAccessionDBResponseEntity = prepareFailureResponse(barcode, deliveryLocation, "Exception" + ex, null);
                     deAccessionDBResponseEntities.add(deAccessionDBResponseEntity);
                 }
             }
         } catch (Exception ex) {
-            logger.error(ScsbCommonConstants.LOG_ERROR, ex);
+            log.error(ScsbCommonConstants.LOG_ERROR, ex);
         }
     }
 
@@ -808,7 +808,7 @@ public class DeAccessionService {
             try {
                 populateDeAccessionDBResponseEntity(itemEntity, deAccessionDBResponseEntity);
             } catch (JSONException e) {
-                logger.error(ScsbCommonConstants.LOG_ERROR, e);
+                log.error(ScsbCommonConstants.LOG_ERROR, e);
             }
         }
         return deAccessionDBResponseEntity;
@@ -905,11 +905,11 @@ public class DeAccessionService {
                     RestTemplate restTemplate = new RestTemplate();
                     HttpEntity<DeAccessionSolrRequest> requestEntity = new HttpEntity<>(deAccessionSolrRequest, getRestHeaderService().getHttpHeaders());
                     ResponseEntity<String> responseEntity = restTemplate.exchange(deAccessionSolrClientUrl, HttpMethod.POST, requestEntity, String.class);
-                    logger.info("Deaccession Item Solr update status : {}", responseEntity.getBody());
+                    log.info("Deaccession Item Solr update status : {}", responseEntity.getBody());
                 }
             }
         } catch (Exception e) {
-            logger.error(EXCEPTION_CONSTANT, e);
+            log.error(EXCEPTION_CONSTANT, e);
         }
     }
 

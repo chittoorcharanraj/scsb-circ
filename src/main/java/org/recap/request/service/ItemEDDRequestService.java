@@ -1,5 +1,6 @@
 package org.recap.request.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.commons.lang3.StringUtils;
 import org.recap.PropertyKeyConstants;
@@ -18,8 +19,6 @@ import org.recap.repository.jpa.RequestItemDetailsRepository;
 import org.recap.repository.jpa.RequestTypeDetailsRepository;
 import org.recap.request.util.ItemRequestServiceUtil;
 import org.recap.util.PropertyUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
@@ -29,10 +28,9 @@ import java.util.List;
 /**
  * Created by sudhishk on 1/12/16.
  */
+@Slf4j
 @Component
 public class ItemEDDRequestService {
-
-    private static final Logger logger = LoggerFactory.getLogger(ItemEDDRequestService.class);
 
     @Autowired
     private ItemDetailsRepository itemDetailsRepository;
@@ -110,7 +108,7 @@ public class ItemEDDRequestService {
         try {
             itemEntities = getItemDetailsRepository().findByBarcodeIn(itemRequestInfo.getItemBarcodes());
             if (itemEntities != null && !itemEntities.isEmpty()) {
-                logger.info("Item Exists in SCSB Database");
+                log.info("Item Exists in SCSB Database");
                 itemEntity = itemEntities.get(0);
                 if (itemEntity.getBibliographicEntities().get(0).getOwningInstitutionBibId().trim().length() <= 0) {
                     itemRequestInfo.setBibId(itemEntity.getBibliographicEntities().get(0).getOwningInstitutionBibId());
@@ -156,7 +154,7 @@ public class ItemEDDRequestService {
                             try {
                                 itemRequestInfo.setPatronBarcode(getPatronIdForOwningInstitutionOnEdd(itemRequestInfo.getItemOwningInstitution()));
                             } catch (Exception e) {
-                                logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
+                                log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
                                 itemResponseInformation.setScreenMessage(ScsbConstants.GENERIC_PATRON_NOT_FOUND_ERROR);
                                 itemResponseInformation.setSuccess(false);
                             }
@@ -167,7 +165,7 @@ public class ItemEDDRequestService {
                             try {
                                 itemRequestInfo.setPatronBarcode(itemRequestServiceUtil.getPatronIdBorrowingInstitution(itemRequestInfo.getRequestingInstitution(), itemRequestInfo.getItemOwningInstitution(), ScsbCommonConstants.REQUEST_TYPE_EDD));
                             } catch (Exception e) {
-                                logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
+                                log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
                                 itemResponseInformation.setScreenMessage(ScsbConstants.GENERIC_PATRON_NOT_FOUND_ERROR);
                                 itemResponseInformation.setSuccess(false);
                             }
@@ -176,14 +174,14 @@ public class ItemEDDRequestService {
 
                     itemResponseInformation = getItemRequestService().updateGFA(itemRequestInfo, itemResponseInformation);
                     if (itemResponseInformation.isRequestTypeForScheduledOnWO()) {
-                        logger.info("EDD Request Received on first scan");
+                        log.info("EDD Request Received on first scan");
                         requestId = getItemRequestService().updateRecapRequestItem(itemRequestInfo, itemEntity, ScsbConstants.LAS_REFILE_REQUEST_PLACED);
-                        logger.info("Updated EDD request id {} on first scan", requestId);
+                        log.info("Updated EDD request id {} on first scan", requestId);
                     }
                     if (!itemResponseInformation.isSuccess()) {
                         getItemRequestService().rollbackUpdateItemAvailabilityStatus(itemEntity, ScsbConstants.GUEST_USER);
                     } else {
-                        logger.info("Patron and Institution info before CheckOut Call in EDD : patron - {} , institution - {}", itemRequestInfo.getPatronBarcode(), itemRequestInfo.getItemOwningInstitution());
+                        log.info("Patron and Institution info before CheckOut Call in EDD : patron - {} , institution - {}", itemRequestInfo.getPatronBarcode(), itemRequestInfo.getItemOwningInstitution());
                         ItemCheckoutResponse itemCheckoutResponse = (ItemCheckoutResponse) requestItemController.checkoutItem(itemRequestInfo, itemRequestInfo.getItemOwningInstitution());
                         if (itemCheckoutResponse.isSuccess()) {
                             itemResponseInformation.setEddSuccessResponseScreenMsg(itemCheckoutResponse.getScreenMessage());
@@ -197,7 +195,7 @@ public class ItemEDDRequestService {
                 itemResponseInformation.setScreenMessage(ScsbConstants.WRONG_ITEM_BARCODE);
                 itemResponseInformation.setSuccess(false);
             }
-            logger.info("Finish Processing");
+            log.info("Finish Processing");
             itemResponseInformation.setItemOwningInstitution(itemRequestInfo.getItemOwningInstitution());
             itemResponseInformation.setDueDate(itemRequestInfo.getExpirationDate());
             itemResponseInformation.setRequestingInstitution(itemRequestInfo.getRequestingInstitution());
@@ -221,9 +219,9 @@ public class ItemEDDRequestService {
             // Update Topics
             getItemRequestService().sendMessageToTopic(itemRequestInfo.getRequestingInstitution(), itemRequestInfo.getRequestType(), itemResponseInformation, exchange);
         } catch (RestClientException ex) {
-            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION_REST, ex);
+            log.error(ScsbCommonConstants.REQUEST_EXCEPTION_REST, ex);
         } catch (Exception ex) {
-            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, ex);
+            log.error(ScsbCommonConstants.REQUEST_EXCEPTION, ex);
         }
         return itemResponseInformation;
     }

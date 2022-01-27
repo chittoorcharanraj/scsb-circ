@@ -1,7 +1,7 @@
 package org.recap.model.jpa;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -14,11 +14,11 @@ import java.util.Date;
 /**
  * Created by rajeshbabuk on 8/5/17.
  */
+@Data
+@EqualsAndHashCode(callSuper=false)
 @Entity
 @Table(name = "DELETED_RECORDS_T", catalog = "")
 @AttributeOverride(name = "id", column = @Column(name = "DELETED_RECORDS_ID"))
-@Getter
-@Setter
 public class DeletedRecordsEntity extends AbstractEntity<Integer>  {
     @Column(name = "RECORDS_TABLE")
     private String Records_Table;

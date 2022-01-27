@@ -1,5 +1,6 @@
 package org.recap.request.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.recap.ScsbConstants;
 import org.recap.ScsbCommonConstants;
@@ -24,10 +25,11 @@ import java.util.Optional;
 /**
  * Created by sudhishk on 1/12/16.
  */
+@Slf4j
 @Component
 public class ItemRequestDBService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ItemRequestDBService.class);
+
 
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ScsbConstants.DATE_FORMAT);
 
@@ -112,11 +114,11 @@ public class ItemRequestDBService {
             savedItemRequest = requestItemDetailsRepository.saveAndFlush(requestItemEntity);
             requestId = savedItemRequest.getId();
             commonUtil.saveItemChangeLogEntity(savedItemRequest.getId(), commonUtil.getUser(itemRequestInformation.getUsername()), ScsbConstants.REQUEST_ITEM_INSERT, savedItemRequest.getItemId() + " - " + savedItemRequest.getPatronId());
-        logger.info("SCSB DB Update Successful");
+        log.info("SCSB DB Update Successful");
         } catch (ParseException e) {
-            logger.error(ScsbConstants.REQUEST_PARSE_EXCEPTION, e);
+            log.error(ScsbConstants.REQUEST_PARSE_EXCEPTION, e);
         } catch (Exception e) {
-            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
+            log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
         }
         return requestId;
     }
@@ -187,11 +189,11 @@ public class ItemRequestDBService {
                 commonUtil.saveItemChangeLogEntity(savedItemRequest.getId(), commonUtil.getUser(itemInformationResponse.getUsername()), ScsbConstants.REQUEST_ITEM_INSERT, savedItemRequest.getItemId() + " - " + savedItemRequest.getPatronId());
             }
             itemInformationResponse.setRequestId(requestId);
-            logger.info("SCSB DB Update Successful");
+            log.info("SCSB DB Update Successful");
         } catch (ParseException e) {
-            logger.error(ScsbConstants.REQUEST_PARSE_EXCEPTION, e);
+            log.error(ScsbConstants.REQUEST_PARSE_EXCEPTION, e);
         } catch (Exception e) {
-            logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
+            log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
         }
         return itemInformationResponse;
     }
@@ -263,11 +265,11 @@ public class ItemRequestDBService {
 
     private Date getExpirationDate(String expirationDate) throws ParseException {
         if (StringUtils.isNotBlank(expirationDate)) {
-            logger.info("Expiration date from response : {}", expirationDate);
+            log.info("Expiration date from response : {}", expirationDate);
             try {
                 return simpleDateFormat.parse(expirationDate);
             } catch (Exception ex) {
-                logger.error(ScsbCommonConstants.REQUEST_EXCEPTION, ex);
+                log.error(ScsbCommonConstants.REQUEST_EXCEPTION, ex);
             }
         }
         return null;

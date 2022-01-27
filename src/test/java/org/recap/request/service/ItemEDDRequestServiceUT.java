@@ -45,7 +45,7 @@ import static org.mockito.ArgumentMatchers.any;
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class ItemEDDRequestServiceUT extends BaseTestCaseUT {
 
-    private static final Logger logger = LoggerFactory.getLogger(ItemEDDRequestServiceUT.class);
+
 
     @InjectMocks
     ItemEDDRequestService itemEDDRequestService;

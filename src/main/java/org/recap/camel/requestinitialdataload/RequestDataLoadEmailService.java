@@ -1,13 +1,12 @@
 package org.recap.camel.requestinitialdataload;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.recap.PropertyKeyConstants;
 import org.recap.ScsbConstants;
 import org.recap.camel.EmailPayLoad;
 import org.recap.util.PropertyUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
@@ -16,11 +15,11 @@ import org.springframework.stereotype.Service;
 /**
  * Created by harikrishnanv on 18/7/17.
  */
+@Slf4j
 @Service
 @Scope("prototype")
 public class RequestDataLoadEmailService {
 
-    private static final Logger logger = LoggerFactory.getLogger(RequestDataLoadEmailService.class);
 
     @Autowired
     private ProducerTemplate producerTemplate;
@@ -36,7 +35,7 @@ public class RequestDataLoadEmailService {
     public RequestDataLoadEmailService(String institutionCode){this.institutionCode=institutionCode;}
 
     public void processInput(Exchange exchange) {
-        logger.info("ReqeustDataLoad EMailservice started for {}", institutionCode);
+        log.info("ReqeustDataLoad EMailservice started for {}", institutionCode);
         String fileNameWithPath = (String)exchange.getIn().getHeader("CamelAwsS3Key");
         producerTemplate.sendBodyAndHeader(ScsbConstants.EMAIL_Q, getEmailPayLoad(fileNameWithPath), ScsbConstants.EMAIL_BODY_FOR, ScsbConstants.REQUEST_INITIAL_DATA_LOAD);
     }
@@ -45,7 +44,7 @@ public class RequestDataLoadEmailService {
         EmailPayLoad emailPayLoad = new EmailPayLoad();
         emailPayLoad.setTo(emailIdTo(institutionCode));
         emailPayLoad.setSubject(subjectForRequestInitialDataLoad);
-        logger.info("RequestDataLoad email sent to {}", emailPayLoad.getTo());
+        log.info("RequestDataLoad email sent to {}", emailPayLoad.getTo());
         emailPayLoad.setMessageDisplay(messageDisplayForInstitution(fileNameWithPath));
         return emailPayLoad;
     }

@@ -3,8 +3,8 @@ package org.recap.ils.protocol.rest.model.request;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+
 import org.recap.ils.protocol.rest.model.Description;
 
 /**
@@ -18,8 +18,7 @@ import org.recap.ils.protocol.rest.model.Description;
         "patronBarcode",
         "description"
 })
-@Getter
-@Setter
+@Data
 public class CreateHoldRequest {
     @JsonProperty("trackingId")
     private String trackingId;
