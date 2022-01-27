@@ -1,7 +1,7 @@
 buildscript {
 	ext {
-		springBootVersion = '2.5.8'
-		set('springCloudVersion', "2020.0.5")
+		springBootVersion = '2.6.2'
+		set('springCloudVersion', "2021.0.0")
 	}
 	repositories {
 		mavenCentral()
@@ -14,7 +14,7 @@ buildscript {
 plugins {
 	id "org.sonarqube" version "3.3"
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'org.springframework.boot' version '2.5.8'
+	id 'org.springframework.boot' version '2.6.2'
 }
 
 apply plugin: 'java'
@@ -31,8 +31,8 @@ jar {
 	archivesBaseName = 'phase4-scsb-circ'
 	archiveVersion = '0.0.1-SNAPSHOT'
 }
-sourceCompatibility = 1.11
-targetCompatibility = 1.11
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 repositories {
 	mavenCentral()
@@ -62,6 +62,7 @@ dependencies {
 	implementation('commons-io:commons-io:2.11.0')
 	implementation('io.springfox:springfox-swagger-ui:3.0.0')
 	implementation('io.springfox:springfox-swagger2:3.0.0')
+//	implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
 	implementation('org.codehaus.jettison:jettison:1.4.1')
 	implementation('org.apache.camel.springboot:camel-spring-boot-starter:3.14.0')
 	implementation group: 'org.apache.camel.springboot', name: 'camel-aws-s3-starter', version: '3.8.0'
@@ -106,13 +107,13 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 }
 
-configurations.all {
-	resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-		if (details.requested.group == 'org.apache.logging.log4j') {
-			details.useVersion '2.17.0'
-		}
-	}
-}
+//configurations.all {
+//	resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+//		if (details.requested.group == 'org.apache.logging.log4j') {
+//			details.useVersion '2.17.0'
+//		}
+//	}
+//}
 
 dependencyManagement {
 	imports {
@@ -149,9 +150,7 @@ task scsbCircJavadocs(type: Javadoc) {
 
 }
 
-bootJar {
-	layered()
-}
+
 jar {
 	enabled = false
 	archiveClassifier = '' //use empty string
