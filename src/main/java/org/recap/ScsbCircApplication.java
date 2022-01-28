@@ -16,7 +16,6 @@ import org.springframework.web.client.RestTemplate;
  */
 @EnableAutoConfiguration(exclude={WebMvcAutoConfiguration.class})
 @PropertySource("classpath:application.properties")
-@SpringBootApplication
 public class ScsbCircApplication {
 
 	/**
