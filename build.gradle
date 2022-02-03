@@ -1,7 +1,7 @@
 buildscript {
 	ext {
-		springBootVersion = '2.6.2'
-		set('springCloudVersion', "2021.0.0")
+		springBootVersion = '2.5.8'
+		set('springCloudVersion', "2020.0.5")
 	}
 	repositories {
 		mavenCentral()
@@ -14,7 +14,7 @@ buildscript {
 plugins {
 	id "org.sonarqube" version "3.3"
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'org.springframework.boot' version '2.6.2'
+	id 'org.springframework.boot' version '2.5.8'
 }
 
 apply plugin: 'java'
@@ -62,7 +62,6 @@ dependencies {
 	implementation('commons-io:commons-io:2.11.0')
 	implementation('io.springfox:springfox-swagger-ui:3.0.0')
 	implementation('io.springfox:springfox-swagger2:3.0.0')
-//	implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
 	implementation('org.codehaus.jettison:jettison:1.4.1')
 	implementation('org.apache.camel.springboot:camel-spring-boot-starter:3.14.0')
 	implementation group: 'org.apache.camel.springboot', name: 'camel-aws-s3-starter', version: '3.8.0'
@@ -76,10 +75,10 @@ dependencies {
 	implementation('org.apache.camel:camel-ftp:3.14.0')
 	implementation('org.apache.camel:camel-jms:3.14.0')
 	implementation('org.apache.camel:camel-zipfile:3.14.0')
-	implementation('org.apache.activemq:activemq-camel:5.16.3')
-	implementation('org.apache.activemq:activemq-pool:5.16.3')
-	implementation('org.apache.activemq:activemq-broker:5.16.3')
-	implementation('org.apache.activemq:activemq-client:5.16.3')
+	implementation('org.apache.activemq:activemq-camel:5.15.15')
+	implementation('org.apache.activemq:activemq-pool:5.15.15')
+	implementation('org.apache.activemq:activemq-broker:5.15.15')
+	implementation('org.apache.activemq:activemq-client:5.15.15')
 	implementation('info.freelibrary:freelib-marc4j:2.6.12')
 	implementation('org.apache.poi:poi:5.1.0')
 	implementation group: 'org.apache.camel', name: 'camel-zip-deflater', version: '3.14.0'
@@ -112,7 +111,7 @@ configurations.all {
 		if (details.requested.group == 'org.apache.logging.log4j') {
 			details.useVersion '2.17.1'
 		}
-}
+	}
 }
 
 dependencyManagement {
@@ -153,7 +152,7 @@ task scsbCircJavadocs(type: Javadoc) {
 bootJar {
 	layered {
 		enabled = true
-	}
+}
 }
 
 jar {

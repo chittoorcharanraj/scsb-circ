@@ -18,9 +18,6 @@ public class CheckOutItemResponseData implements NCIPResponseData {
     protected ItemId itemId;
     protected UserId userId;
     protected GregorianCalendar dateDue;
-    protected Boolean indeterminateLoanPeriodFlag;
-    protected Boolean nonReturnableFlag;
-    protected BigDecimal renewalCount;
     protected ItemOptionalFields itemOptionalFields;
     protected UserOptionalFields userOptionalFields;
 
@@ -97,30 +94,6 @@ public class CheckOutItemResponseData implements NCIPResponseData {
 
     public void setDateDue(GregorianCalendar dateDue) {
         this.dateDue = dateDue;
-    }
-
-    public Boolean getIndeterminateLoanPeriodFlag() {
-        return this.indeterminateLoanPeriodFlag;
-    }
-
-    public void setIndeterminateLoanPeriodFlag(Boolean indeterminateLoanPeriodFlag) {
-        this.indeterminateLoanPeriodFlag = indeterminateLoanPeriodFlag;
-    }
-
-    public Boolean getNonReturnableFlag() {
-        return this.nonReturnableFlag;
-    }
-
-    public void setNonReturnableFlag(Boolean nonReturnableFlag) {
-        this.nonReturnableFlag = nonReturnableFlag;
-    }
-
-    public BigDecimal getRenewalCount() {
-        return this.renewalCount;
-    }
-
-    public void setRenewalCount(BigDecimal renewalCount) {
-        this.renewalCount = renewalCount;
     }
 
     public UserOptionalFields getUserOptionalFields() {

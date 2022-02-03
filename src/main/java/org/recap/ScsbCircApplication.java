@@ -1,9 +1,7 @@
 package org.recap;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
@@ -14,8 +12,8 @@ import org.springframework.web.client.RestTemplate;
 /**
  * The type SCSB Circulation Application.
  */
-@EnableAutoConfiguration(exclude={WebMvcAutoConfiguration.class})
 @PropertySource("classpath:application.properties")
+@SpringBootApplication
 public class ScsbCircApplication {
 
 	/**

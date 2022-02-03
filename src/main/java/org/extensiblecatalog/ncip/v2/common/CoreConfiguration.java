@@ -3,6 +3,10 @@ package org.extensiblecatalog.ncip.v2.common;
 import org.extensiblecatalog.ncip.v2.service.AgencyElementType;
 import org.extensiblecatalog.ncip.v2.service.AgencyId;
 import org.extensiblecatalog.ncip.v2.service.ApplicationProfileType;
+/*
+import org.extensiblecatalog.ncip.v2.service.AuthenticationDataFormatType;
+import org.extensiblecatalog.ncip.v2.service.AuthenticationInputType;
+*/
 import org.extensiblecatalog.ncip.v2.service.FromSystemId;
 import org.extensiblecatalog.ncip.v2.service.ItemElementType;
 import org.extensiblecatalog.ncip.v2.service.PickupLocation;
@@ -11,8 +15,8 @@ import org.extensiblecatalog.ncip.v2.service.RequestIdentifierType;
 import org.extensiblecatalog.ncip.v2.service.ToSystemId;
 import org.extensiblecatalog.ncip.v2.service.ToolkitException;
 import org.extensiblecatalog.ncip.v2.service.UserElementType;
-/*
 import org.extensiblecatalog.ncip.v2.service.Version1AcceptItemProcessingError;
+/*
 import org.extensiblecatalog.ncip.v2.service.Version1AgencyAddressRoleType;
 import org.extensiblecatalog.ncip.v2.service.Version1AgencyElementType;
 import org.extensiblecatalog.ncip.v2.service.Version1AuthenticationDataFormatType;
@@ -30,7 +34,9 @@ import org.extensiblecatalog.ncip.v2.service.Version1ElectronicAddressType;
 import org.extensiblecatalog.ncip.v2.service.Version1ElectronicDataFormatType;
 import org.extensiblecatalog.ncip.v2.service.Version1FiscalActionType;
 import org.extensiblecatalog.ncip.v2.service.Version1FiscalTransactionType;
+*/
 import org.extensiblecatalog.ncip.v2.service.Version1GeneralProcessingError;
+/*
 import org.extensiblecatalog.ncip.v2.service.Version1ItemDescriptionLevel;
 import org.extensiblecatalog.ncip.v2.service.Version1ItemElementType;
 import org.extensiblecatalog.ncip.v2.service.Version1ItemIdentifierType;
@@ -89,11 +95,14 @@ public interface CoreConfiguration extends ToolkitConfiguration {
     String CORE_INCLUDE_STACK_TRACES_IN_PROBLEM_RESPONSES_KEY = "CoreConfiguration.IncludeStackTracesInProblemResponses";
     String CORE_INCLUDE_STACK_TRACES_IN_PROBLEM_RESPONSES_DEFAULT = "False";
     String CORE_SCHEME_VALUE_PAIR_CLASSES_LIST_KEY = "CoreConfiguration.SVPClasses";
-    //String CORE_SCHEME_VALUE_PAIR_CLASSES_LIST_DEFAULT = Version1AcceptItemProcessingError.class.getName() + "," + Version1AgencyAddressRoleType.class.getName() + "," + Version1AgencyElementType.class.getName() + "," + Version1AuthenticationDataFormatType.class.getName() + "," + Version1AuthenticationInputType.class.getName() + "," + Version1BibliographicItemIdentifierCode.class.getName() + "," + Version1BibliographicLevel.class.getName() + "," + Version1BibliographicRecordIdentifierCode.class.getName() + "," + Version1CancelRequestItemProcessingError.class.getName() + "," + Version1CheckInItemProcessingError.class.getName() + "," + Version1CheckOutItemProcessingError.class.getName() + "," + Version1CirculationStatus.class.getName() + "," + Version1ComponentIdentifierType.class.getName() + "," + Version1CurrencyCode.class.getName() + "," + Version1ElectronicAddressType.class.getName() + "," + Version1ElectronicDataFormatType.class.getName() + "," + Version1FiscalActionType.class.getName() + "," + Version1FiscalTransactionType.class.getName() + "," + Version1GeneralProcessingError.class.getName() + "," + Version1ItemDescriptionLevel.class.getName() + "," + Version1ItemElementType.class.getName() + "," + Version1ItemIdentifierType.class.getName() + "," + Version1ItemUseRestrictionType.class.getName() + "," + Version1Language.class.getName() + "," + Version1LocationType.class.getName() + "," + Version1LookupItemProcessingError.class.getName() + "," + Version1LookupRequestProcessingError.class.getName() + "," + Version1LookupUserProcessingError.class.getName() + "," + Version1MediumType.class.getName() + "," + Version1MessagingError.class.getName() + "," + Version1OrganizationNameType.class.getName() + "," + Version1PaymentMethodType.class.getName() + "," + Version1PhysicalAddressType.class.getName() + "," + Version1PhysicalConditionType.class.getName() + "," + Version1RenewItemProcessingError.class.getName() + "," + Version1RequestedActionType.class.getName() + "," + Version1RequestElementType.class.getName() + "," + Version1RequestItemProcessingError.class.getName() + "," + Version1RequestScopeType.class.getName() + "," + Version1RequestStatusType.class.getName() + "," + Version1RequestType.class.getName() + "," + Version1SecurityMarker.class.getName() + "," + Version1UnstructuredAddressType.class.getName() + "," + Version1UserAddressRoleType.class.getName() + "," + Version1UpdateRequestItemProcessingError.class.getName() + "," + Version1UserElementType.class.getName() + "," + Version1UserIdentifierType.class.getName();
+//    String CORE_SCHEME_VALUE_PAIR_CLASSES_LIST_DEFAULT = Version1AcceptItemProcessingError.class.getName() + "," + Version1AgencyAddressRoleType.class.getName() + "," + Version1AgencyElementType.class.getName() + "," + Version1AuthenticationDataFormatType.class.getName() + "," + Version1AuthenticationInputType.class.getName() + "," + Version1BibliographicItemIdentifierCode.class.getName() + "," + Version1BibliographicLevel.class.getName() + "," + Version1BibliographicRecordIdentifierCode.class.getName() + "," + Version1CancelRequestItemProcessingError.class.getName() + "," + Version1CheckInItemProcessingError.class.getName() + "," + Version1CheckOutItemProcessingError.class.getName() + "," + Version1CirculationStatus.class.getName() + "," + Version1ComponentIdentifierType.class.getName() + "," + Version1CurrencyCode.class.getName() + "," + Version1ElectronicAddressType.class.getName() + "," + Version1ElectronicDataFormatType.class.getName() + "," + Version1FiscalActionType.class.getName() + "," + Version1FiscalTransactionType.class.getName() + "," + Version1GeneralProcessingError.class.getName() + "," + Version1ItemDescriptionLevel.class.getName() + "," + Version1ItemElementType.class.getName() + "," + Version1ItemIdentifierType.class.getName() + "," + Version1ItemUseRestrictionType.class.getName() + "," + Version1Language.class.getName() + "," + Version1LocationType.class.getName() + "," + Version1LookupItemProcessingError.class.getName() + "," + Version1LookupRequestProcessingError.class.getName() + "," + Version1LookupUserProcessingError.class.getName() + "," + Version1MediumType.class.getName() + "," + Version1MessagingError.class.getName() + "," + Version1OrganizationNameType.class.getName() + "," + Version1PaymentMethodType.class.getName() + "," + Version1PhysicalAddressType.class.getName() + "," + Version1PhysicalConditionType.class.getName() + "," + Version1RenewItemProcessingError.class.getName() + "," + Version1RequestedActionType.class.getName() + "," + Version1RequestElementType.class.getName() + "," + Version1RequestItemProcessingError.class.getName() + "," + Version1RequestScopeType.class.getName() + "," + Version1RequestStatusType.class.getName() + "," + Version1RequestType.class.getName() + "," + Version1SecurityMarker.class.getName() + "," + Version1UnstructuredAddressType.class.getName() + "," + Version1UserAddressRoleType.class.getName() + "," + Version1UpdateRequestItemProcessingError.class.getName() + "," + Version1UserElementType.class.getName() + "," + Version1UserIdentifierType.class.getName();
+    String CORE_SCHEME_VALUE_PAIR_CLASSES_LIST_DEFAULT = Version1AcceptItemProcessingError.class.getName()  + "," + Version1GeneralProcessingError.class.getName();
     String CORE_SCHEME_VALUE_PAIR_ADDED_CLASSES_LIST_KEY = "CoreConfiguration.AddedSVPClasses";
     String CORE_SCHEME_VALUE_PAIR_ADDED_CLASSES_LIST_DEFAULT = null;
     String CORE_SCHEME_VALUE_PAIR_ALLOW_ANY_CLASSES_LIST_KEY = "CoreConfiguration.SVPClassesAllowAny";
+//    String CORE_SCHEME_VALUE_PAIR_ALLOW_ANY_CLASSES_LIST_DEFAULT = AgencyId.class.getName() + "," + AuthenticationDataFormatType.class.getName() + "," + AuthenticationInputType.class.getName() + "," + ApplicationProfileType.class.getName() + "," + FromSystemId.class.getName() + "," + PickupLocation.class.getName() + "," + RequestIdentifierType.class.getName() + "," + ToSystemId.class.getName();
     String CORE_SCHEME_VALUE_PAIR_ALLOW_ANY_CLASSES_LIST_DEFAULT = AgencyId.class.getName() + "," + ApplicationProfileType.class.getName() + "," + FromSystemId.class.getName() + "," + PickupLocation.class.getName() + "," + RequestIdentifierType.class.getName() + "," + ToSystemId.class.getName();
+
     String CORE_SCHEME_VALUE_PAIR_ADDED_ALLOW_ANY_CLASSES_LIST_KEY = "CoreConfiguration.AddedSVPClassesAllowAny";
     String CORE_SCHEME_VALUE_PAIR_ADDED_ALLOW_ANY_CLASSES_LIST_DEFAULT = null;
     String CORE_SCHEME_VALUE_PAIR_ALLOW_NULL_SCHEME_CLASSES_LIST_KEY = "CoreConfiguration.SVPClassesAllowNullScheme";
