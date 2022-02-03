@@ -1,8 +1,3 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package org.extensiblecatalog.ncip.v2.common;
 
 import java.lang.reflect.InvocationTargetException;
@@ -46,7 +41,7 @@ public class DefaultCoreConfiguration extends BaseToolkitConfiguration implement
                 this.includeStackTracesInProblemResponses = Boolean.parseBoolean(stackTracesPropertyString);
             }
 
-           // String svpClassNamesCSV = this.properties.getProperty("CoreConfiguration.SVPClasses", CoreConfiguration.CORE_SCHEME_VALUE_PAIR_CLASSES_LIST_DEFAULT);
+            String svpClassNamesCSV = this.properties.getProperty("CoreConfiguration.SVPClasses", CoreConfiguration.CORE_SCHEME_VALUE_PAIR_CLASSES_LIST_DEFAULT);
             String addedSVPClassNamesCSV = this.properties.getProperty("CoreConfiguration.AddedSVPClasses");
             String allowAnyClassNamesCSV = this.properties.getProperty("CoreConfiguration.SVPClassesAllowAny", CoreConfiguration.CORE_SCHEME_VALUE_PAIR_ALLOW_ANY_CLASSES_LIST_DEFAULT);
             String addedAllowAnyClassNamesCSV = this.properties.getProperty("CoreConfiguration.AddedSVPClassesAllowAny");
@@ -54,7 +49,7 @@ public class DefaultCoreConfiguration extends BaseToolkitConfiguration implement
             String addedAllowNullSchemeClassNamesCSV = this.properties.getProperty("CoreConfiguration.AddedSVPClassesAllowNullScheme");
 
             try {
-                SchemeLoader.init(addedSVPClassNamesCSV, allowAnyClassNamesCSV, addedAllowAnyClassNamesCSV, allowNullSchemeClassNamesCSV, addedAllowNullSchemeClassNamesCSV);
+                SchemeLoader.init(svpClassNamesCSV, addedSVPClassNamesCSV, allowAnyClassNamesCSV, addedAllowAnyClassNamesCSV, allowNullSchemeClassNamesCSV, addedAllowNullSchemeClassNamesCSV);
             } catch (InvocationTargetException var11) {
                 throw new ToolkitException("InvocationTargetException calling SchemeLoader.init", var11);
             } catch (ClassNotFoundException var12) {

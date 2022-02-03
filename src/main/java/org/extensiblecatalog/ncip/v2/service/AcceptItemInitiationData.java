@@ -13,9 +13,6 @@ public class AcceptItemInitiationData implements NCIPInitiationData {
     protected RequestedActionType requestedActionType;
     protected UserId userId;
     protected GregorianCalendar dateForReturn;
-    protected Boolean indeterminateLoanPeriodFlag;
-    protected Boolean nonReturnableFlag;
-    protected Boolean renewalNotPermitted;
     protected ItemOptionalFields itemOptionalFields;
     protected UserOptionalFields userOptionalFields;
     protected PickupLocation pickupLocation;
@@ -99,31 +96,6 @@ public class AcceptItemInitiationData implements NCIPInitiationData {
     public void setDateForReturn(GregorianCalendar dateForReturn) {
         this.dateForReturn = dateForReturn;
     }
-
-    public Boolean getIndeterminateLoanPeriodFlag() {
-        return this.indeterminateLoanPeriodFlag;
-    }
-
-    public void setIndeterminateLoanPeriodFlag(Boolean indeterminateLoanPeriodFlag) {
-        this.indeterminateLoanPeriodFlag = indeterminateLoanPeriodFlag;
-    }
-
-    public Boolean getNonReturnableFlag() {
-        return this.nonReturnableFlag;
-    }
-
-    public void setNonReturnableFlag(Boolean nonReturnableFlag) {
-        this.nonReturnableFlag = nonReturnableFlag;
-    }
-
-    public Boolean getRenewalNotPermitted() {
-        return this.renewalNotPermitted;
-    }
-
-    public void setRenewalNotPermitted(Boolean renewalNotPermitted) {
-        this.renewalNotPermitted = renewalNotPermitted;
-    }
-
 
     public ItemOptionalFields getItemOptionalFields() {
         return this.itemOptionalFields;

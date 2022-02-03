@@ -1,8 +1,3 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
-
 package org.extensiblecatalog.ncip.v2.common;
 
 import java.lang.reflect.InvocationTargetException;
@@ -14,13 +9,13 @@ public final class SchemeLoader {
     private SchemeLoader() {
     }
 
-    public static void init(String addedSVPClassNamesCSV, String allowAnyClassNamesCSV, String addedAllowAnyClassNamesCSV, String allowNullSchemeClassNamesCSV, String addedAllowNullSchemeClassNamesCSV) throws InvocationTargetException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException {
-        loadAll(addedSVPClassNamesCSV);
+    public static void init(String svpClassNamesCSV, String addedSVPClassNamesCSV, String allowAnyClassNamesCSV, String addedAllowAnyClassNamesCSV, String allowNullSchemeClassNamesCSV, String addedAllowNullSchemeClassNamesCSV) throws InvocationTargetException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException {
+        loadAll(svpClassNamesCSV, addedSVPClassNamesCSV);
         allowAny(allowAnyClassNamesCSV, addedAllowAnyClassNamesCSV);
         allowNullScheme(allowNullSchemeClassNamesCSV, addedAllowNullSchemeClassNamesCSV);
     }
 
-    public static void loadAll(String addedSVPClassNamesCSV) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    public static void loadAll(String svpClassNamesCSV, String addedSVPClassNamesCSV) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         String[] classNames;
         String[] var3;
         int var4;
@@ -29,7 +24,7 @@ public final class SchemeLoader {
         Class clazz;
         Class svpClass;
         Method loadAllMethod;
-       /* if (svpClassNamesCSV != null && !svpClassNamesCSV.isEmpty()) {
+        if (svpClassNamesCSV != null && !svpClassNamesCSV.isEmpty()) {
             classNames = svpClassNamesCSV.split(",");
             var3 = classNames;
             var4 = classNames.length;
@@ -41,7 +36,7 @@ public final class SchemeLoader {
                 loadAllMethod = svpClass.getMethod("loadAll");
                 loadAllMethod.invoke((Object)null);
             }
-        }*/
+        }
 
         if (addedSVPClassNamesCSV != null && !addedSVPClassNamesCSV.isEmpty()) {
             classNames = addedSVPClassNamesCSV.split(",");
