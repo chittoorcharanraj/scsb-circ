@@ -42,7 +42,7 @@ repositories {
 dependencies {
 	implementation fileTree(dir: '/data/commonjar',include: '*2.2.jar')
 	implementation fileTree(dir: '/data/commonjar', include: 'jsip2-1.1.0.jar')
-	//implementation fileTree(dir: '/data/commonjar', include: 'ncip.jar')
+	implementation fileTree(dir: '/data/commonjar', include: 'ncip.jar')
 	implementation 'org.projectlombok:lombok:1.18.22'
 	annotationProcessor 'org.projectlombok:lombok:1.18.22'
 	testImplementation 'org.projectlombok:lombok:1.18.22'
@@ -54,7 +54,7 @@ dependencies {
 	implementation 'net.sf.dozer:dozer:5.5.1'
 	implementation group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '3.0.2'
 	implementation 'javax.servlet:javax.servlet-api:4.0.1'
-	//implementation group: 'log4j', name: 'log4j', version: '1.2.17'
+	implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.17.1'
 	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
 
 	implementation('commons-beanutils:commons-beanutils:1.9.4')
