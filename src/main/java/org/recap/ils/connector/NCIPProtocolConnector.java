@@ -52,6 +52,7 @@ import org.recap.ils.protocol.rest.util.RestApiResponseUtil;
 import org.recap.model.ILSConfigProperties;
 import org.recap.model.AbstractResponseItem;
 import org.recap.repository.jpa.ItemDetailsRepository;
+import org.recap.util.CommonUtil;
 import org.recap.util.PropertyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -96,6 +97,10 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
 
     @Autowired
     PropertyUtil propertyUtil;
+
+    @Autowired
+    CommonUtil commonUtil;
+
 
     @Override
     public boolean supports(String protocol) {
@@ -204,6 +209,7 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
             NCIPToolKitUtil ncipToolkitUtil = NCIPToolKitUtil.getInstance();
             InputStream requestMessageStream = ncipToolkitUtil.translator.createInitiationMessageStream(ncipToolkitUtil.serviceContext, checkOutItemInitiationData);
             String requestBody = IOUtils.toString(requestMessageStream, StandardCharsets.UTF_8);
+            requestBody = commonUtil.formatRequest(requestBody);
             CloseableHttpClient client = buildCloseableHttpClient();
 
             HttpUriRequest request = getHttpRequest(requestBody);
@@ -212,6 +218,7 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
 
             HttpEntity entity = response.getEntity();
             responseString = EntityUtils.toString( entity, StandardCharsets.UTF_8);
+            responseString = commonUtil.formatResponse(responseString);
 
             log.info(ncipRequest);
             log.info(requestBody);
@@ -276,15 +283,16 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
         try {
             NCIPToolKitUtil ncipToolkitUtil = NCIPToolKitUtil.getInstance();
             String requestBody = checkInItem.getRequestBody(ncipToolkitUtil, checkInItemInitiationData);
+            requestBody = commonUtil.formatRequest(requestBody);
             HttpUriRequest request = getHttpRequest(requestBody);
             CloseableHttpClient client = buildCloseableHttpClient();
 
             String responseString = null;
-
             HttpResponse response = client.execute(request);
 
             HttpEntity entity = response.getEntity();
             responseString = EntityUtils.toString(entity, StandardCharsets.UTF_8);
+            responseString = commonUtil.formatResponse(responseString);
 
             log.info(ncipRequest);
             log.info(requestBody);
@@ -427,6 +435,7 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
             NCIPToolKitUtil ncipToolkitUtil = NCIPToolKitUtil.getInstance();
             InputStream requestMessageStream = ncipToolkitUtil.translator.createInitiationMessageStream(ncipToolkitUtil.serviceContext, cancelRequestItemInitiationData);
             String requestBody = IOUtils.toString(requestMessageStream, StandardCharsets.UTF_8);
+            requestBody = commonUtil.formatRequest(requestBody);
 
             CloseableHttpClient client = buildCloseableHttpClient();
             HttpUriRequest request = getHttpRequest(requestBody);
@@ -434,6 +443,7 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
 
             HttpEntity entity = response.getEntity();
             responseString = EntityUtils.toString(entity, StandardCharsets.UTF_8);
+            responseString = commonUtil.formatResponse(responseString);
 
             log.info(ncipRequest);
             log.info(requestBody);
@@ -506,6 +516,7 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
             NCIPToolKitUtil ncipToolkitUtil = NCIPToolKitUtil.getInstance();
             InputStream requestMessageStream = ncipToolkitUtil.translator.createInitiationMessageStream(ncipToolkitUtil.serviceContext, lookupUserInitiationData);
             String requestBody = IOUtils.toString(requestMessageStream, StandardCharsets.UTF_8);
+            requestBody = commonUtil.formatRequest(requestBody);
             CloseableHttpClient client = buildCloseableHttpClient();
 
             HttpUriRequest request = getHttpRequest(requestBody);
@@ -513,6 +524,7 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
 
             HttpEntity entity = response.getEntity();
             responseString = EntityUtils.toString(entity, StandardCharsets.UTF_8);
+            responseString = commonUtil.formatResponse(responseString);
 
             log.info(ncipRequest);
             log.info(requestBody);
@@ -578,12 +590,14 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
             NCIPToolKitUtil ncipToolkitUtil = NCIPToolKitUtil.getInstance();
             InputStream requestMessageStream = ncipToolkitUtil.translator.createInitiationMessageStream(ncipToolkitUtil.serviceContext, recallItemInitiationData);
             String requestBody = IOUtils.toString(requestMessageStream, StandardCharsets.UTF_8);
+            requestBody = commonUtil.formatRequest(requestBody);
             CloseableHttpClient client = buildCloseableHttpClient();
 
             HttpUriRequest request = getHttpRequest(requestBody);
             HttpResponse response = client.execute(request);
             HttpEntity entity = response.getEntity();
             responseString = EntityUtils.toString(entity, StandardCharsets.UTF_8);
+            responseString = commonUtil.formatResponse(responseString);
 
             log.info(ncipRequest);
             log.info(requestBody);
@@ -689,11 +703,12 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
                 acceptItemInitiationData = acceptItem.getAcceptItemInitiationData(itemIdentifier, requestId, patronIdentifier, title, author, pickupLocation, callNumber, getNcipAgencyId(), getNcipScheme(), itemAgencyId);
             }
             String requestBody = acceptItem.getRequestBody(ncipToolkitUtil, acceptItemInitiationData);
+            requestBody = commonUtil.formatRequest(requestBody);
             HttpUriRequest request = getHttpRequest(requestBody);
             HttpResponse response = client.execute(request);
             HttpEntity entity = response.getEntity();
             responseString = EntityUtils.toString(entity, StandardCharsets.UTF_8);
-
+            responseString = commonUtil.formatResponse(responseString);
 
             log.info(ncipRequest);
             log.info(requestBody);

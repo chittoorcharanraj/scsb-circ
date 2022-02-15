@@ -42,7 +42,7 @@ repositories {
 dependencies {
 	implementation fileTree(dir: '/data/commonjar',include: '*2.2.jar')
 	implementation fileTree(dir: '/data/commonjar', include: 'jsip2-1.1.0.jar')
-	implementation fileTree(dir: '/data/commonjar', include: 'ncip.jar')
+	implementation fileTree(dir: '/data/commonjar', include: 'ncip-new.jar')
 	implementation 'org.projectlombok:lombok:1.18.22'
 	annotationProcessor 'org.projectlombok:lombok:1.18.22'
 	testImplementation 'org.projectlombok:lombok:1.18.22'
