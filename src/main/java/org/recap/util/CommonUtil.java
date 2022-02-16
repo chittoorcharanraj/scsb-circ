@@ -341,4 +341,30 @@ public class CommonUtil {
             }
         });
     }
+
+    private String replaceStringCharacters(String text){
+        for (int i = 1; i < text.length(); i++) {
+            if(text.charAt(i) == 60){
+                if(text.charAt(i + 1) > 64 && text.charAt(i + 1) <= 122){
+                    text = text.substring(0, i) + "<ns1:"
+                            + text.substring(i + 1);
+                    i = i+5;
+                }
+            }
+        }
+        return text;
+    }
+
+    public String formatRequest(String requestBody){
+        String tempRequest = requestBody.replaceAll("</", "RECAP_123");
+        tempRequest = replaceStringCharacters(tempRequest);
+        return tempRequest.replaceAll("RECAP_123", "</ns1:");
+    }
+
+    public String formatResponse(String responseBody)
+    {
+       String responseString = responseBody.replaceAll("<ns1:","<");
+       return responseString.replaceAll("</ns1:","</");
+    }
+
 }

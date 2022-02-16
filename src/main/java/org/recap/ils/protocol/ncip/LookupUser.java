@@ -36,7 +36,7 @@ public class LookupUser extends ScsbNCIP {
         userid.setAgencyId(new AgencyId(fromAgency));
         userid.setUserIdentifierValue(useridString);
         lookupUserInitationData.setUserId(userid);
-        lookupUserInitationData.setUserAddressInformationDesired(Boolean.TRUE);
+      //  lookupUserInitationData.setUserAddressInformationDesired(Boolean.TRUE);
         lookupUserInitationData.setBlockOrTrapDesired(Boolean.TRUE);
         lookupUserInitationData.setNameInformationDesired(Boolean.TRUE);
         lookupUserInitationData.setUserPrivilegeDesired(Boolean.TRUE);
