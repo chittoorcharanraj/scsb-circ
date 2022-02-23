@@ -65,6 +65,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -79,12 +80,12 @@ import java.util.Map;
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class NCIPProtocolConnector extends AbstractProtocolConnector {
 
-    private String ncipRequest = "NCIP2 request sent: ";
-    private String ncipResponse = "NCIP2 response received: ";
-    private String httpCallTo = "Http call to ";
-    private String returnedResponseCode = " returned response code ";
-    private String responseBody = ".  Response body: ";
-    private String failureReason = "Failure due to ";
+    private final String ncipRequest = "NCIP2 request sent: ";
+    private final String ncipResponse = "NCIP2 response received: ";
+    private final String httpCallTo = "Http call to ";
+    private final String returnedResponseCode = " returned response code ";
+    private final String responseBody = ".  Response body: ";
+    private final String failureReason = "Failure due to ";
 
     @Autowired
     RestApiResponseUtil restApiResponseUtil;
@@ -208,30 +209,17 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
             CheckOutItemInitiationData checkOutItemInitiationData = checkoutItem.getCheckOutItemInitiationData(itemIdentifier, requestId, patronIdentifier, getNcipAgencyId());
             NCIPToolKitUtil ncipToolkitUtil = NCIPToolKitUtil.getInstance();
             InputStream requestMessageStream = ncipToolkitUtil.translator.createInitiationMessageStream(ncipToolkitUtil.serviceContext, checkOutItemInitiationData);
-            String requestBody = IOUtils.toString(requestMessageStream, StandardCharsets.UTF_8);
-            requestBody = commonUtil.formatRequest(requestBody);
-            CloseableHttpClient client = buildCloseableHttpClient();
-
-            HttpUriRequest request = getHttpRequest(requestBody);
-
-            HttpResponse response = client.execute(request);
-
-            HttpEntity entity = response.getEntity();
-            responseString = EntityUtils.toString( entity, StandardCharsets.UTF_8);
-            responseString = commonUtil.formatResponse(responseString);
-
-            log.info(ncipRequest);
-            log.info(requestBody);
-            log.info(ncipResponse);
-            log.info(responseString);
-            int responseCode = response.getStatusLine().getStatusCode();
-            if (responseCode > 399) {
-                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST , httpCallTo + getEndPointUrl() + returnedResponseCode + responseCode + responseBody + responseString);
+            HttpResponse response =  executeRequest(requestMessageStream);
+            NCIPResponseData responseData = null;
+            if(response != null) {
+                int responseCode = response.getStatusLine().getStatusCode();
+                if (responseCode > 399) {
+                    throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, httpCallTo + getEndPointUrl() + returnedResponseCode + responseCode + responseBody + responseString);
+                }
+                else {
+                    responseData = getResponseString(response, ncipToolkitUtil, responseData);
+                }
             }
-
-            InputStream stream = new ByteArrayInputStream(responseString.getBytes(StandardCharsets.UTF_8));
-            NCIPResponseData responseData = ncipToolkitUtil.translator.createResponseData(ncipToolkitUtil.serviceContext, stream);
-
             //transforms the NCIP Objects into a JSON response object
             CheckOutItemResponseData checkoutItemResponse = (CheckOutItemResponseData) responseData;
 
@@ -434,28 +422,17 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
 
             NCIPToolKitUtil ncipToolkitUtil = NCIPToolKitUtil.getInstance();
             InputStream requestMessageStream = ncipToolkitUtil.translator.createInitiationMessageStream(ncipToolkitUtil.serviceContext, cancelRequestItemInitiationData);
-            String requestBody = IOUtils.toString(requestMessageStream, StandardCharsets.UTF_8);
-            requestBody = commonUtil.formatRequest(requestBody);
-
-            CloseableHttpClient client = buildCloseableHttpClient();
-            HttpUriRequest request = getHttpRequest(requestBody);
-            HttpResponse response = client.execute(request);
-
-            HttpEntity entity = response.getEntity();
-            responseString = EntityUtils.toString(entity, StandardCharsets.UTF_8);
-            responseString = commonUtil.formatResponse(responseString);
-
-            log.info(ncipRequest);
-            log.info(requestBody);
-            log.info(ncipResponse);
-            log.info(responseString);
-            int responseCode = response.getStatusLine().getStatusCode();
-            if (responseCode > 399) {
-                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, httpCallTo + getEndPointUrl() + returnedResponseCode + responseCode + responseBody + responseString);
+            HttpResponse response =  executeRequest(requestMessageStream);
+            NCIPResponseData responseData = null;
+            if(response != null) {
+                int responseCode = response.getStatusLine().getStatusCode();
+                if (responseCode > 399) {
+                    throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, httpCallTo + getEndPointUrl() + returnedResponseCode + responseCode + responseBody + responseString);
+                }
+                else {
+                    responseData = getResponseString(response, ncipToolkitUtil, responseData);
+                }
             }
-            //transforms the NCIP xml response into NCIP Objects
-            InputStream stream = new ByteArrayInputStream(responseString.getBytes(StandardCharsets.UTF_8));
-            NCIPResponseData responseData = ncipToolkitUtil.translator.createResponseData(ncipToolkitUtil.serviceContext, stream);
 
             //transforms the NCIP Objects into a JSON response object
             CancelRequestItemResponseData cancelItemResponse = (CancelRequestItemResponseData) responseData;
@@ -507,7 +484,7 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
     public AbstractResponseItem lookupPatron(String patronIdentifier) {
         log.info("Lookup for patron {}", patronIdentifier);
         PatronInformationResponse patronInformationResponse = new PatronInformationResponse();
-        String responseString;
+        String responseString = null;
         JSONObject responseObject;
 
         try {
@@ -515,28 +492,21 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
             LookupUserInitiationData lookupUserInitiationData = lookupUser.getLookupUserInitiationData(patronIdentifier, getNcipAgencyId());
             NCIPToolKitUtil ncipToolkitUtil = NCIPToolKitUtil.getInstance();
             InputStream requestMessageStream = ncipToolkitUtil.translator.createInitiationMessageStream(ncipToolkitUtil.serviceContext, lookupUserInitiationData);
-            String requestBody = IOUtils.toString(requestMessageStream, StandardCharsets.UTF_8);
-            requestBody = commonUtil.formatRequest(requestBody);
-            CloseableHttpClient client = buildCloseableHttpClient();
-
-            HttpUriRequest request = getHttpRequest(requestBody);
-            HttpResponse response = client.execute(request);
-
-            HttpEntity entity = response.getEntity();
-            responseString = EntityUtils.toString(entity, StandardCharsets.UTF_8);
-            responseString = commonUtil.formatResponse(responseString);
-
-            log.info(ncipRequest);
-            log.info(requestBody);
-            log.info(ncipResponse);
-            log.info(responseString);
-            int responseCode = response.getStatusLine().getStatusCode();
-            if (responseCode > 399) {
-                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, httpCallTo + getEndPointUrl() + returnedResponseCode + responseCode + responseBody + responseString);
+            HttpResponse response = executeRequest(requestMessageStream);
+            NCIPResponseData responseData = null;
+            responseString = null;
+            if(response != null) {
+                System.out.println("response is null");
+                int responseCode = response.getStatusLine().getStatusCode();
+                if (responseCode > 399) {
+                    throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, httpCallTo + getEndPointUrl() + returnedResponseCode + responseCode + responseBody + responseString);
+                }
+                else {
+                    responseData = getResponseString(response, ncipToolkitUtil, responseData);
+                }
             }
+
             //transforms the NCIP xml response into  NCIP Objects
-            InputStream stream = new ByteArrayInputStream(responseString.getBytes(StandardCharsets.UTF_8));
-            NCIPResponseData responseData = ncipToolkitUtil.translator.createResponseData(ncipToolkitUtil.serviceContext, stream);
             //transforms the  NCIP Objects into a JSON response object
             LookupUserResponseData lookupUserResponseData = (LookupUserResponseData) responseData;
 
@@ -555,20 +525,13 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
                 );
                 patronInformationResponse.setSuccess(Boolean.TRUE);
                 patronInformationResponse.setScreenMessage(ScsbCommonConstants.SUCCESS);
-                /*patronInformationResponse.setEmail((!lookupUserResponseData.getUserOptionalFields().getUserAddressInformations().isEmpty() && lookupUserResponseData.getUserOptionalFields().getUserAddressInformations().size() > 1)
-                        ? lookupUserResponseData.getUserOptionalFields().getUserAddressInformation(1).getElectronicAddress().getElectronicAddressData():"");*/
                 patronInformationResponse.setPatronIdentifier(patronIdentifier);
                 log.info("patronInformation Response >>> " + lookupUserResponseData);
                 log.info("patronInformation Response message >>> " + patronInformationResponse.getScreenMessage());
 
                 return patronInformationResponse;
             }
-        } catch (HttpClientErrorException httpException) {
-            log.error(ScsbCommonConstants.LOG_ERROR, httpException);
-            patronInformationResponse.setSuccess(false);
-            patronInformationResponse.setScreenMessage(httpException.getStatusText());
-            log.error("patronInformation Response message >>> " + patronInformationResponse.getScreenMessage());
-        } catch (Exception e) {
+        }  catch (Exception e) {
             log.error(ScsbCommonConstants.LOG_ERROR, e);
             patronInformationResponse.setSuccess(false);
             patronInformationResponse.setScreenMessage(e.getMessage());
@@ -581,7 +544,7 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
     public Object recallItem(String itemIdentifier, String patronIdentifier, String institutionId, String expirationDate, String bibId, String pickupLocation) {
         log.info("recallItem for Item {}", itemIdentifier);
         ItemRecallResponse itemRecallResponse = new ItemRecallResponse();
-        String responseString;
+        String responseString = null;
         JSONObject responseObject;
 
         try {
@@ -589,27 +552,19 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
             RecallItemInitiationData recallItemInitiationData = recallItem.getRecallItemInitiationData(itemIdentifier, patronIdentifier, getNcipAgencyId());
             NCIPToolKitUtil ncipToolkitUtil = NCIPToolKitUtil.getInstance();
             InputStream requestMessageStream = ncipToolkitUtil.translator.createInitiationMessageStream(ncipToolkitUtil.serviceContext, recallItemInitiationData);
-            String requestBody = IOUtils.toString(requestMessageStream, StandardCharsets.UTF_8);
-            requestBody = commonUtil.formatRequest(requestBody);
-            CloseableHttpClient client = buildCloseableHttpClient();
 
-            HttpUriRequest request = getHttpRequest(requestBody);
-            HttpResponse response = client.execute(request);
-            HttpEntity entity = response.getEntity();
-            responseString = EntityUtils.toString(entity, StandardCharsets.UTF_8);
-            responseString = commonUtil.formatResponse(responseString);
-
-            log.info(ncipRequest);
-            log.info(requestBody);
-            log.info(ncipResponse);
-            log.info(responseString);
-            int responseCode = response.getStatusLine().getStatusCode();
-            if (responseCode > 399) {
-                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, httpCallTo + getEndPointUrl() + returnedResponseCode + responseCode + responseBody + responseString);
+            HttpResponse response = executeRequest(requestMessageStream);
+            NCIPResponseData responseData = null;
+            if(response != null) {
+                int responseCode = response.getStatusLine().getStatusCode();
+                if (responseCode > 399) {
+                    throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, httpCallTo + getEndPointUrl() + returnedResponseCode + responseCode + responseBody + responseString);
+                }
+                else {
+                    responseData = getResponseString(response, ncipToolkitUtil, responseData);
+                }
             }
             //transforms the NCIP xml response into NCIP Objects
-            InputStream stream = new ByteArrayInputStream(responseString.getBytes(StandardCharsets.UTF_8));
-            NCIPResponseData responseData = ncipToolkitUtil.translator.createResponseData(ncipToolkitUtil.serviceContext, stream);
             //transforms the NCIP Objects into a JSON response object
             RecallItemResponseData recallItemResponse = (RecallItemResponseData) responseData;
             responseObject = recallItem.getRecallItemResponse(recallItemResponse);
@@ -689,7 +644,6 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
         JSONObject responseObject;
         try {
             NCIPToolKitUtil ncipToolkitUtil = NCIPToolKitUtil.getInstance();
-            CloseableHttpClient client = buildCloseableHttpClient();
             AcceptItemInitiationData acceptItemInitiationData = new AcceptItemInitiationData();
                     List<ItemEntity> itemEntities = itemDetailsRepository.findByBarcode(itemIdentifier);
             ItemEntity itemEntity = !itemEntities.isEmpty() ? itemEntities.get(0) : null;
@@ -702,25 +656,19 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
                 itemAgencyId = propertyUtil.getPropertyByInstitutionAndKey(callInstitutionId, PropertyKeyConstants.ILS.ILS_UNRESTRICTED_ACCEPT_ITEM_AGENCY_ID);
                 acceptItemInitiationData = acceptItem.getAcceptItemInitiationData(itemIdentifier, requestId, patronIdentifier, title, author, pickupLocation, callNumber, getNcipAgencyId(), getNcipScheme(), itemAgencyId);
             }
-            String requestBody = acceptItem.getRequestBody(ncipToolkitUtil, acceptItemInitiationData);
-            requestBody = commonUtil.formatRequest(requestBody);
-            HttpUriRequest request = getHttpRequest(requestBody);
-            HttpResponse response = client.execute(request);
-            HttpEntity entity = response.getEntity();
-            responseString = EntityUtils.toString(entity, StandardCharsets.UTF_8);
-            responseString = commonUtil.formatResponse(responseString);
-
-            log.info(ncipRequest);
-            log.info(requestBody);
-            log.info(ncipResponse);
-            log.info(responseString);
-            int responseCode = response.getStatusLine().getStatusCode();
-            if (responseCode > 399) {
-                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, getEndPointUrl() + returnedResponseCode + responseCode + responseBody + responseString);
+            InputStream requestMessageStream = ncipToolkitUtil.translator.createInitiationMessageStream(ncipToolkitUtil.serviceContext, acceptItemInitiationData);
+            String requestBody = IOUtils.toString(requestMessageStream, StandardCharsets.UTF_8);
+            HttpResponse response = executeRequest(requestMessageStream);
+            NCIPResponseData responseData = null;
+            if(response != null) {
+                int responseCode = response.getStatusLine().getStatusCode();
+                if (responseCode > 399) {
+                    throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, getEndPointUrl() + returnedResponseCode + responseCode + responseBody + responseString);
+                }
+                else {
+                    responseData = getResponseString(response, ncipToolkitUtil, responseData);
+                }
             }
-            //transforms the NCIP xml response into NCIP Objects
-            InputStream stream = new ByteArrayInputStream(responseString.getBytes(StandardCharsets.UTF_8));
-            NCIPResponseData responseData = ncipToolkitUtil.translator.createResponseData(ncipToolkitUtil.serviceContext, stream);
 
             //transforms the  NCIP Objects into a JSON response object
             AcceptItemResponseData acceptItemResponse = (AcceptItemResponseData) responseData;
@@ -757,4 +705,45 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
         }
         return itemHoldResponse;
     }
+    private HttpResponse executeRequest(InputStream requestMessageStream)
+    {
+        try {
+            String requestBody = IOUtils.toString(requestMessageStream, StandardCharsets.UTF_8);
+            requestBody = commonUtil.formatRequest(requestBody);
+            CloseableHttpClient client = buildCloseableHttpClient();
+
+            HttpUriRequest request = getHttpRequest(requestBody);
+            HttpResponse response = client.execute(request);
+            log.info(ncipRequest);
+            log.info(requestBody);
+            log.info(ncipResponse);
+            return response;
+        }
+        catch (Exception e) {
+            return null ;
+        }
+    }
+    private NCIPResponseData getResponseString(HttpResponse response, NCIPToolKitUtil ncipToolKitUtil, NCIPResponseData responseData)
+    {
+        String responseString = null;
+        System.out.println("response >>>" +response.toString());
+        HttpEntity entity = response.getEntity();
+        try {
+            responseString = EntityUtils.toString(entity, StandardCharsets.UTF_8);
+            System.out.println("responseString >>>" +responseString.toString());
+
+            responseString = commonUtil.formatResponse(responseString);
+            InputStream stream = new ByteArrayInputStream(responseString.getBytes(StandardCharsets.UTF_8));
+            responseData = ncipToolKitUtil.translator.createResponseData(ncipToolKitUtil.serviceContext, stream);
+
+            System.out.println("responseString now >>>" +responseString.toString());
+
+            log.info(responseString);
+        }
+        catch (Exception ex) {
+            return null;
+        }
+        return responseData;
+    }
+
 }
