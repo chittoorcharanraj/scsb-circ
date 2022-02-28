@@ -188,58 +188,66 @@ public class ItemRequestService {
 
                 DeliveryCodeTranslationEntity deliveryCodeTranslationEntity = deliveryCodeTranslationDetailsRepository.findByRequestingInstitutionandImsLocation(institutionEntity.getId(), deliveryCodeEntity.getId(), itemEntity.getImsLocationEntity().getId());
                 if (deliveryCodeTranslationEntity != null && deliveryCodeTranslationEntity.getImsLocationDeliveryCode() != null) {
-                    log.info("Translation Code >>>> {} "  , deliveryCodeTranslationEntity.getImsLocationDeliveryCode());
+                    log.info("Translation Code >>>> {} ", deliveryCodeTranslationEntity.getImsLocationDeliveryCode());
                     itemRequestInfo.setTranslatedDeliveryLocation(deliveryCodeTranslationEntity.getImsLocationDeliveryCode());
                 } else {
                     itemResponseInformation.setScreenMessage(ScsbConstants.REQUEST_SCSB_EXCEPTION + ScsbConstants.INVALID_TRANSLATED_CODE);
                     itemResponseInformation.setSuccess(false);
                 }
-                log.info("itemEntity.getImsLocationEntity().getImsLocationCode() >>>> {} "  , itemEntity.getImsLocationEntity().getImsLocationCode());
+                log.info("itemEntity.getImsLocationEntity().getImsLocationCode() >>>> {} ", itemEntity.getImsLocationEntity().getImsLocationCode());
                 SearchResultRow searchResultRow = searchRecords(itemEntity); //Solr
-
-                itemRequestInfo.setTitleIdentifier(getTitle(itemRequestInfo.getTitleIdentifier(), itemEntity, searchResultRow));
-                itemRequestInfo.setAuthor(searchResultRow.getAuthor());
-                itemRequestInfo.setCustomerCode(itemEntity.getCustomerCode());
-                if (deliveryCodeEntity != null) {
-                    itemRequestInfo.setPickupLocation(deliveryCodeEntity.getPickupLocation());
+                if (searchResultRow == null) {
+                    searchResultRow = searchRecords(itemEntity);
                 }
-                itemResponseInformation.setItemId(itemEntity.getId());
+                if (searchResultRow != null) {
+                    itemRequestInfo.setTitleIdentifier(getTitle(itemRequestInfo.getTitleIdentifier(), itemEntity, searchResultRow));
+                    itemRequestInfo.setAuthor(searchResultRow.getAuthor());
+                    itemRequestInfo.setCustomerCode(itemEntity.getCustomerCode());
+                    if (deliveryCodeEntity != null) {
+                        itemRequestInfo.setPickupLocation(deliveryCodeEntity.getPickupLocation());
+                    }
+                    itemResponseInformation.setItemId(itemEntity.getId());
 
-                boolean isItemStatusAvailable;
-                synchronized (this) {
-                    // Change Item Availablity
-                    isItemStatusAvailable = updateItemAvailabilityStatus(itemEntities, itemRequestInfo.getUsername());
-                }
+                    boolean isItemStatusAvailable;
+                    synchronized (this) {
+                        // Change Item Availablity
+                        isItemStatusAvailable = updateItemAvailabilityStatus(itemEntities, itemRequestInfo.getUsername());
+                    }
 
-                Integer requestId = updateRecapRequestItem(itemRequestInfo, itemEntity, ScsbConstants.REQUEST_STATUS_PROCESSING);
-                itemRequestInfo.setRequestId(requestId);
-                itemResponseInformation.setRequestId(requestId);
+                    Integer requestId = updateRecapRequestItem(itemRequestInfo, itemEntity, ScsbConstants.REQUEST_STATUS_PROCESSING);
+                    itemRequestInfo.setRequestId(requestId);
+                    itemResponseInformation.setRequestId(requestId);
 
-                if (requestId == 0) {
-                    rollbackUpdateItemAvailabilityStatus(itemEntity, itemRequestInfo.getUsername());
-                    itemResponseInformation.setScreenMessage(ScsbCommonConstants.REQUEST_EXCEPTION + ScsbConstants.INTERNAL_ERROR_DURING_REQUEST);
-                    itemResponseInformation.setSuccess(false);
-                } else if (!isItemStatusAvailable) {
-                    itemResponseInformation.setScreenMessage(ScsbConstants.REQUEST_SCSB_EXCEPTION + ScsbConstants.RETRIEVAL_NOT_FOR_UNAVAILABLE_ITEM);
-                    itemResponseInformation.setSuccess(false);
+                    if (requestId == 0) {
+                        rollbackUpdateItemAvailabilityStatus(itemEntity, itemRequestInfo.getUsername());
+                        itemResponseInformation.setScreenMessage(ScsbCommonConstants.REQUEST_EXCEPTION + ScsbConstants.INTERNAL_ERROR_DURING_REQUEST);
+                        itemResponseInformation.setSuccess(false);
+                    } else if (!isItemStatusAvailable) {
+                        itemResponseInformation.setScreenMessage(ScsbConstants.REQUEST_SCSB_EXCEPTION + ScsbConstants.RETRIEVAL_NOT_FOR_UNAVAILABLE_ITEM);
+                        itemResponseInformation.setSuccess(false);
+                    } else {
+                        // Process
+                        itemResponseInformation = checkOwningInstitution(itemRequestInfo, itemResponseInformation, itemEntity);
+                    }
                 } else {
-                    // Process
-                    itemResponseInformation = checkOwningInstitution(itemRequestInfo, itemResponseInformation, itemEntity);
+                    itemResponseInformation.setScreenMessage(ScsbConstants.REQUEST_SCSB_EXCEPTION + ScsbConstants.WRONG_ITEM_BARCODE);
+                    itemResponseInformation.setSuccess(false);
                 }
-            } else {
-                itemResponseInformation.setScreenMessage(ScsbConstants.REQUEST_SCSB_EXCEPTION + ScsbConstants.WRONG_ITEM_BARCODE);
+                setItemResponseInformation(itemRequestInfo, itemResponseInformation);
+                log.info("itemRequestInfo.getImsLocationCode() before LAS Call >>>> {} ", itemRequestInfo.getImsLocationCode());
+                if (isUseQueueLasCall(itemRequestInfo.getImsLocationCode()) && (StringUtils.containsIgnoreCase(itemResponseInformation.getScreenMessage(), ScsbConstants.REQUEST_ILS_EXCEPTION)
+                        || StringUtils.containsIgnoreCase(itemResponseInformation.getScreenMessage(), ScsbConstants.REQUEST_SCSB_EXCEPTION)
+                        || StringUtils.containsIgnoreCase(itemResponseInformation.getScreenMessage(), ScsbConstants.REQUEST_LAS_EXCEPTION))) {
+                    updateChangesToDb(itemResponseInformation, ScsbConstants.REQUEST_RETRIEVAL + "-" + itemResponseInformation.getRequestingInstitution());
+                }
+                // Update Topics
+                sendMessageToTopic(itemRequestInfo.getRequestingInstitution(), itemRequestInfo.getRequestType(), itemResponseInformation, exchange);
+                log.info(ScsbConstants.FINISH_PROCESSING);
+            }
+            else {
+                itemResponseInformation.setScreenMessage(ScsbConstants.SOLR_SEARCH_ERROR);
                 itemResponseInformation.setSuccess(false);
             }
-            setItemResponseInformation(itemRequestInfo, itemResponseInformation);
-            log.info("itemRequestInfo.getImsLocationCode() before LAS Call >>>> {} "  , itemRequestInfo.getImsLocationCode());
-            if (isUseQueueLasCall(itemRequestInfo.getImsLocationCode()) && (StringUtils.containsIgnoreCase(itemResponseInformation.getScreenMessage(), ScsbConstants.REQUEST_ILS_EXCEPTION)
-                    || StringUtils.containsIgnoreCase(itemResponseInformation.getScreenMessage(), ScsbConstants.REQUEST_SCSB_EXCEPTION)
-                    || StringUtils.containsIgnoreCase(itemResponseInformation.getScreenMessage(), ScsbConstants.REQUEST_LAS_EXCEPTION))) {
-                updateChangesToDb(itemResponseInformation, ScsbConstants.REQUEST_RETRIEVAL + "-" + itemResponseInformation.getRequestingInstitution());
-            }
-            // Update Topics
-            sendMessageToTopic(itemRequestInfo.getRequestingInstitution(), itemRequestInfo.getRequestType(), itemResponseInformation, exchange);
-            log.info(ScsbConstants.FINISH_PROCESSING);
         } catch (RestClientException ex) {
             log.error(ScsbCommonConstants.REQUEST_EXCEPTION_REST, ex);
         } catch (Exception ex) {
@@ -280,41 +288,49 @@ public class ItemRequestService {
                 if (itemEntities != null && !itemEntities.isEmpty()) {
                     itemEntity = itemEntities.get(0);
                     SearchResultRow searchResultRow = searchRecords(itemEntity); //Solr
+                    if (searchResultRow == null) {
+                        searchResultRow = searchRecords(itemEntity);
+                    }
+                    if (searchResultRow != null) {
+                        itemRequestInfo.setTitleIdentifier(getTitle(itemRequestInfo.getTitleIdentifier(), itemEntity, searchResultRow));
+                        itemRequestInfo.setAuthor(searchResultRow.getAuthor());
+                        itemRequestInfo.setBibId(itemEntity.getBibliographicEntities().get(0).getOwningInstitutionBibId());
+                        itemRequestInfo.setItemOwningInstitution(itemEntity.getInstitutionEntity().getInstitutionCode());
+                        itemRequestInfo.setImsLocationCode(itemEntity.getImsLocationEntity().getImsLocationCode());
+                        InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionCode(itemRequestInfo.getRequestingInstitution());
+                        itemRequestInfo.setPickupLocation(getPickupLocation(institutionEntity.getId(), itemRequestInfo.getDeliveryLocation()));
+                        itemResponseInformation.setItemId(itemEntity.getId());
+                        Integer requestId = updateRecapRequestItem(itemRequestInfo, itemEntity, ScsbConstants.REQUEST_STATUS_PROCESSING);
+                        itemRequestInfo.setRequestId(requestId);
+                        itemResponseInformation.setRequestId(requestId);
 
-                    itemRequestInfo.setTitleIdentifier(getTitle(itemRequestInfo.getTitleIdentifier(), itemEntity, searchResultRow));
-                    itemRequestInfo.setAuthor(searchResultRow.getAuthor());
-                    itemRequestInfo.setBibId(itemEntity.getBibliographicEntities().get(0).getOwningInstitutionBibId());
-                    itemRequestInfo.setItemOwningInstitution(itemEntity.getInstitutionEntity().getInstitutionCode());
-                    itemRequestInfo.setImsLocationCode(itemEntity.getImsLocationEntity().getImsLocationCode());
-                    InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionCode(itemRequestInfo.getRequestingInstitution());
-                    itemRequestInfo.setPickupLocation(getPickupLocation(institutionEntity.getId(), itemRequestInfo.getDeliveryLocation()));
-                    itemResponseInformation.setItemId(itemEntity.getId());
-                    Integer requestId = updateRecapRequestItem(itemRequestInfo, itemEntity, ScsbConstants.REQUEST_STATUS_PROCESSING);
-                    itemRequestInfo.setRequestId(requestId);
-                    itemResponseInformation.setRequestId(requestId);
-
-                    if (requestId == 0) {
-                        itemResponseInformation.setScreenMessage(ScsbCommonConstants.REQUEST_EXCEPTION + ScsbConstants.INTERNAL_ERROR_DURING_REQUEST);
-                        itemResponseInformation.setSuccess(false);
+                        if (requestId == 0) {
+                            itemResponseInformation.setScreenMessage(ScsbCommonConstants.REQUEST_EXCEPTION + ScsbConstants.INTERNAL_ERROR_DURING_REQUEST);
+                            itemResponseInformation.setSuccess(false);
+                        } else {
+                            checkOwningInstitutionRecall(itemRequestInfo, itemResponseInformation, itemEntity);
+                        }
                     } else {
-                        checkOwningInstitutionRecall(itemRequestInfo, itemResponseInformation, itemEntity);
+                        itemResponseInformation.setScreenMessage(ScsbConstants.REQUEST_SCSB_EXCEPTION + ScsbConstants.WRONG_ITEM_BARCODE);
+                        itemResponseInformation.setSuccess(false);
                     }
                 } else {
-                    itemResponseInformation.setScreenMessage(ScsbConstants.REQUEST_SCSB_EXCEPTION + ScsbConstants.WRONG_ITEM_BARCODE);
+                    itemResponseInformation.setScreenMessage(ScsbConstants.REQUEST_SCSB_EXCEPTION + ScsbConstants.CANNOT_REFILE_FIRST_SCAN_REQUEST);
                     itemResponseInformation.setSuccess(false);
                 }
-            } else {
-                itemResponseInformation.setScreenMessage(ScsbConstants.REQUEST_SCSB_EXCEPTION + ScsbConstants.CANNOT_REFILE_FIRST_SCAN_REQUEST);
+                log.info(ScsbConstants.FINISH_PROCESSING);
+                setItemResponseInformation(itemRequestInfo, itemResponseInformation);
+
+                if (isUseQueueLasCall(itemRequestInfo.getImsLocationCode())) {
+                    updateChangesToDb(itemResponseInformation, ScsbConstants.REQUEST_RECALL + "-" + itemResponseInformation.getRequestingInstitution());
+                }
+                // Update Topics
+                sendMessageToTopic(itemRequestInfo.getItemOwningInstitution(), itemRequestInfo.getRequestType(), itemResponseInformation, exchange);
+            }
+            else {
+                itemResponseInformation.setScreenMessage(ScsbConstants.SOLR_SEARCH_ERROR);
                 itemResponseInformation.setSuccess(false);
             }
-            log.info(ScsbConstants.FINISH_PROCESSING);
-            setItemResponseInformation(itemRequestInfo, itemResponseInformation);
-
-            if (isUseQueueLasCall(itemRequestInfo.getImsLocationCode())) {
-                updateChangesToDb(itemResponseInformation, ScsbConstants.REQUEST_RECALL + "-" + itemResponseInformation.getRequestingInstitution());
-            }
-            // Update Topics
-            sendMessageToTopic(itemRequestInfo.getItemOwningInstitution(), itemRequestInfo.getRequestType(), itemResponseInformation, exchange);
         } catch (RestClientException ex) {
             log.error(ScsbCommonConstants.REQUEST_EXCEPTION_REST, ex);
             itemResponseInformation.setScreenMessage(ScsbConstants.REQUEST_SCSB_EXCEPTION + ScsbConstants.INTERNAL_ERROR_DURING_REQUEST);
@@ -477,50 +493,49 @@ public class ItemRequestService {
     }
 
     private void setItemRequestInfoForRequest(ItemEntity itemEntity, ItemRequestInformation itemRequestInfo, RequestItemEntity requestItemEntity) {
-        if(requestItemEntity.getRequestTypeEntity().getRequestTypeCode().equalsIgnoreCase(ScsbConstants.EDD_REQUEST)){
+        if(requestItemEntity.getRequestTypeEntity().getRequestTypeCode().equalsIgnoreCase(ScsbConstants.EDD_REQUEST)) {
             String notes = requestItemEntity.getNotes();
             String[] eddInformation = notes.split("\n");
-            HashMap<String,String> eddNotesMap= new HashMap<>();
+            HashMap<String, String> eddNotesMap = new HashMap<>();
             for (String eddInfo : eddInformation) {
-                String[] eddInfoInPairs = eddInfo.split(":",2);
-                if(!(eddInfoInPairs[0].isEmpty()))
-                    eddNotesMap.put(eddInfoInPairs[0],eddInfoInPairs[1]);
+                String[] eddInfoInPairs = eddInfo.split(":", 2);
+                if (!(eddInfoInPairs[0].isEmpty()))
+                    eddNotesMap.put(eddInfoInPairs[0], eddInfoInPairs[1]);
             }
             if (itemEntity.getBibliographicEntities().get(0).getOwningInstitutionBibId().trim().length() <= 0) {
                 itemRequestInfo.setBibId(itemEntity.getBibliographicEntities().get(0).getOwningInstitutionBibId());
             }
             SearchResultRow searchResultRow = searchRecords(itemEntity);
-            itemRequestInfo.setTitleIdentifier(removeDiacritical(searchResultRow.getTitle().replaceAll("[^\\x00-\\x7F]", "?")));
-            itemRequestInfo.setItemAuthor(removeDiacritical(searchResultRow.getAuthor()));
-            itemRequestInfo.setEmailAddress(securityUtil.getDecryptedValue(requestItemEntity.getEmailId()));
-            itemRequestInfo.setRequestType(ScsbConstants.EDD_REQUEST);
-            if(itemRequestInfo.isOwningInstitutionItem()) {
-                itemRequestInfo.setPatronBarcode(itemEDDRequestService.getPatronIdForOwningInstitutionOnEdd(itemRequestInfo.getItemOwningInstitution()));
-            }
-            else {
-                itemRequestInfo.setPatronBarcode(itemRequestServiceUtil.getPatronIdBorrowingInstitution(itemRequestInfo.getRequestingInstitution(), itemRequestInfo.getItemOwningInstitution(), ScsbCommonConstants.REQUEST_TYPE_EDD));
-            }
-            setEddInformation(itemRequestInfo, eddNotesMap);
-        }
-        else {
-            itemRequestInfo.setRequestType(ScsbCommonConstants.RETRIEVAL);
-            if (null == requestItemEntity.getBulkRequestItemEntity()) {
-                InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionCode(requestItemEntity.getInstitutionEntity().getInstitutionCode());
-                DeliveryCodeEntity deliveryCodeEntity = deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(requestItemEntity.getStopCode(), institutionEntity.getId(), 'Y');
-                DeliveryCodeTranslationEntity deliveryCodeTranslationEntity = deliveryCodeTranslationDetailsRepository.findByRequestingInstitutionandImsLocation(institutionEntity.getId(), deliveryCodeEntity.getId(), itemEntity.getImsLocationEntity().getId());
-                if (deliveryCodeTranslationEntity != null && deliveryCodeTranslationEntity.getImsLocationDeliveryCode() != null) {
-                    log.info("Translation Code >>>> {} "  , deliveryCodeTranslationEntity.getImsLocationDeliveryCode());
-                    itemRequestInfo.setTranslatedDeliveryLocation(deliveryCodeTranslationEntity.getImsLocationDeliveryCode());
+                itemRequestInfo.setTitleIdentifier(removeDiacritical(searchResultRow.getTitle().replaceAll("[^\\x00-\\x7F]", "?")));
+                itemRequestInfo.setItemAuthor(removeDiacritical(searchResultRow.getAuthor()));
+                itemRequestInfo.setEmailAddress(securityUtil.getDecryptedValue(requestItemEntity.getEmailId()));
+                itemRequestInfo.setRequestType(ScsbConstants.EDD_REQUEST);
+                if (itemRequestInfo.isOwningInstitutionItem()) {
+                    itemRequestInfo.setPatronBarcode(itemEDDRequestService.getPatronIdForOwningInstitutionOnEdd(itemRequestInfo.getItemOwningInstitution()));
+                } else {
+                    itemRequestInfo.setPatronBarcode(itemRequestServiceUtil.getPatronIdBorrowingInstitution(itemRequestInfo.getRequestingInstitution(), itemRequestInfo.getItemOwningInstitution(), ScsbCommonConstants.REQUEST_TYPE_EDD));
                 }
-            } else {
-                itemRequestInfo.setTranslatedDeliveryLocation(requestItemEntity.getStopCode());
+                setEddInformation(itemRequestInfo, eddNotesMap);
             }
-        }
-        itemRequestInfo.setRequestNotes(requestItemEntity.getNotes());
-        itemRequestInfo.setRequestId(requestItemEntity.getId());
-        itemRequestInfo.setUsername(requestItemEntity.getCreatedBy());
-        itemRequestInfo.setDeliveryLocation(requestItemEntity.getStopCode());
-        itemRequestInfo.setCustomerCode(itemEntity.getCustomerCode());
+        else{
+                itemRequestInfo.setRequestType(ScsbCommonConstants.RETRIEVAL);
+                if (null == requestItemEntity.getBulkRequestItemEntity()) {
+                    InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionCode(requestItemEntity.getInstitutionEntity().getInstitutionCode());
+                    DeliveryCodeEntity deliveryCodeEntity = deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(requestItemEntity.getStopCode(), institutionEntity.getId(), 'Y');
+                    DeliveryCodeTranslationEntity deliveryCodeTranslationEntity = deliveryCodeTranslationDetailsRepository.findByRequestingInstitutionandImsLocation(institutionEntity.getId(), deliveryCodeEntity.getId(), itemEntity.getImsLocationEntity().getId());
+                    if (deliveryCodeTranslationEntity != null && deliveryCodeTranslationEntity.getImsLocationDeliveryCode() != null) {
+                        log.info("Translation Code >>>> {} ", deliveryCodeTranslationEntity.getImsLocationDeliveryCode());
+                        itemRequestInfo.setTranslatedDeliveryLocation(deliveryCodeTranslationEntity.getImsLocationDeliveryCode());
+                    }
+                } else {
+                    itemRequestInfo.setTranslatedDeliveryLocation(requestItemEntity.getStopCode());
+                }
+            }
+            itemRequestInfo.setRequestNotes(requestItemEntity.getNotes());
+            itemRequestInfo.setRequestId(requestItemEntity.getId());
+            itemRequestInfo.setUsername(requestItemEntity.getCreatedBy());
+            itemRequestInfo.setDeliveryLocation(requestItemEntity.getStopCode());
+            itemRequestInfo.setCustomerCode(itemEntity.getCustomerCode());
     }
 
     private void setEddInformation(ItemRequestInformation itemRequestInfo, HashMap<String, String> eddNotesMap) {

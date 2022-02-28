@@ -114,110 +114,118 @@ public class ItemEDDRequestService {
                     itemRequestInfo.setBibId(itemEntity.getBibliographicEntities().get(0).getOwningInstitutionBibId());
                 }
                 SearchResultRow searchResultRow = getItemRequestService().searchRecords(itemEntity);
-
-                itemRequestInfo.setItemOwningInstitution(itemEntity.getInstitutionEntity().getInstitutionCode());
-                itemRequestInfo.setImsLocationCode(itemEntity.getImsLocationEntity().getImsLocationCode());
-                itemRequestInfo.setTitleIdentifier(getItemRequestService().removeDiacritical(searchResultRow.getTitle().replaceAll("[^\\x00-\\x7F]", "?")));
-                itemRequestInfo.setItemAuthor(getItemRequestService().removeDiacritical(searchResultRow.getAuthor()));
-                itemRequestInfo.setCustomerCode(itemEntity.getCustomerCode());
-                // Save user Notes to be sent to LAS
-                itemRequestInfo.setEddNotes(itemRequestInfo.getRequestNotes());
-                // Add EDD Information to notes to be saved in database
-                itemRequestInfo.setRequestNotes(getNotes(itemRequestInfo));
-                boolean isItemStatusAvailable;
-                synchronized (this) {
-                    // Change Item Availability
-                    isItemStatusAvailable = getItemRequestService().updateItemAvailabilityStatus(itemEntities, itemRequestInfo.getUsername());
+                if (searchResultRow == null) {
+                    searchResultRow = getItemRequestService().searchRecords(itemEntity);
                 }
-                requestId = getItemRequestService().updateRecapRequestItem(itemRequestInfo, itemEntity, ScsbConstants.REQUEST_STATUS_PROCESSING);
-                itemRequestInfo.setRequestId(requestId);
-                itemResponseInformation.setRequestId(requestId);
-
-                if (requestId == 0) {
-                    itemResponseInformation.setScreenMessage(ScsbConstants.INTERNAL_ERROR_DURING_REQUEST);
-                    itemResponseInformation.setSuccess(false);
-                    getItemRequestService().rollbackUpdateItemAvailabilityStatus(itemEntity, ScsbConstants.GUEST_USER);
-                } else if (!isItemStatusAvailable) {
-                    itemResponseInformation.setScreenMessage(ScsbConstants.RETRIEVAL_NOT_FOR_UNAVAILABLE_ITEM);
-                    itemResponseInformation.setSuccess(false);
-                } else {
-                    // Process
-                    String requestInfoPatronBarcode = itemRequestInfo.getPatronBarcode();
-                    if (getItemRequestService().getGfaLasService().isUseQueueLasCall(itemRequestInfo.getImsLocationCode())) {
-                        getItemRequestService().updateRecapRequestItem(itemRequestInfo, itemEntity, ScsbConstants.REQUEST_STATUS_PENDING);
+                if(searchResultRow != null) {
+                    itemRequestInfo.setItemOwningInstitution(itemEntity.getInstitutionEntity().getInstitutionCode());
+                    itemRequestInfo.setImsLocationCode(itemEntity.getImsLocationEntity().getImsLocationCode());
+                    itemRequestInfo.setTitleIdentifier(getItemRequestService().removeDiacritical(searchResultRow.getTitle().replaceAll("[^\\x00-\\x7F]", "?")));
+                    itemRequestInfo.setItemAuthor(getItemRequestService().removeDiacritical(searchResultRow.getAuthor()));
+                    itemRequestInfo.setCustomerCode(itemEntity.getCustomerCode());
+                    // Save user Notes to be sent to LAS
+                    itemRequestInfo.setEddNotes(itemRequestInfo.getRequestNotes());
+                    // Add EDD Information to notes to be saved in database
+                    itemRequestInfo.setRequestNotes(getNotes(itemRequestInfo));
+                    boolean isItemStatusAvailable;
+                    synchronized (this) {
+                        // Change Item Availability
+                        isItemStatusAvailable = getItemRequestService().updateItemAvailabilityStatus(itemEntities, itemRequestInfo.getUsername());
                     }
-                    itemResponseInformation.setItemId(itemEntity.getId());
+                    requestId = getItemRequestService().updateRecapRequestItem(itemRequestInfo, itemEntity, ScsbConstants.REQUEST_STATUS_PROCESSING);
+                    itemRequestInfo.setRequestId(requestId);
+                    itemResponseInformation.setRequestId(requestId);
 
-                    if (itemRequestInfo.isOwningInstitutionItem()) {
-                        String useGenericPatronEddForSelf = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_USE_GENERIC_PATRON_EDD_SELF);
-                        if (Boolean.TRUE.toString().equalsIgnoreCase(useGenericPatronEddForSelf)) {
-                            try {
-                                itemRequestInfo.setPatronBarcode(getPatronIdForOwningInstitutionOnEdd(itemRequestInfo.getItemOwningInstitution()));
-                            } catch (Exception e) {
-                                log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
-                                itemResponseInformation.setScreenMessage(ScsbConstants.GENERIC_PATRON_NOT_FOUND_ERROR);
-                                itemResponseInformation.setSuccess(false);
-                            }
-                        }
-                    } else {
-                        String useGenericPatronEddForCrossInst = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_USE_GENERIC_PATRON_EDD_CROSS);
-                        if (Boolean.TRUE.toString().equalsIgnoreCase(useGenericPatronEddForCrossInst)) {
-                            try {
-                                itemRequestInfo.setPatronBarcode(itemRequestServiceUtil.getPatronIdBorrowingInstitution(itemRequestInfo.getRequestingInstitution(), itemRequestInfo.getItemOwningInstitution(), ScsbCommonConstants.REQUEST_TYPE_EDD));
-                            } catch (Exception e) {
-                                log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
-                                itemResponseInformation.setScreenMessage(ScsbConstants.GENERIC_PATRON_NOT_FOUND_ERROR);
-                                itemResponseInformation.setSuccess(false);
-                            }
-                        }
-                    }
-
-                    itemResponseInformation = getItemRequestService().updateGFA(itemRequestInfo, itemResponseInformation);
-                    if (itemResponseInformation.isRequestTypeForScheduledOnWO()) {
-                        log.info("EDD Request Received on first scan");
-                        requestId = getItemRequestService().updateRecapRequestItem(itemRequestInfo, itemEntity, ScsbConstants.LAS_REFILE_REQUEST_PLACED);
-                        log.info("Updated EDD request id {} on first scan", requestId);
-                    }
-                    if (!itemResponseInformation.isSuccess()) {
+                    if (requestId == 0) {
+                        itemResponseInformation.setScreenMessage(ScsbConstants.INTERNAL_ERROR_DURING_REQUEST);
+                        itemResponseInformation.setSuccess(false);
                         getItemRequestService().rollbackUpdateItemAvailabilityStatus(itemEntity, ScsbConstants.GUEST_USER);
+                    } else if (!isItemStatusAvailable) {
+                        itemResponseInformation.setScreenMessage(ScsbConstants.RETRIEVAL_NOT_FOR_UNAVAILABLE_ITEM);
+                        itemResponseInformation.setSuccess(false);
                     } else {
-                        log.info("Patron and Institution info before CheckOut Call in EDD : patron - {} , institution - {}", itemRequestInfo.getPatronBarcode(), itemRequestInfo.getItemOwningInstitution());
-                        ItemCheckoutResponse itemCheckoutResponse = (ItemCheckoutResponse) requestItemController.checkoutItem(itemRequestInfo, itemRequestInfo.getItemOwningInstitution());
-                        if (itemCheckoutResponse.isSuccess()) {
-                            itemResponseInformation.setEddSuccessResponseScreenMsg(itemCheckoutResponse.getScreenMessage());
-                        } else {
-                            itemResponseInformation.setEddFailureResponseScreenMsg(itemCheckoutResponse.getScreenMessage());
+                        // Process
+                        String requestInfoPatronBarcode = itemRequestInfo.getPatronBarcode();
+                        if (getItemRequestService().getGfaLasService().isUseQueueLasCall(itemRequestInfo.getImsLocationCode())) {
+                            getItemRequestService().updateRecapRequestItem(itemRequestInfo, itemEntity, ScsbConstants.REQUEST_STATUS_PENDING);
                         }
+                        itemResponseInformation.setItemId(itemEntity.getId());
+
+                        if (itemRequestInfo.isOwningInstitutionItem()) {
+                            String useGenericPatronEddForSelf = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_USE_GENERIC_PATRON_EDD_SELF);
+                            if (Boolean.TRUE.toString().equalsIgnoreCase(useGenericPatronEddForSelf)) {
+                                try {
+                                    itemRequestInfo.setPatronBarcode(getPatronIdForOwningInstitutionOnEdd(itemRequestInfo.getItemOwningInstitution()));
+                                } catch (Exception e) {
+                                    log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
+                                    itemResponseInformation.setScreenMessage(ScsbConstants.GENERIC_PATRON_NOT_FOUND_ERROR);
+                                    itemResponseInformation.setSuccess(false);
+                                }
+                            }
+                        } else {
+                            String useGenericPatronEddForCrossInst = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.ILS_USE_GENERIC_PATRON_EDD_CROSS);
+                            if (Boolean.TRUE.toString().equalsIgnoreCase(useGenericPatronEddForCrossInst)) {
+                                try {
+                                    itemRequestInfo.setPatronBarcode(itemRequestServiceUtil.getPatronIdBorrowingInstitution(itemRequestInfo.getRequestingInstitution(), itemRequestInfo.getItemOwningInstitution(), ScsbCommonConstants.REQUEST_TYPE_EDD));
+                                } catch (Exception e) {
+                                    log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
+                                    itemResponseInformation.setScreenMessage(ScsbConstants.GENERIC_PATRON_NOT_FOUND_ERROR);
+                                    itemResponseInformation.setSuccess(false);
+                                }
+                            }
+                        }
+
+                        itemResponseInformation = getItemRequestService().updateGFA(itemRequestInfo, itemResponseInformation);
+                        if (itemResponseInformation.isRequestTypeForScheduledOnWO()) {
+                            log.info("EDD Request Received on first scan");
+                            requestId = getItemRequestService().updateRecapRequestItem(itemRequestInfo, itemEntity, ScsbConstants.LAS_REFILE_REQUEST_PLACED);
+                            log.info("Updated EDD request id {} on first scan", requestId);
+                        }
+                        if (!itemResponseInformation.isSuccess()) {
+                            getItemRequestService().rollbackUpdateItemAvailabilityStatus(itemEntity, ScsbConstants.GUEST_USER);
+                        } else {
+                            log.info("Patron and Institution info before CheckOut Call in EDD : patron - {} , institution - {}", itemRequestInfo.getPatronBarcode(), itemRequestInfo.getItemOwningInstitution());
+                            ItemCheckoutResponse itemCheckoutResponse = (ItemCheckoutResponse) requestItemController.checkoutItem(itemRequestInfo, itemRequestInfo.getItemOwningInstitution());
+                            if (itemCheckoutResponse.isSuccess()) {
+                                itemResponseInformation.setEddSuccessResponseScreenMsg(itemCheckoutResponse.getScreenMessage());
+                            } else {
+                                itemResponseInformation.setEddFailureResponseScreenMsg(itemCheckoutResponse.getScreenMessage());
+                            }
+                        }
+                        itemResponseInformation.setPatronBarcode(requestInfoPatronBarcode);
                     }
-                    itemResponseInformation.setPatronBarcode(requestInfoPatronBarcode);
+                } else {
+                    itemResponseInformation.setScreenMessage(ScsbConstants.WRONG_ITEM_BARCODE);
+                    itemResponseInformation.setSuccess(false);
                 }
-            } else {
-                itemResponseInformation.setScreenMessage(ScsbConstants.WRONG_ITEM_BARCODE);
+                log.info("Finish Processing");
+                itemResponseInformation.setItemOwningInstitution(itemRequestInfo.getItemOwningInstitution());
+                itemResponseInformation.setDueDate(itemRequestInfo.getExpirationDate());
+                itemResponseInformation.setRequestingInstitution(itemRequestInfo.getRequestingInstitution());
+                itemResponseInformation.setTitleIdentifier(itemRequestInfo.getTitleIdentifier());
+                itemResponseInformation.setBibID(itemRequestInfo.getBibId());
+                itemResponseInformation.setItemBarcode(itemRequestInfo.getItemBarcodes().get(0));
+                itemResponseInformation.setRequestType(itemRequestInfo.getRequestType());
+                itemResponseInformation.setEmailAddress(itemRequestInfo.getEmailAddress());
+                itemResponseInformation.setDeliveryLocation(itemRequestInfo.getDeliveryLocation());
+                itemResponseInformation.setUsername(itemRequestInfo.getUsername());
+                itemResponseInformation.setImsLocationCode(itemRequestInfo.getImsLocationCode());
+                if (!itemResponseInformation.isSuccess()) {
+                    itemResponseInformation.setRequestNotes(itemRequestInfo.getRequestNotes() + "\n" + ScsbConstants.REQUEST_SCSB_EXCEPTION + itemResponseInformation.getScreenMessage());
+                    getItemRequestService().updateChangesToDb(itemResponseInformation, ScsbCommonConstants.REQUEST_TYPE_EDD + "-" + itemResponseInformation.getRequestingInstitution());
+                } else {
+                    itemResponseInformation.setRequestNotes(itemRequestInfo.getRequestNotes());
+                    if (itemEntity != null) {
+                        itemRequestServiceUtil.updateSolrIndex(itemEntity);
+                    }
+                }
+                // Update Topics
+                getItemRequestService().sendMessageToTopic(itemRequestInfo.getRequestingInstitution(), itemRequestInfo.getRequestType(), itemResponseInformation, exchange);
+            }
+            else {
+                itemResponseInformation.setScreenMessage(ScsbConstants.SOLR_SEARCH_ERROR);
                 itemResponseInformation.setSuccess(false);
             }
-            log.info("Finish Processing");
-            itemResponseInformation.setItemOwningInstitution(itemRequestInfo.getItemOwningInstitution());
-            itemResponseInformation.setDueDate(itemRequestInfo.getExpirationDate());
-            itemResponseInformation.setRequestingInstitution(itemRequestInfo.getRequestingInstitution());
-            itemResponseInformation.setTitleIdentifier(itemRequestInfo.getTitleIdentifier());
-            itemResponseInformation.setBibID(itemRequestInfo.getBibId());
-            itemResponseInformation.setItemBarcode(itemRequestInfo.getItemBarcodes().get(0));
-            itemResponseInformation.setRequestType(itemRequestInfo.getRequestType());
-            itemResponseInformation.setEmailAddress(itemRequestInfo.getEmailAddress());
-            itemResponseInformation.setDeliveryLocation(itemRequestInfo.getDeliveryLocation());
-            itemResponseInformation.setUsername(itemRequestInfo.getUsername());
-            itemResponseInformation.setImsLocationCode(itemRequestInfo.getImsLocationCode());
-            if (!itemResponseInformation.isSuccess()) {
-                itemResponseInformation.setRequestNotes(itemRequestInfo.getRequestNotes() + "\n" + ScsbConstants.REQUEST_SCSB_EXCEPTION + itemResponseInformation.getScreenMessage());
-                getItemRequestService().updateChangesToDb(itemResponseInformation, ScsbCommonConstants.REQUEST_TYPE_EDD + "-" + itemResponseInformation.getRequestingInstitution());
-            } else {
-                itemResponseInformation.setRequestNotes(itemRequestInfo.getRequestNotes());
-                if (itemEntity != null) {
-                    itemRequestServiceUtil.updateSolrIndex(itemEntity);
-                }
-            }
-            // Update Topics
-            getItemRequestService().sendMessageToTopic(itemRequestInfo.getRequestingInstitution(), itemRequestInfo.getRequestType(), itemResponseInformation, exchange);
         } catch (RestClientException ex) {
             log.error(ScsbCommonConstants.REQUEST_EXCEPTION_REST, ex);
         } catch (Exception ex) {
