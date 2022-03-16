@@ -412,8 +412,12 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
 
     @Override
     public Object cancelHold(String itemIdentifier, Integer requestId, String patronIdentifier, String institutionId, String expirationDate, String bibId, String pickupLocation, String trackingId) {
+
         ItemHoldResponse itemHoldResponse = new ItemHoldResponse();
-        String responseString = null;
+        itemHoldResponse.setSuccess(false);
+        itemHoldResponse.setScreenMessage("Cancel Request is not available for " + institutionId);
+
+       /* String responseString = null;
         JSONObject responseObject = new JSONObject();
 
         try {
@@ -466,7 +470,7 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
             log.error("cancelHold Response message >>> " + itemHoldResponse.getScreenMessage());
         }
         log.info("cancelHold Response >>> " + itemHoldResponse);
-        log.info("cancelHold Response message >>> " + itemHoldResponse.getScreenMessage());
+        log.info("cancelHold Response message >>> " + itemHoldResponse.getScreenMessage());*/
         return itemHoldResponse;
     }
 
