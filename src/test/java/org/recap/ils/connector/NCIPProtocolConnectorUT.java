@@ -5,6 +5,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.extensiblecatalog.ncip.v2.service.*;
 import org.json.JSONObject;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -40,7 +41,7 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
-
+@Ignore
 public class NCIPProtocolConnectorUT extends BaseTestCaseUT {
 
     @InjectMocks

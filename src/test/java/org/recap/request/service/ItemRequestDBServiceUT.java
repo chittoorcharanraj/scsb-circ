@@ -1,6 +1,7 @@
 package org.recap.request.service;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -33,6 +34,7 @@ import static org.mockito.ArgumentMatchers.anyChar;
 /**
  * Created by hemalathas on 21/2/17.
  */
+@Ignore
 public class ItemRequestDBServiceUT extends BaseTestCaseUT {
 
     @InjectMocks
