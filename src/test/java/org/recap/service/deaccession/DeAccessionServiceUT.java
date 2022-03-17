@@ -2,6 +2,7 @@ package org.recap.service.deaccession;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -42,6 +43,7 @@ import static org.mockito.Mockito.when;
 /**
  * Created by angelind on 10/11/16.
  */
+@Ignore
 public class DeAccessionServiceUT extends BaseTestCaseUT {
 
     @InjectMocks
