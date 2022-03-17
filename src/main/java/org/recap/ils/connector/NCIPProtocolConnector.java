@@ -500,7 +500,6 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
             NCIPResponseData responseData = null;
             responseString = null;
             if(response != null) {
-                System.out.println("response is null");
                 int responseCode = response.getStatusLine().getStatusCode();
                 if (responseCode > 399) {
                     throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, httpCallTo + getEndPointUrl() + returnedResponseCode + responseCode + responseBody + responseString);
@@ -730,17 +729,13 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
     private NCIPResponseData getResponseString(HttpResponse response, NCIPToolKitUtil ncipToolKitUtil, NCIPResponseData responseData)
     {
         String responseString = null;
-        System.out.println("response >>>" +response.toString());
         HttpEntity entity = response.getEntity();
         try {
             responseString = EntityUtils.toString(entity, StandardCharsets.UTF_8);
-            System.out.println("responseString >>>" +responseString.toString());
 
             responseString = commonUtil.formatResponse(responseString);
             InputStream stream = new ByteArrayInputStream(responseString.getBytes(StandardCharsets.UTF_8));
             responseData = ncipToolKitUtil.translator.createResponseData(ncipToolKitUtil.serviceContext, stream);
-
-            System.out.println("responseString now >>>" +responseString.toString());
 
             log.info(responseString);
         }
