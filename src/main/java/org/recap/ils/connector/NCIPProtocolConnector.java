@@ -646,7 +646,6 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
         String itemAgencyId = null;
         JSONObject responseObject;
         try {
-            NCIPToolKitUtil ncipToolkitUtil = NCIPToolKitUtil.getInstance();
             AcceptItemInitiationData acceptItemInitiationData = new AcceptItemInitiationData();
                     List<ItemEntity> itemEntities = itemDetailsRepository.findByBarcode(itemIdentifier);
             ItemEntity itemEntity = !itemEntities.isEmpty() ? itemEntities.get(0) : null;
@@ -659,8 +658,9 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
                 itemAgencyId = propertyUtil.getPropertyByInstitutionAndKey(callInstitutionId, PropertyKeyConstants.ILS.ILS_UNRESTRICTED_ACCEPT_ITEM_AGENCY_ID);
                 acceptItemInitiationData = acceptItem.getAcceptItemInitiationData(itemIdentifier, requestId, patronIdentifier, title, author, pickupLocation, callNumber, getNcipAgencyId(), getNcipScheme(), itemAgencyId);
             }
+
+            NCIPToolKitUtil ncipToolkitUtil = NCIPToolKitUtil.getInstance();
             InputStream requestMessageStream = ncipToolkitUtil.translator.createInitiationMessageStream(ncipToolkitUtil.serviceContext, acceptItemInitiationData);
-            String requestBody = IOUtils.toString(requestMessageStream, StandardCharsets.UTF_8);
             HttpResponse response = executeRequest(requestMessageStream);
             NCIPResponseData responseData = null;
             if(response != null) {
