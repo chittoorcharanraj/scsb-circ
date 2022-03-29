@@ -27,7 +27,7 @@ public class GFAPwdTtItemResponseUT extends BaseTestCaseUT {
         gfaPwdTtItemResponse.setPriority("first");
         gfaPwdTtItemResponse.setNotes("test");
         gfaPwdTtItemResponse.setRequestDate(new Date());
-        gfaPwdTtItemResponse.setRequestTime(new Time(new Long(10)));
+        gfaPwdTtItemResponse.setRequestTime(new Time(Long.valueOf(10)));
         gfaPwdTtItemResponse.setErrorCode("test");
         gfaPwdTtItemResponse.setErrorNote("test");
         gfaPwdTtItemResponse.equals(gfaPwdTtItemResponse);

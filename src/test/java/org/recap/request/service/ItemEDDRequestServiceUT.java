@@ -88,7 +88,7 @@ public class ItemEDDRequestServiceUT extends BaseTestCaseUT {
         searchResultRow.setTitle("Title Of the Book");
         ResponseEntity res = new ResponseEntity(ScsbConstants.WRONG_ITEM_BARCODE, HttpStatus.CONTINUE);
         ItemRequestInformation itemRequestInfo = getItemRequestInformation();
-        itemRequestInfo.setRequestingInstitution("UC");
+        itemRequestInfo.setRequestingInstitution("PUL");
 
         ItemInformationResponse itemResponseInformation1 = new ItemInformationResponse();
         itemResponseInformation1.setSuccess(true);
@@ -133,7 +133,7 @@ public class ItemEDDRequestServiceUT extends BaseTestCaseUT {
         searchResultRow.setTitle("Title Of the Book");
         ResponseEntity res = new ResponseEntity(ScsbConstants.WRONG_ITEM_BARCODE, HttpStatus.CONTINUE);
         ItemRequestInformation itemRequestInfo = getItemRequestInformation();
-        itemRequestInfo.setRequestingInstitution("UC");
+        itemRequestInfo.setRequestingInstitution("PUL");
 
         ItemInformationResponse itemResponseInformation1 = new ItemInformationResponse();
         itemResponseInformation1.setSuccess(true);
@@ -256,7 +256,7 @@ public class ItemEDDRequestServiceUT extends BaseTestCaseUT {
         ItemInformationResponse itemResponseInformation = new ItemInformationResponse();
         itemResponseInformation.setSuccess(true);
         Mockito.when(itemDetailsRepository.findByBarcodeIn(itemRequestInfo.getItemBarcodes())).thenReturn(null);
-        Mockito.when(itemEDDRequestService.eddRequestItem(itemRequestInfo, exchange)).thenCallRealMethod();
+        //Mockito.when(itemEDDRequestService.eddRequestItem(itemRequestInfo, exchange)).thenCallRealMethod();
         ItemInformationResponse itemInfoResponse = itemEDDRequestService.eddRequestItem(itemRequestInfo, exchange);
         assertNotNull(itemInfoResponse);
     }
@@ -357,8 +357,8 @@ public class ItemEDDRequestServiceUT extends BaseTestCaseUT {
 
         InstitutionEntity institutionEntity = new InstitutionEntity();
         institutionEntity.setId(1);
-        institutionEntity.setInstitutionCode("UC");
-        institutionEntity.setInstitutionName("University of Chicago");
+        institutionEntity.setInstitutionCode("PUL");
+        institutionEntity.setInstitutionName("Princeton University");
         assertNotNull(institutionEntity);
 
         Random random = new Random();
