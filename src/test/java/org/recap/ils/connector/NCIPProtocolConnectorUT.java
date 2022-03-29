@@ -5,7 +5,6 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.extensiblecatalog.ncip.v2.service.*;
 import org.json.JSONObject;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -41,7 +40,6 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
-@Ignore
 public class NCIPProtocolConnectorUT extends BaseTestCaseUT {
 
     @InjectMocks
@@ -103,7 +101,6 @@ public class NCIPProtocolConnectorUT extends BaseTestCaseUT {
         ncipProtocolConnector.getRestTemplate();
         ncipProtocolConnector.getRestApiResponseUtil();
         ncipProtocolConnector.getHttpHeader();
-        ncipProtocolConnector.getHttpEntity(headers);
         ncipProtocolConnector.getItemDetailsRepository();
         ncipProtocolConnector.getBibDataApiUrl();
 //        Mockito.when(ilsConfigProperties.getIlsRestDataApi()).thenReturn("");
@@ -117,7 +114,7 @@ public class NCIPProtocolConnectorUT extends BaseTestCaseUT {
 
     @Test
     public void setInstitution() {
-        ncipProtocolConnector.setInstitution("NYPL");
+        ncipProtocolConnector.setInstitution("PUL");
     }
 
     @Test
@@ -125,12 +122,7 @@ public class NCIPProtocolConnectorUT extends BaseTestCaseUT {
         ncipProtocolConnector.setIlsConfigProperties(ilsConfigProperties);
     }
 
-    @Test
-    public void getHttpEntity(){
-        JSONObject jsonObject = new JSONObject();
-        org.springframework.http.HttpEntity httpEntity = ncipProtocolConnector.getHttpEntity(jsonObject,headers);
-        assertNotNull(httpEntity);
-    }
+
    /* @Test
     public void lookupItem() throws Exception {
         ItemLookupResponse itemLookupResponse = getItemLookupResponse();

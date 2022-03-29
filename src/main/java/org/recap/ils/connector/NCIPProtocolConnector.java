@@ -13,8 +13,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.extensiblecatalog.ncip.v2.service.AcceptItemInitiationData;
 import org.extensiblecatalog.ncip.v2.service.AcceptItemResponseData;
-import org.extensiblecatalog.ncip.v2.service.CancelRequestItemInitiationData;
-import org.extensiblecatalog.ncip.v2.service.CancelRequestItemResponseData;
 import org.extensiblecatalog.ncip.v2.service.CheckInItemInitiationData;
 import org.extensiblecatalog.ncip.v2.service.CheckInItemResponseData;
 import org.extensiblecatalog.ncip.v2.service.CheckOutItemInitiationData;
@@ -160,20 +158,6 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
      */
     public HttpHeaders getHttpHeader() {
         return new HttpHeaders();
-    }
-
-    /**
-     * Get http entity http entity.
-     *
-     * @param headers the headers
-     * @return the http entity
-     */
-    public org.springframework.http.HttpEntity getHttpEntity(JSONObject body, HttpHeaders headers){
-        return new org.springframework.http.HttpEntity<>(body.toString(), headers);
-    }
-
-    public org.springframework.http.HttpEntity getHttpEntity(HttpHeaders headers){
-        return new org.springframework.http.HttpEntity<>(headers);
     }
 
 
