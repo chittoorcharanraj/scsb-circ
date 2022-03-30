@@ -48,10 +48,7 @@ public class CommonUtilUT extends BaseTestCaseUT {
     @Value("${scsb.support.institution}")
     private String supportInstitution;
 
-    @Mock
-    private String text = "test";
-
-    @Before
+   @Before
     public void setup() {
         MockitoAnnotations.openMocks(this);
     }
@@ -447,15 +444,15 @@ public class CommonUtilUT extends BaseTestCaseUT {
     }
 
     @Test
-    private void formatRequest() {
-        String formattedText = commonUtil.formatRequest(text);
+    public void formatRequest() {
+        String formattedText = commonUtil.formatRequest("test format");
         assertNotNull(formattedText);
 
     }
 
     @Test
-    private void formatResponse() {
-        String formattedText = commonUtil.formatResponse(text);
+    public void formatResponse() {
+        String formattedText = commonUtil.formatResponse("test format");
         assertNotNull(formattedText);
 
     }
