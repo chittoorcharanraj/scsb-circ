@@ -6,10 +6,12 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.extensiblecatalog.ncip.v2.service.*;
 import org.json.JSONObject;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.recap.BaseTestCaseUT;
 import org.recap.PropertyKeyConstants;
 import org.recap.ils.protocol.ncip.CheckinItem;
@@ -40,6 +42,7 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class NCIPProtocolConnectorUT extends BaseTestCaseUT {
 
     @InjectMocks
