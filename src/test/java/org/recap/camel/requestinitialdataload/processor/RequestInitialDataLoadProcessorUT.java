@@ -59,7 +59,7 @@ public class RequestInitialDataLoadProcessorUT {
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
     }
     @Test
     public void testBefore() {

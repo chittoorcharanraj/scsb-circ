@@ -51,7 +51,7 @@ public class GFALasServiceIT {
 
     @Before
     public void setup() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         List<ImsLocationEntity> imsLocationEntities = imsLocationDetailsRepository.findAll();
         if (!imsLocationEntities.isEmpty()) {
             imsConfigProperties = propertyUtil.getIMSConfigProperties(imsLocationEntities.get(0).getImsLocationCode());

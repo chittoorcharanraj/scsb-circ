@@ -33,7 +33,7 @@ public class RequestDataLoadEmailServiceUT {
     @Before
     public void setUp() throws Exception {
         ReflectionTestUtils.setField(requestDataLoadEmailService, "subjectForRequestInitialDataLoad","testPul@gmail.com" );
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
     }
     @Test
     public void processInputPUL(){

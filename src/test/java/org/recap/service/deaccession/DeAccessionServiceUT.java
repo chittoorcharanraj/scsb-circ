@@ -4,10 +4,12 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.recap.BaseTestCaseUT;
 import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
@@ -43,7 +45,8 @@ import static org.mockito.Mockito.when;
 /**
  * Created by angelind on 10/11/16.
  */
-@Ignore
+
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class DeAccessionServiceUT extends BaseTestCaseUT {
 
     @InjectMocks
@@ -638,7 +641,7 @@ public class DeAccessionServiceUT extends BaseTestCaseUT {
         deAccessionService.deAccessionItemsInDB(barcodeAndStopCodeMap, deAccessionDBResponseEntities, username);
     }
 
-    @Test
+    @Ignore
     public void deAccessionItemsInDBException() {
         Map<String, String> barcodeAndStopCodeMap = new HashMap<>();
         Set<String> itemBarcodeList = barcodeAndStopCodeMap.keySet();
