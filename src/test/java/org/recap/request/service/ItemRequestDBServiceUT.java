@@ -34,7 +34,7 @@ import static org.mockito.ArgumentMatchers.anyChar;
 /**
  * Created by hemalathas on 21/2/17.
  */
-@Ignore
+
 public class ItemRequestDBServiceUT extends BaseTestCaseUT {
 
     @InjectMocks
