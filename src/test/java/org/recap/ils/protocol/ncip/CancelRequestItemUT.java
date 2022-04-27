@@ -1,10 +1,6 @@
 package org.recap.ils.protocol.ncip;
 
-import org.extensiblecatalog.ncip.v2.service.CancelRequestItemResponseData;
-import org.extensiblecatalog.ncip.v2.service.ItemId;
-import org.extensiblecatalog.ncip.v2.service.Problem;
-import org.extensiblecatalog.ncip.v2.service.ProblemType;
-import org.extensiblecatalog.ncip.v2.service.RequestId;
+import org.extensiblecatalog.ncip.v2.service.*;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.recap.BaseTestCaseUT;
@@ -58,6 +54,27 @@ public class CancelRequestItemUT extends BaseTestCaseUT {
         cancelRequestItem.getCancelRequestItemResponse(cancelRequestItemResponseData);
     }
 
+    @Test
+    public void  getCancelRequestItemInitiationData()
+    {
+        Integer requestId = 1;
+        String patronIdentifier = "1021011";
+        String ncipAgencyId = "19";
+        String ncipScheme = "test";
+        cancelRequestItem.getCancelRequestItemInitiationData(requestId,patronIdentifier,ncipAgencyId,ncipScheme);
+
+    }
+
+    @Test
+    public void  getCancelRequestItemInitiationDatareqID_null()
+    {
+        Integer requestId = null;
+        String patronIdentifier = "1021011";
+        String ncipAgencyId = "19";
+        String ncipScheme = "test";
+        cancelRequestItem.getCancelRequestItemInitiationData(requestId,patronIdentifier,ncipAgencyId,ncipScheme);
+
+    }
     private CancelRequestItemResponseData getCancelRequestItemResponseData() {
         CancelRequestItemResponseData cancelRequestItemResponseData = new CancelRequestItemResponseData();
         ItemId itemId = new ItemId();
