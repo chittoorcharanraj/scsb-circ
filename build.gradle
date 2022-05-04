@@ -25,7 +25,7 @@ apply plugin: 'jacoco'
 //added to accept systemproperties while executing gradlew test cmd
 
 jar {
-	archivesBaseName = 'phase4-scsb-circ'
+	archivesBaseName = 'scsb-circ'
 	archiveVersion = '0.0.1-SNAPSHOT'
 }
 sourceCompatibility = JavaVersion.VERSION_17

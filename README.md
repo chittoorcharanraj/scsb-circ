@@ -13,7 +13,7 @@ SCSB-CIRC is a microservice application that provides the core functionalities f
 
 1.**Cloud Config Server**
 
-Dspring.cloud.config.uri=http://phase4-scsb-config-server:<port>
+Dspring.cloud.config.uri=http://scsb-config-server:<port>
 
 ## Build
 
@@ -25,10 +25,10 @@ Download the Project , navigate inside project folder and build the project usin
 
 Naviagte Inside project folder where Dockerfile is present and Execute the below command
 
-**sudo docker build -t  phase4-scsb-circ .**
+**sudo docker build -t  scsb-circ .**
 
 ## Docker Run
 
 User the below command to Run the Docker
 
-**sudo docker run --name phase4-scsb-circ  -v <volume> --label collect_logs_with_filebeat="true" --label decode_log_event_to_json_object="true"  -p <port>:<port> -e "ENV= -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/recap-vol/scsb-circ/heapdump/  -Dorg.apache.activemq.SERIALIZABLE_PACKAGES="*" -Dspring.cloud.config.uri=http://phase4-scsb-config-server:<port> "  --network=scsb  -d phase4-scsb-circ**
+**sudo docker run --name scsb-circ  -v <volume> --label collect_logs_with_filebeat="true" --label decode_log_event_to_json_object="true"  -p <port>:<port> -e "ENV= -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/recap-vol/scsb-circ/heapdump/  -Dorg.apache.activemq.SERIALIZABLE_PACKAGES="*" -Dspring.cloud.config.uri=http://scsb-config-server:<port> "  --network=scsb  -d scsb-circ**
