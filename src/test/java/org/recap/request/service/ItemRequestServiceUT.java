@@ -860,10 +860,14 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
     @Test
     public void buildRetrieveRequestInfoAndReplaceToSCSB() {
         RequestItemEntity requestItemEntity = createRequestItem();
+        DeliveryCodeEntity deliveryCodeEntity = getDeliveryCodeEntity();
+        DeliveryCodeTranslationEntity deliveryCodeEntity1  = getDeliveryCodeTranslationEntity();
         ResponseEntity<String> responseEntity = new ResponseEntity<>("Failure", HttpStatus.OK);
         Mockito.when(mockedSecurityUtil.getDecryptedValue(any())).thenReturn("test@gmail.com");
         Mockito.when(mockedRequestParamaterValidatorService.validateItemRequestParameters(any())).thenReturn(null);
         Mockito.when(mockedItemValidatorService.itemValidation(any())).thenReturn(responseEntity);
+        Mockito.when(deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(requestItemEntity.getStopCode(), requestItemEntity.getInstitutionEntity().getId(), 'Y')).thenReturn(deliveryCodeEntity);
+        Mockito.when(deliveryCodeTranslationDetailsRepository.findByRequestingInstitutionandImsLocation(requestItemEntity.getInstitutionEntity().getId(), deliveryCodeEntity.getId(), requestItemEntity.getItemEntity().getImsLocationEntity().getId())).thenReturn(deliveryCodeEntity1);
         ReflectionTestUtils.invokeMethod(mockedItemRequestService, "buildRetrieveRequestInfoAndReplaceToSCSB", requestItemEntity);
     }
 
