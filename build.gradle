@@ -86,7 +86,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
-	implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
+	implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
 	compileOnly('org.projectlombok:lombok:1.18.24')
 	annotationProcessor 'org.projectlombok:lombok:1.18.24'
 
