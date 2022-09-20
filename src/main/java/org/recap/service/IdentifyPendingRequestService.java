@@ -103,7 +103,7 @@ public class IdentifyPendingRequestService {
         pendingRequestDetailsRespository.saveAll(pendingRequestEntityList);
     }
 
-    private String getEmailBodyForPendinglasRequest(List<RequestItemEntity> pendingRequestEntities , List<RequestItemEntity> lasRequestEntities) {
+    private static String getEmailBodyForPendinglasRequest(List<RequestItemEntity> pendingRequestEntities , List<RequestItemEntity> lasRequestEntities) {
         StringBuilder stringBuilder=new StringBuilder();
         if(!pendingRequestEntities.isEmpty()) {
             stringBuilder.append("Below are the request in PENDING:");
@@ -119,7 +119,7 @@ public class IdentifyPendingRequestService {
         return stringBuilder.toString();
     }
 
-    private void appendItemEntityInfo(List<RequestItemEntity> pendingRequestEntities, StringBuilder stringBuilder) {
+    private static void appendItemEntityInfo(List<RequestItemEntity> pendingRequestEntities, StringBuilder stringBuilder) {
         pendingRequestEntities.forEach(pendingReq -> {
             stringBuilder.append("\nBarcode : ").append(pendingReq.getItemEntity().getBarcode())
                     .append("\t\t Request Created Date : ").append(pendingReq.getCreatedDate())
@@ -135,7 +135,7 @@ public class IdentifyPendingRequestService {
         producerTemplate.sendBodyAndHeader(ScsbConstants.EMAIL_Q, emailPayLoad, ScsbConstants.EMAIL_BODY_FOR, ScsbConstants.EMAIL_HEADER_REQUEST_STATUS_PENDING);
     }
 
-    private long getDifferenceInMinutes(Date createdDate) {
+    private static long getDifferenceInMinutes(Date createdDate) {
         LocalDateTime now = LocalDateTime.now();
         Instant instant = Instant.ofEpochMilli(createdDate.getTime());
         LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());

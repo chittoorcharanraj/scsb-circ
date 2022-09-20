@@ -67,7 +67,7 @@ public class LookupUser extends ScsbNCIP {
     }
 
 
-    private JSONObject gatherName(LookupUserResponseData lookupUserResponse,JSONObject returnJson) {
+    private  static JSONObject gatherName(LookupUserResponseData lookupUserResponse,JSONObject returnJson) {
 
         String firstName = "";
         String lastName = "";
@@ -75,7 +75,7 @@ public class LookupUser extends ScsbNCIP {
             firstName = lookupUserResponse.getUserOptionalFields().getNameInformation().getPersonalNameInformation().getStructuredPersonalUserName().getGivenName();
             lastName = lookupUserResponse.getUserOptionalFields().getNameInformation().getPersonalNameInformation().getStructuredPersonalUserName().getSurname();
         }
-        catch(Exception e) {
+        catch(RuntimeException e) {
             log.info("Name not provided in response");
         }
         returnJson.put("firstName", firstName);
@@ -106,7 +106,7 @@ public class LookupUser extends ScsbNCIP {
                 json.put(stringValue,addressAsJson);
                 jsonArray.put(json);
             }
-            catch(Exception e) {
+            catch(RuntimeException e) {
                 log.error("Unable to parse physical address");
                 log.error(e.toString());
             }
@@ -132,7 +132,7 @@ public class LookupUser extends ScsbNCIP {
                 json.put(stringValue, value);
                 jsonArray.put(json);
             }
-            catch(Exception e) {
+            catch(RuntimeException e) {
                 log.error("Unable to parse electronic address");
                 log.error(e.toString());
             }
@@ -140,7 +140,7 @@ public class LookupUser extends ScsbNCIP {
         return jsonArray;
     }
 
-    private boolean isEmailPattern(String email) {
+    private static boolean isEmailPattern(String email) {
         String regex = ScsbCommonConstants.REGEX_FOR_EMAIL_ADDRESS;
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(email);
@@ -148,7 +148,7 @@ public class LookupUser extends ScsbNCIP {
     }
 
 
-    private String getUserIdString(LookupUserResponseData lookupUserResponse) {
+    private static String getUserIdString(LookupUserResponseData lookupUserResponse) {
         if (lookupUserResponse.getUserId() != null)
             return lookupUserResponse.getUserId().getUserIdentifierValue();
         return "";
@@ -169,7 +169,7 @@ public class LookupUser extends ScsbNCIP {
                 json.put(stringValue, value);
                 jsonArray.put(json);
             }
-            catch(Exception e) {
+            catch(RuntimeException e) {
                 log.error("Unable to parse user privilege");
                 log.error(e.toString());
             }

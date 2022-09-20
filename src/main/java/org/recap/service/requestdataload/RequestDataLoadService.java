@@ -158,7 +158,7 @@ public class RequestDataLoadService {
         }
     }
 
-    private Date getDateFormat(String date) throws ParseException {
+    private static Date getDateFormat(String date) throws ParseException {
         SimpleDateFormat formatter=new SimpleDateFormat(ScsbConstants.REQUEST_DATA_LOAD_DATE_FORMAT);
         if (StringUtils.isNotBlank(date)){
             return formatter.parse(date);
@@ -212,7 +212,7 @@ public class RequestDataLoadService {
                         itemListAvailableInLAS.add(itemEntity);
                     }
                 }
-                catch (Exception exception){
+                catch (RuntimeException exception){
                     log.info("Exception Occurred while checking status for {} in LAS",itemEntity.getBarcode());
                     itemListAvailableInLAS.add(itemEntity);
                 }

@@ -109,7 +109,7 @@ public class CancelItemController {
                 itemCancelHoldResponse.setSuccess(false);
                 itemCancelHoldResponse.setScreenMessage(ScsbConstants.REQUEST_CANCELLATION_DOES_NOT_EXIST);
             }
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             itemCancelHoldResponse = new ItemHoldResponse();
             itemCancelHoldResponse.setSuccess(false);
             itemCancelHoldResponse.setScreenMessage(e.getMessage());

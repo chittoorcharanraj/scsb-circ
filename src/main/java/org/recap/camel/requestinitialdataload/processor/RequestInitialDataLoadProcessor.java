@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -140,9 +141,9 @@ public class RequestInitialDataLoadProcessor {
         startFileSystemRoutesForAccessionReconciliation(barcodesAvailableInLAS);
         if(isSolrIndexRequired) {
             List<Integer> bibIdsToIndex = barcodesToIndex.stream()
-                    .flatMap(itemEntity -> itemEntity.getBibliographicEntities().stream().map(bibliographicEntity -> bibliographicEntity.getId()).collect(toList()).stream())
+                    .flatMap(itemEntity -> itemEntity.getBibliographicEntities().stream().map(bibliographicEntity -> bibliographicEntity.getId()).collect(toCollection(ArrayList::new)).stream())
                     .distinct()
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toCollection(ArrayList::new));
             restTemplate.postForObject(scsbSolrClientUrl + "/solrIndexer/indexByBibliographicId", bibIdsToIndex, String.class);
         }
     }
@@ -157,7 +158,7 @@ public class RequestInitialDataLoadProcessor {
                 institutionWiseEntries.getValue().entrySet().forEach(imsWiseEntries -> {
                     headers.put("imsLocationCode", imsWiseEntries.getKey());
                     List<ItemEntity> barcodesInAvailableStatus = imsWiseEntries.getValue();
-                    List<RequestInitialLoadBarcodesInLAS> barcodes = barcodesInAvailableStatus.stream().map(itemEntity -> new RequestInitialLoadBarcodesInLAS(itemEntity.getBarcode())).collect(Collectors.toList());
+                    List<RequestInitialLoadBarcodesInLAS> barcodes = barcodesInAvailableStatus.stream().map(itemEntity -> new RequestInitialLoadBarcodesInLAS(itemEntity.getBarcode())).collect(Collectors.toCollection(ArrayList::new));
                     producerTemplate.sendBodyAndHeaders(ScsbConstants.DIRECT + ScsbConstants.RIL_DIRECT_BARCODES_AVAILABLE_IN_LAS, barcodes, headers);
                 });
             });

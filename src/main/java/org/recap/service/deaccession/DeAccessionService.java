@@ -270,7 +270,7 @@ public class DeAccessionService {
         }
     }
 
-    private Boolean validateUserRoles(List<String> userRoles) {
+    private static Boolean validateUserRoles(List<String> userRoles) {
         for (String role : userRoles) {
             if (role.equalsIgnoreCase(ScsbConstants.ROLE_RECAP) || role.equalsIgnoreCase(ScsbConstants.ROLE_SUPER_ADMIN)) {
                 return ScsbConstants.BOOLEAN_TRUE;
@@ -286,7 +286,7 @@ public class DeAccessionService {
         return institutionList;
     }
 
-    private String getDeliveryLcation(String barCode, DeAccessionRequest deAccessionRequest, List<DeAccessionItem> removeDeaccessionItems) {
+    private static String getDeliveryLcation(String barCode, DeAccessionRequest deAccessionRequest, List<DeAccessionItem> removeDeaccessionItems) {
         DeAccessionItem deAccessionItem = new DeAccessionItem();
         String deliveryLocation = deAccessionRequest.getDeAccessionItems().stream().filter(item -> item.getItemBarcode().equalsIgnoreCase(barCode)).findAny().get().getItemBarcode();
         deAccessionItem.setDeliveryLocation(deliveryLocation);
@@ -295,7 +295,7 @@ public class DeAccessionService {
         return deliveryLocation;
     }
 
-    private DeAccessionRequest removeDeaccessionItems(List<DeAccessionItem> removeDeaccessionItems, DeAccessionRequest deAccessionRequest, List<DeAccessionItem> removeDeaccessionItemsList, Map<String, String> resultMap) {
+    private static DeAccessionRequest removeDeaccessionItems(List<DeAccessionItem> removeDeaccessionItems, DeAccessionRequest deAccessionRequest, List<DeAccessionItem> removeDeaccessionItemsList, Map<String, String> resultMap) {
         Predicate<DeAccessionItem> removeItem = deAccessionItem -> {
             for (DeAccessionItem removeDeAccessionItem : removeDeaccessionItems) {
                 if (removeDeAccessionItem.getItemBarcode().equalsIgnoreCase(deAccessionItem.getItemBarcode())) {
@@ -399,7 +399,7 @@ public class DeAccessionService {
                 if (!Objects.isNull(deAccessionDBResponseEntity.getImsLocationCode())) {
                     try {
                         recapAssistanceEmailTo = getRecapAssistanceEmailTo(deAccessionDBResponseEntity.getImsLocationCode());
-                    } catch (Exception e) {
+                    } catch (RuntimeException e) {
                         log.info("Exception occurred while pulling recap assistance email to: {}", e.getMessage());
                     }
                 }
@@ -558,7 +558,7 @@ public class DeAccessionService {
                     } else {
                         barcodeAndStopCodeMap.put(itemBarcode, deliveryLocation);
                     }
-                } catch (Exception e) {
+                } catch (RuntimeException e) {
                     deAccessionDBResponseEntities.add(prepareFailureResponse(itemBarcode, deliveryLocation, ScsbCommonConstants.FAILURE + " - " + e, null));
                     log.error(EXCEPTION_CONSTANT, e);
                 }
@@ -686,7 +686,7 @@ public class DeAccessionService {
                     itemDetailsRepository.markItemAsDeleted(itemId, username, currentDate);
                     deAccessionDBResponseEntity = prepareSuccessResponse(barcode, deliveryLocation, itemEntity, holdingsIds, bibliographicIds);
                     deAccessionDBResponseEntities.add(deAccessionDBResponseEntity);
-                } catch (Exception ex) {
+                } catch (RuntimeException ex) {
                     log.error(ScsbCommonConstants.LOG_ERROR, ex);
                     deAccessionDBResponseEntity = prepareFailureResponse(barcode, deliveryLocation, "Exception" + ex, null);
                     deAccessionDBResponseEntities.add(deAccessionDBResponseEntity);
@@ -726,7 +726,7 @@ public class DeAccessionService {
         return reportEntities;
     }
 
-    private ReportEntity generateReportEntity(DeAccessionDBResponseEntity deAccessionDBResponseEntity, String owningInstitutionBibId) {
+    private static ReportEntity generateReportEntity(DeAccessionDBResponseEntity deAccessionDBResponseEntity, String owningInstitutionBibId) {
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 
         ReportEntity reportEntity = new ReportEntity();
@@ -787,7 +787,7 @@ public class DeAccessionService {
         return reportEntity;
     }
 
-    private DeAccessionDBResponseEntity prepareSuccessResponse(String itemBarcode, String deliveryLocation, ItemEntity itemEntity, List<Integer> holdingIds, List<Integer> bibliographicIds) throws JSONException {
+    private static DeAccessionDBResponseEntity prepareSuccessResponse(String itemBarcode, String deliveryLocation, ItemEntity itemEntity, List<Integer> holdingIds, List<Integer> bibliographicIds) throws JSONException {
         DeAccessionDBResponseEntity deAccessionDBResponseEntity = new DeAccessionDBResponseEntity();
         deAccessionDBResponseEntity.setBarcode(itemBarcode);
         deAccessionDBResponseEntity.setDeliveryLocation(deliveryLocation);
@@ -814,7 +814,7 @@ public class DeAccessionService {
         return deAccessionDBResponseEntity;
     }
 
-    private void populateDeAccessionDBResponseEntity(ItemEntity itemEntity, DeAccessionDBResponseEntity deAccessionDBResponseEntity) throws JSONException {
+    private static void populateDeAccessionDBResponseEntity(ItemEntity itemEntity, DeAccessionDBResponseEntity deAccessionDBResponseEntity) throws JSONException {
         ItemStatusEntity itemStatusEntity = itemEntity.getItemStatusEntity();
         if (itemStatusEntity != null) {
             deAccessionDBResponseEntity.setItemStatus(itemStatusEntity.getStatusCode());

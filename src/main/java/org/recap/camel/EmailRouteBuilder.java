@@ -177,7 +177,7 @@ public class EmailRouteBuilder {
 
                                             EmailPayLoad emailPayLoad = (EmailPayLoad) in.getHeader("emailPayLoad");
                                             in.addAttachment("Results_" + emailPayLoad.getBulkRequestFileName(), new DataHandler(emailPayLoad.getBulkRequestCsvFileData(), "text/csv"));
-                                        } catch (Exception ex) {
+                                        } catch (RuntimeException ex) {
                                             log.info(ScsbCommonConstants.LOG_ERROR , ex);
                                         }
                                         }
