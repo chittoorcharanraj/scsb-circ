@@ -45,7 +45,7 @@ public class SetupDataService {
                 for (ItemStatusEntity itemStatusEntity : itemStatusEntities) {
                     itemStatusIdCodeMap.put(itemStatusEntity.getId(), itemStatusEntity.getStatusCode());
                 }
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 log.error(ScsbCommonConstants.LOG_ERROR,e);
             }
         }
@@ -65,7 +65,7 @@ public class SetupDataService {
                 for (ItemStatusEntity itemStatusEntity : itemStatusEntities) {
                     itemStatusCodeIdMap.put(itemStatusEntity.getStatusCode(), itemStatusEntity.getId());
                 }
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 log.error(ScsbCommonConstants.LOG_ERROR,e);
             }
         }
@@ -85,7 +85,7 @@ public class SetupDataService {
                 for (InstitutionEntity institutionEntity : institutionEntities) {
                     institutionEntityMap.put(institutionEntity.getId(), institutionEntity.getInstitutionCode());
                 }
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 log.error(ScsbCommonConstants.LOG_ERROR,e);
             }
         }
@@ -100,7 +100,7 @@ public class SetupDataService {
                 for (InstitutionEntity institutionEntity : institutionEntities) {
                     institutionCodeIdMap.put(institutionEntity.getInstitutionCode(), institutionEntity.getId());
                 }
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 log.error(ScsbCommonConstants.LOG_ERROR,e);
             }
         }
@@ -115,7 +115,7 @@ public class SetupDataService {
                 for (CollectionGroupEntity collectionGroupEntity : collectionGroupEntities) {
                     collectionGroupMap.put(collectionGroupEntity.getCollectionGroupCode(), collectionGroupEntity.getId());
                 }
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 log.error(ScsbCommonConstants.LOG_ERROR,e);
             }
         }

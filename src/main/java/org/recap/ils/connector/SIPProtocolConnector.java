@@ -49,7 +49,7 @@ public class SIPProtocolConnector extends AbstractProtocolConnector {
             log.info("Host: {}", getHost());
             log.info("Port: {}", getPort());
             connection.connect();
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             log.error(ScsbCommonConstants.LOG_ERROR, e);
         }
         return connection;
@@ -102,7 +102,7 @@ public class SIPProtocolConnector extends AbstractProtocolConnector {
             SIP2PatronInformationRequest request = new SIP2PatronInformationRequest(institutionId, patronIdentifier, getOperatorPassword());
             SIP2PatronInformationResponse response = (SIP2PatronInformationResponse) connection.send(request);
             loginPatronStatus = loginResponse.isOk() && response.isValidPatron() && response.isValidPatronPassword();
-        } catch (Exception ex) {
+        } catch (RuntimeException | InvalidSIP2ResponseException | InvalidSIP2ResponseValueException ex) {
             log.error(ScsbCommonConstants.LOG_ERROR, ex);
         } finally {
             connection.close();
@@ -535,7 +535,7 @@ public class SIPProtocolConnector extends AbstractProtocolConnector {
                 patronInformationResponse.setSuccess(true);
                 patronInformationResponse.setScreenMessage(ScsbConstants.ILS_CONNECTION_FAILED);
             }
-        } catch (Exception ex) {
+        } catch (RuntimeException | InvalidSIP2ResponseException | InvalidSIP2ResponseValueException ex) {
             log.error("", ex);
         } finally {
             connection.close();

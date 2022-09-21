@@ -121,7 +121,7 @@ public class RequestParamaterValidatorService {
             } else {
                 bSuccess = true;
             }
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             log.error(ScsbCommonConstants.LOG_ERROR,e);
         }
         return bSuccess;
@@ -138,7 +138,7 @@ public class RequestParamaterValidatorService {
         return responseHeaders;
     }
 
-    private String buildErrorMessage(Map<Integer, String> erroMessageMap) {
+    private static String buildErrorMessage(Map<Integer, String> erroMessageMap) {
         StringBuilder errorMessageBuilder = new StringBuilder();
         erroMessageMap.forEach((key, value) -> errorMessageBuilder.append(value).append("\n"));
         return errorMessageBuilder.toString();

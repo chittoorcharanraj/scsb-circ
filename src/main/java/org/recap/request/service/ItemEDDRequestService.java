@@ -156,7 +156,7 @@ public class ItemEDDRequestService {
                             if (Boolean.TRUE.toString().equalsIgnoreCase(useGenericPatronEddForSelf)) {
                                 try {
                                     itemRequestInfo.setPatronBarcode(getPatronIdForOwningInstitutionOnEdd(itemRequestInfo.getItemOwningInstitution()));
-                                } catch (Exception e) {
+                                } catch (RuntimeException e) {
                                     log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
                                     itemResponseInformation.setScreenMessage(ScsbConstants.GENERIC_PATRON_NOT_FOUND_ERROR);
                                     itemResponseInformation.setSuccess(false);
@@ -167,7 +167,7 @@ public class ItemEDDRequestService {
                             if (Boolean.TRUE.toString().equalsIgnoreCase(useGenericPatronEddForCrossInst)) {
                                 try {
                                     itemRequestInfo.setPatronBarcode(itemRequestServiceUtil.getPatronIdBorrowingInstitution(itemRequestInfo.getRequestingInstitution(), itemRequestInfo.getItemOwningInstitution(), ScsbCommonConstants.REQUEST_TYPE_EDD));
-                                } catch (Exception e) {
+                                } catch (RuntimeException e) {
                                     log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
                                     itemResponseInformation.setScreenMessage(ScsbConstants.GENERIC_PATRON_NOT_FOUND_ERROR);
                                     itemResponseInformation.setSuccess(false);
@@ -234,7 +234,7 @@ public class ItemEDDRequestService {
         return itemResponseInformation;
     }
 
-    private String getNotes(ItemRequestInformation itemRequestInfo) {
+    private static String getNotes(ItemRequestInformation itemRequestInfo) {
         String notes = "";
         if (!StringUtils.isBlank(itemRequestInfo.getRequestNotes())) {
             notes = String.format("User: %s", itemRequestInfo.getRequestNotes().replace("\n", " "));

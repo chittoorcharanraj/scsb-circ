@@ -47,7 +47,7 @@ public class CheckoutItem extends ScsbNCIP {
             checkoutItemInitiationData.setRequestId(requestIdentifier);
             checkoutItemInitiationData.setDesiredDateDue((GregorianCalendar) cal);
             return checkoutItemInitiationData;
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             return new CheckOutItemInitiationData();
         }
 

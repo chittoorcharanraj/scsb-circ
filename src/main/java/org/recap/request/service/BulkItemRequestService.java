@@ -130,7 +130,7 @@ public class BulkItemRequestService {
      * @param bulkRequestItemBarcodeList
      * @return
      */
-    private Set<String> removeDuplicates(List<String> bulkRequestItemBarcodeList) {
+    private static Set<String> removeDuplicates(List<String> bulkRequestItemBarcodeList) {
         return new HashSet<>(bulkRequestItemBarcodeList);
     }
 
@@ -141,7 +141,7 @@ public class BulkItemRequestService {
      * @param status
      * @return
      */
-    private BulkRequestItem buildBulkRequestItem(String barcode, String customerCode, String status) {
+    private static BulkRequestItem buildBulkRequestItem(String barcode, String customerCode, String status) {
         BulkRequestItem bulkRequestItem = new BulkRequestItem();
         bulkRequestItem.setItemBarcode(barcode);
         bulkRequestItem.setCustomerCode(customerCode);
