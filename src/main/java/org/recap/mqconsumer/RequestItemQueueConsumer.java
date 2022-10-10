@@ -1,5 +1,6 @@
 package org.recap.mqconsumer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Body;
@@ -352,7 +353,7 @@ public class RequestItemQueueConsumer {
                 if (!getItemRequestService().isUseQueueLasCall(itemInformationResponse.getImsLocationCode())) {
                     getItemRequestService().updateChangesToDb(itemInformationResponse, operationType);
                 }
-            } catch (Exception e) {
+            } catch (RuntimeException | JsonProcessingException e) {
                 log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
             }
         }

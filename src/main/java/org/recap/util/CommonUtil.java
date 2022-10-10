@@ -116,7 +116,7 @@ public class CommonUtil {
                     ItemStatusEntity itemStatusEntity = iterator.next();
                     itemStatusMap.put(itemStatusEntity.getStatusCode(), itemStatusEntity.getId());
                 }
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 log.error(ScsbCommonConstants.LOG_ERROR,e);
             }
         }
@@ -137,7 +137,7 @@ public class CommonUtil {
                     CollectionGroupEntity collectionGroupEntity = iterator.next();
                     collectionGroupMap.put(collectionGroupEntity.getCollectionGroupCode(), collectionGroupEntity.getId());
                 }
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 log.error(ScsbCommonConstants.LOG_ERROR,e);
             }
         }
@@ -158,7 +158,7 @@ public class CommonUtil {
                     InstitutionEntity institutionEntity = iterator.next();
                     institutionEntityMap.put(institutionEntity.getInstitutionCode(), institutionEntity.getId());
                 }
-            } catch (Exception e) {
+            } catch (RuntimeException e) {
                 log.error(ScsbCommonConstants.LOG_ERROR,e);
             }
         }

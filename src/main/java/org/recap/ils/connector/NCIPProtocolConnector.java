@@ -212,8 +212,8 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
             if (!checkoutItemResponse.getProblems().isEmpty()) {
                 itemCheckoutResponse.setSuccess(Boolean.FALSE);
                 itemCheckoutResponse.setScreenMessage(failureReason + checkoutItemResponse.getProblems());
-                log.error("checkOutItem Response >>> " + checkoutItemResponse.getProblems());
-                log.error("checkOutItem Response message >>> " + itemCheckoutResponse.getScreenMessage());
+                log.error("checkOutItem Response >>>> " + checkoutItemResponse.getProblems());
+                log.error("checkOutItem Response message >>>> " + itemCheckoutResponse.getScreenMessage());
 
                 return itemCheckoutResponse;
             } else {
@@ -229,7 +229,7 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
                 itemCheckoutResponse.setSuccess(Boolean.TRUE);
                 itemCheckoutResponse.setScreenMessage(ScsbCommonConstants.SUCCESS);
             log.info("checkOutItem Response >>> " + checkoutItemResponse.getProblems());
-                log.info("checkOutItem Response message >>> " + itemCheckoutResponse.getScreenMessage());
+                log.info("checkOutItem Response message >>>>> " + itemCheckoutResponse.getScreenMessage());
 
                 return itemCheckoutResponse;
             }
@@ -238,12 +238,12 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
             log.error(ScsbCommonConstants.LOG_ERROR, httpException);
             itemCheckoutResponse.setSuccess(false);
             itemCheckoutResponse.setScreenMessage(httpException.getStatusText());
-            log.error("checkOutItem Response message >>> " + itemCheckoutResponse.getScreenMessage());
+            log.error("checkOutItem Response message >>>>>> " + itemCheckoutResponse.getScreenMessage());
         } catch (Exception e) {
             log.error(ScsbCommonConstants.LOG_ERROR, e);
             itemCheckoutResponse.setSuccess(false);
             itemCheckoutResponse.setScreenMessage(e.getMessage());
-            log.error("checkOutItem Response message >>> " + itemCheckoutResponse.getScreenMessage());
+            log.error("checkOutItem Response message >>>>>>> " + itemCheckoutResponse.getScreenMessage());
         }
         return itemCheckoutResponse;
     }

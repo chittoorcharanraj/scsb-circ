@@ -91,7 +91,7 @@ public class RequestItemController {
                 itemCheckoutResponse.setSuccess(false);
                 itemCheckoutResponse.setScreenMessage("Item Id not found");
             }
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             itemCheckoutResponse.setSuccess(false);
             itemCheckoutResponse.setScreenMessage(e.getMessage());
             log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
@@ -154,7 +154,7 @@ public class RequestItemController {
                     itemRequestInformation.getAuthor(),
                     itemRequestInformation.getCallNumber());
 
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             log.info(ScsbCommonConstants.REQUEST_EXCEPTION, e);
             itemHoldResponse.setSuccess(false);
             itemHoldResponse.setScreenMessage("ILS returned a invalid response");

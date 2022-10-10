@@ -163,7 +163,7 @@ public class BulkItemRequestProcessService {
      * @param bulkRequestItemEntity
      * @return
      */
-    private ItemRequestInformation buildItemRequestInformation(BulkRequestItemEntity bulkRequestItemEntity) {
+    private static ItemRequestInformation buildItemRequestInformation(BulkRequestItemEntity bulkRequestItemEntity) {
         ItemRequestInformation itemRequestInformation = new ItemRequestInformation();
         itemRequestInformation.setRequestType(ScsbCommonConstants.REQUEST_TYPE_RETRIEVAL);
         itemRequestInformation.setRequestingInstitution(bulkRequestItemEntity.getInstitutionEntity().getInstitutionCode());

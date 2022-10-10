@@ -709,7 +709,8 @@ public class ItemRequestService {
                 itemResponseInformation.setSuccess(true);
                 itemResponseInformation.setScreenMessage(ScsbConstants.RETRIEVAL_ORDER_NOT_REQUIRED_FOR_RECALL);
             }
-        } catch (Exception e) {
+
+        } catch (RuntimeException e) {
             itemResponseInformation.setSuccess(false);
             itemResponseInformation.setScreenMessage(ScsbConstants.REQUEST_SCSB_EXCEPTION + e.getMessage());
             log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
@@ -741,7 +742,7 @@ public class ItemRequestService {
                     saveItemChangeLogEntity(itemEntity.getId(), getUser(itemRequestInfo.getUsername()), ScsbConstants.REQUEST_ITEM_HOLD_FAILURE, createBibResponse.getBibId() + " - " + createBibResponse.getScreenMessage());
                 }
             }
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
             itemResponseInformation.setScreenMessage(ScsbConstants.REQUEST_SCSB_EXCEPTION + e.getMessage());
             itemResponseInformation.setSuccess(false);
@@ -762,14 +763,14 @@ public class ItemRequestService {
                     if (Boolean.TRUE.toString().equalsIgnoreCase(useGenericPatronRetrievalForCross)) {
                         try {
                             itemRequestInfo.setPatronBarcode(itemRequestServiceUtil.getPatronIdBorrowingInstitution(itemRequestInfo.getRequestingInstitution(), itemRequestInfo.getItemOwningInstitution(), ScsbCommonConstants.REQUEST_TYPE_RETRIEVAL));
-                        } catch (Exception e) {
+                        } catch (RuntimeException e) {
                             log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
                             itemRequestInfo.setPatronBarcode("");
                         }
                     }
                     log.info("Performing CheckOut using the generic patron : {} in Owning Institution : {}",itemRequestInfo.getPatronBarcode(), itemRequestInfo.getItemOwningInstitution());
                     requestItemController.checkoutItem(itemRequestInfo, itemRequestInfo.getItemOwningInstitution());
-                } catch (Exception e) {
+                } catch (RuntimeException e) {
                     log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
                     log.error("Cross Partner Request Item Checkout Failed. Own Ins: {}, Req Ins: {}, Cross PatronId: {}", itemResponseInformation.getItemOwningInstitution(), itemRequestInfo.getRequestingInstitution(), itemRequestInfo.getPatronBarcode());
                 }
@@ -853,7 +854,7 @@ public class ItemRequestService {
                             itemRequestInfo.setPickupLocation(getPickupLocation(institutionEntity.getId(), requestItemEntity.getStopCode()));
                             itemRequestInfo.setBibId(itemInformation.getBibID());
                             itemRecallResponse = (ItemRecallResponse) requestItemController.recallItem(itemRequestInfo, requestItemEntity.getInstitutionEntity().getInstitutionCode());
-                        } catch (Exception e) {
+                        } catch (RuntimeException e) {
                             log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
                             itemRecallResponse.setSuccess(false);
                             itemRecallResponse.setScreenMessage(ScsbConstants.GENERIC_PATRON_NOT_FOUND_ERROR);
@@ -884,7 +885,7 @@ public class ItemRequestService {
         return itemResponseInformation;
     }
 
-    private String recallError(ItemRecallResponse itemRecallResponse) {
+    private static String recallError(ItemRecallResponse itemRecallResponse) {
         if (itemRecallResponse.getScreenMessage() != null && itemRecallResponse.getScreenMessage().trim().length() > 0) {
             return ScsbConstants.REQUEST_SCSB_EXCEPTION + itemRecallResponse.getScreenMessage();
         } else {
@@ -941,7 +942,7 @@ public class ItemRequestService {
             if (statusResponse != null && !statusResponse.isEmpty()) {
                 searchResultRow = statusResponse.get(0);
             }
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
         }
         return searchResultRow;
@@ -1166,7 +1167,7 @@ public class ItemRequestService {
             } else {
                 resultMap.put(ScsbCommonConstants.INVALID_REQUEST, ScsbConstants.REQUEST_REPLACE_BY_TYPE_NOT_SELECTED);
             }
-        } catch (Exception exception) {
+        } catch (RuntimeException | ParseException exception) {
             log.error(ScsbCommonConstants.REQUEST_EXCEPTION, exception);
             resultMap.put(ScsbCommonConstants.FAILURE, exception.getMessage());
         }
@@ -1408,7 +1409,7 @@ public class ItemRequestService {
             } else if (commonUtil.checkIfImsItemStatusIsAvailableOrNotAvailable(requestItemEntity.getItemEntity().getImsLocationEntity().getImsLocationCode(), itemStatus, true)) {
                 producerTemplate.sendBodyAndHeader(ScsbConstants.REQUEST_ITEM_QUEUE, json, ScsbCommonConstants.REQUEST_TYPE_QUEUE_HEADER, itemRequestInformation.getRequestType());
             }
-        } catch (Exception exception) {
+        } catch (RuntimeException | JsonProcessingException exception) {
             log.error(ScsbCommonConstants.REQUEST_EXCEPTION, exception);
             return ScsbCommonConstants.FAILURE + ":" + exception.getMessage();
         }
