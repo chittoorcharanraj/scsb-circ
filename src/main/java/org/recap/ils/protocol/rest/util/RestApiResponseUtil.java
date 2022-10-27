@@ -84,7 +84,7 @@ public class RestApiResponseUtil {
         itemInformationResponse.setBibIds(itemData.getBibIds());
         itemInformationResponse.setCallNumber((String) itemData.getCallNumber());
         itemInformationResponse.setItemType((String) itemData.getItemType());
-        itemInformationResponse.setSource(itemData.getNyplSource());
+        itemInformationResponse.setSource(itemData.getSource());
         itemInformationResponse.setUpdatedDate(formatFromSipDate(itemData.getUpdatedDate()));
         itemInformationResponse.setCreatedDate(formatFromSipDate(itemData.getCreatedDate()));
         itemInformationResponse.setDeletedDate(formatFromSipDate((String) itemData.getDeletedDate()));
@@ -241,7 +241,7 @@ public class RestApiResponseUtil {
      *
      * @param reqInstitution the Requesting institution id
      * @param owningInstitution the Owning institution id
-     * @return the nypl source
+     * @return the source
      */
     public String getRestApiSourceForInstitution(String reqInstitution, String owningInstitution) {
         return propertyUtil.getPropertyByInstitutionAndKey(reqInstitution, ScsbConstants.ILS_SOURCE_FOR_ITEM + owningInstitution.toLowerCase());
