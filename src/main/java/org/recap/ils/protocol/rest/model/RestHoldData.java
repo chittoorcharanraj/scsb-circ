@@ -20,7 +20,7 @@ import lombok.Data;
         "createdDate",
         "recordType",
         "record",
-        "nyplSource",
+        "source",
         "pickupLocation",
         "neededBy",
         "numberOfCopies"
@@ -45,8 +45,8 @@ public class RestHoldData {
     private String recordType;
     @JsonProperty("record")
     private String record;
-    @JsonProperty("nyplSource")
-    private String nyplSource;
+    @JsonProperty("source")
+    private String source;
     @JsonProperty("pickupLocation")
     private String pickupLocation;
     @JsonProperty("neededBy")

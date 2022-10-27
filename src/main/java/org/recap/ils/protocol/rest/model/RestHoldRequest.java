@@ -14,7 +14,7 @@ import lombok.Data;
         "patron",
         "recordType",
         "record",
-        "nyplSource",
+        "source",
         "pickupLocation",
         "numberOfCopies",
         "neededBy"
@@ -27,8 +27,8 @@ public class RestHoldRequest {
     private String recordType;
     @JsonProperty("record")
     private String record;
-    @JsonProperty("nyplSource")
-    private String nyplSource;
+    @JsonProperty("source")
+    private String source;
     @JsonProperty("pickupLocation")
     private String pickupLocation;
     @JsonProperty("deliveryLocation")
