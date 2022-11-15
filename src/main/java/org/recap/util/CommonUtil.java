@@ -358,7 +358,10 @@ public class CommonUtil {
     public String formatRequest(String requestBody){
         String tempRequest = requestBody.replaceAll("</", "RECAP_123");
         tempRequest = replaceStringCharacters(tempRequest);
-        return tempRequest.replaceAll("RECAP_123", "</ns1:");
+        tempRequest = tempRequest.replaceAll("RECAP_123", "</ns1:");
+        tempRequest = tempRequest.replaceAll("xmlns:ns2","xmlns:ns1");
+        tempRequest = tempRequest.replaceAll("ns2:version","ns1:version");
+        return tempRequest;
     }
 
     public String formatResponse(String responseBody)
