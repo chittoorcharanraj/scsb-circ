@@ -361,6 +361,7 @@ public class CommonUtil {
         tempRequest = tempRequest.replaceAll("RECAP_123", "</ns1:");
         tempRequest = tempRequest.replaceAll("xmlns:ns2","xmlns:ns1");
         tempRequest = tempRequest.replaceAll("ns2:version","ns1:version");
+        tempRequest = tempRequest.replaceAll("ns2:Scheme","ns1:Scheme");
         return tempRequest;
     }
 
