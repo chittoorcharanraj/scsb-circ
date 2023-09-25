@@ -8,7 +8,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.camel.requestinitialdataload.RequestDataLoadCSVRecord;
 import org.recap.model.jpa.ItemEntity;
 import org.recap.model.report.RequestInitialLoadBarcodesInLAS;
@@ -35,7 +35,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toCollection;
-import static java.util.stream.Collectors.toList;
 
 /**
  * Created by hemalathas on 3/5/17.

@@ -29,13 +29,12 @@ import org.recap.ils.protocol.ncip.util.NCIPToolKitUtil;
 import org.recap.model.jpa.ItemEntity;
 import org.recap.model.request.ItemRequestInformation;
 import org.recap.ils.protocol.ncip.AcceptItem;
-import org.recap.ils.protocol.ncip.CancelRequestItem;
 import org.recap.ils.protocol.ncip.CheckinItem;
 import org.recap.ils.protocol.ncip.CheckoutItem;
 import org.recap.ils.protocol.ncip.LookupUser;
 import org.recap.ils.protocol.ncip.RecallItem;
 import org.recap.ScsbCommonConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.ils.protocol.rest.model.BibLookupData;
 import org.recap.ils.protocol.rest.model.ItemLookupData;
 import org.recap.ils.protocol.rest.model.response.ItemLookupResponse;
@@ -63,7 +62,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
@@ -228,7 +226,7 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
                 itemCheckoutResponse.setDueDate(responseObject.getString("dueDate"));
                 itemCheckoutResponse.setSuccess(Boolean.TRUE);
                 itemCheckoutResponse.setScreenMessage(ScsbCommonConstants.SUCCESS);
-            log.info("checkOutItem Response >>> " + checkoutItemResponse.getProblems());
+                log.info("checkOutItem Response >>> " + checkoutItemResponse.getProblems());
                 log.info("checkOutItem Response message >>>>> " + itemCheckoutResponse.getScreenMessage());
 
                 return itemCheckoutResponse;
@@ -282,7 +280,7 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
             //transforms the NCIP Objects into a JSON response object
             checkinItemResponse = (CheckInItemResponseData) responseData;
             checkInItem.getCheckInResponse(checkinItemResponse);
-                   }
+        }
         catch (HttpClientErrorException httpException) {
             log.error(ScsbCommonConstants.LOG_ERROR, httpException);
             itemCheckinResponse.setSuccess(false);
@@ -310,60 +308,60 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
         Boolean isRemoteCheckin = Boolean.FALSE;
 
         String remoteCheckin = propertyUtil.getPropertyByInstitutionAndKey(getInstitution(), PropertyKeyConstants.ILS.ILS_REMOTE_CHECKIN);
-           if(Boolean.TRUE.toString().equalsIgnoreCase(remoteCheckin) && (
-                    getInstitution().equals(itemRequestInformation.getItemOwningInstitution())
-              || itemRequestInformation.getRequestingInstitution().equals(itemRequestInformation.getItemOwningInstitution()))) {
-                isRemoteCheckin = Boolean.TRUE;
-            }
-                if (isRemoteCheckin.booleanValue()) {
-                    String remoteProfileType = propertyUtil.getPropertyByInstitutionAndLocationAndKey(getInstitution(), imsLocation, PropertyKeyConstants.ILS.ILS_REMOTE_PROFILE_TYPE);
-                    if (!itemRequestInformation.getRequestingInstitution().equals(itemRequestInformation.getItemOwningInstitution()) || itemRequestInformation.getRequestType().equals(ScsbCommonConstants.REQUEST_TYPE_EDD)) {
-                        CheckInItemInitiationData checkInItemInitiationData = checkInItem.getCheckInItemInitiationData(itemIdentifier,  getNcipAgencyId());
-                        CheckInItemResponseData checkinItemResponse = getCheckinResponse(checkInItem, checkInItemInitiationData);
-                        if (!checkinItemResponse.getProblems().isEmpty()) {
-                            itemCheckinResponse.setSuccess(Boolean.FALSE);
-                            itemCheckinResponse.setScreenMessage(failureReason + checkinItemResponse.getProblems());
-                            log.error("CheckinItem Response >>> " + checkinItemResponse.getProblems());
-                            log.error("CheckinItem Response message >>> " + itemCheckinResponse.getScreenMessage());
-                            return itemCheckinResponse;
-                        }
-                        checkInItemInitiationData = checkInItem.getCheckInItemInitiationRemoteData(itemIdentifier, itemEntity, imsLocation, remoteProfileType, getNcipAgencyId(), getNcipScheme());
-                        checkinItemResponse = getCheckinResponse(checkInItem, checkInItemInitiationData);
-                        if (!checkinItemResponse.getProblems().isEmpty()) {
-                            itemCheckinResponse.setSuccess(Boolean.FALSE);
-                            itemCheckinResponse.setScreenMessage(failureReason + checkinItemResponse.getProblems());
-                            log.error("CheckinItem Response >>> " + checkinItemResponse.getProblems());
-                            log.error("CheckinItem Response message >>> " + itemCheckinResponse.getScreenMessage());
-                            return itemCheckinResponse;
-                        }
-                    } else {
-                        CheckInItemInitiationData checkInItemInitiationData = checkInItem.getCheckInItemInitiationRemoteData(itemIdentifier, itemEntity, imsLocation, remoteProfileType, getNcipAgencyId(), getNcipScheme());
-                        CheckInItemResponseData checkinItemResponse = getCheckinResponse(checkInItem, checkInItemInitiationData);
-                        if (!checkinItemResponse.getProblems().isEmpty()) {
-                            itemCheckinResponse.setSuccess(Boolean.FALSE);
-                            itemCheckinResponse.setScreenMessage(failureReason + checkinItemResponse.getProblems());
-                            log.error("CheckinItem Response >>> " + checkinItemResponse.getProblems());
-                            log.error("CheckinItem Response message >>> " + itemCheckinResponse.getScreenMessage());
-                            return itemCheckinResponse;
-                        }
-                      }
-
-                } else {
-                        CheckInItemInitiationData checkInItemInitiationData = checkInItem.getCheckInItemInitiationData(itemRequestInformation.getItemBarcodes().get(0), getNcipAgencyId());
-                        CheckInItemResponseData checkinItemResponse = getCheckinResponse(checkInItem, checkInItemInitiationData);
-                        if (!checkinItemResponse.getProblems().isEmpty()) {
-                            itemCheckinResponse.setSuccess(Boolean.FALSE);
-                            itemCheckinResponse.setScreenMessage(failureReason + checkinItemResponse.getProblems());
-                            log.info("itemCheckinResponse Response message >>> " + itemCheckinResponse.getScreenMessage());
-                            log.info("itemCheckinResponse problems >>> " + checkinItemResponse.getProblems());
-                            return itemCheckinResponse;
-                        }
-                    log.info("itemCheckinResponse Response message >>> " + itemCheckinResponse.getScreenMessage());
+        if(Boolean.TRUE.toString().equalsIgnoreCase(remoteCheckin) && (
+                getInstitution().equals(itemRequestInformation.getItemOwningInstitution())
+                        || itemRequestInformation.getRequestingInstitution().equals(itemRequestInformation.getItemOwningInstitution()))) {
+            isRemoteCheckin = Boolean.TRUE;
+        }
+        if (isRemoteCheckin.booleanValue()) {
+            String remoteProfileType = propertyUtil.getPropertyByInstitutionAndLocationAndKey(getInstitution(), imsLocation, PropertyKeyConstants.ILS.ILS_REMOTE_PROFILE_TYPE);
+            if (!itemRequestInformation.getRequestingInstitution().equals(itemRequestInformation.getItemOwningInstitution()) || itemRequestInformation.getRequestType().equals(ScsbCommonConstants.REQUEST_TYPE_EDD)) {
+                CheckInItemInitiationData checkInItemInitiationData = checkInItem.getCheckInItemInitiationData(itemIdentifier,  getNcipAgencyId());
+                CheckInItemResponseData checkinItemResponse = getCheckinResponse(checkInItem, checkInItemInitiationData);
+                if (!checkinItemResponse.getProblems().isEmpty()) {
+                    itemCheckinResponse.setSuccess(Boolean.FALSE);
+                    itemCheckinResponse.setScreenMessage(failureReason + checkinItemResponse.getProblems());
+                    log.error("CheckinItem Response >>> " + checkinItemResponse.getProblems());
+                    log.error("CheckinItem Response message >>> " + itemCheckinResponse.getScreenMessage());
+                    return itemCheckinResponse;
                 }
-                    itemCheckinResponse.setSuccess(Boolean.TRUE);
-                    itemCheckinResponse.setScreenMessage(ScsbCommonConstants.SUCCESS);
-                    itemCheckinResponse.setItemOwningInstitution(getInstitution());
-                    log.info("itemCheckinResponse Response message >>> " + itemCheckinResponse.getScreenMessage());
+                checkInItemInitiationData = checkInItem.getCheckInItemInitiationRemoteData(itemIdentifier, itemEntity, imsLocation, remoteProfileType, getNcipAgencyId(), getNcipScheme());
+                checkinItemResponse = getCheckinResponse(checkInItem, checkInItemInitiationData);
+                if (!checkinItemResponse.getProblems().isEmpty()) {
+                    itemCheckinResponse.setSuccess(Boolean.FALSE);
+                    itemCheckinResponse.setScreenMessage(failureReason + checkinItemResponse.getProblems());
+                    log.error("CheckinItem Response >>> " + checkinItemResponse.getProblems());
+                    log.error("CheckinItem Response message >>> " + itemCheckinResponse.getScreenMessage());
+                    return itemCheckinResponse;
+                }
+            } else {
+                CheckInItemInitiationData checkInItemInitiationData = checkInItem.getCheckInItemInitiationRemoteData(itemIdentifier, itemEntity, imsLocation, remoteProfileType, getNcipAgencyId(), getNcipScheme());
+                CheckInItemResponseData checkinItemResponse = getCheckinResponse(checkInItem, checkInItemInitiationData);
+                if (!checkinItemResponse.getProblems().isEmpty()) {
+                    itemCheckinResponse.setSuccess(Boolean.FALSE);
+                    itemCheckinResponse.setScreenMessage(failureReason + checkinItemResponse.getProblems());
+                    log.error("CheckinItem Response >>> " + checkinItemResponse.getProblems());
+                    log.error("CheckinItem Response message >>> " + itemCheckinResponse.getScreenMessage());
+                    return itemCheckinResponse;
+                }
+            }
+
+        } else {
+            CheckInItemInitiationData checkInItemInitiationData = checkInItem.getCheckInItemInitiationData(itemRequestInformation.getItemBarcodes().get(0), getNcipAgencyId());
+            CheckInItemResponseData checkinItemResponse = getCheckinResponse(checkInItem, checkInItemInitiationData);
+            if (!checkinItemResponse.getProblems().isEmpty()) {
+                itemCheckinResponse.setSuccess(Boolean.FALSE);
+                itemCheckinResponse.setScreenMessage(failureReason + checkinItemResponse.getProblems());
+                log.info("itemCheckinResponse Response message >>> " + itemCheckinResponse.getScreenMessage());
+                log.info("itemCheckinResponse problems >>> " + checkinItemResponse.getProblems());
+                return itemCheckinResponse;
+            }
+            log.info("itemCheckinResponse Response message >>> " + itemCheckinResponse.getScreenMessage());
+        }
+        itemCheckinResponse.setSuccess(Boolean.TRUE);
+        itemCheckinResponse.setScreenMessage(ScsbCommonConstants.SUCCESS);
+        itemCheckinResponse.setItemOwningInstitution(getInstitution());
+        log.info("itemCheckinResponse Response message >>> " + itemCheckinResponse.getScreenMessage());
         return itemCheckinResponse;
     }
 
@@ -508,7 +506,7 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
                 return patronInformationResponse;
             } else {
                 patronInformationResponse.setPatronName(lookupUserResponseData.getUserOptionalFields().getNameInformation().getPersonalNameInformation().getStructuredPersonalUserName().getGivenName()
-                + lookupUserResponseData.getUserOptionalFields().getNameInformation().getPersonalNameInformation().getStructuredPersonalUserName().getSurname()
+                        + lookupUserResponseData.getUserOptionalFields().getNameInformation().getPersonalNameInformation().getStructuredPersonalUserName().getSurname()
                 );
                 patronInformationResponse.setSuccess(Boolean.TRUE);
                 patronInformationResponse.setScreenMessage(ScsbCommonConstants.SUCCESS);
@@ -582,7 +580,7 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
             itemRecallResponse.setSuccess(false);
             itemRecallResponse.setScreenMessage(httpException.getStatusText());
             log.error("recallItem Response message >>> " + itemRecallResponse.getScreenMessage());
-      } catch (Exception e) {
+        } catch (Exception e) {
             log.error(ScsbCommonConstants.LOG_ERROR, e);
             itemRecallResponse.setSuccess(false);
             itemRecallResponse.setScreenMessage(e.getMessage());
@@ -631,7 +629,7 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
         JSONObject responseObject;
         try {
             AcceptItemInitiationData acceptItemInitiationData = new AcceptItemInitiationData();
-                    List<ItemEntity> itemEntities = itemDetailsRepository.findByBarcode(itemIdentifier);
+            List<ItemEntity> itemEntities = itemDetailsRepository.findByBarcode(itemIdentifier);
             ItemEntity itemEntity = !itemEntities.isEmpty() ? itemEntities.get(0) : null;
             String useRestrictions = itemEntity != null ? itemEntity.getUseRestrictions() : null;
             if(useRestrictions != null && useRestrictions.trim().length() > 0) {

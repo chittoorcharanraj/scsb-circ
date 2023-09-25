@@ -2,10 +2,9 @@ package org.recap.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
-import org.apache.camel.builder.RouteBuilder;
 import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.ims.service.GFALasService;
 import org.recap.mqconsumer.RequestItemQueueConsumer;
 import org.recap.ims.processor.LasHeartBeatCheckPollingProcessor;

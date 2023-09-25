@@ -2,7 +2,7 @@ package org.recap.request.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.model.request.ItemRequestInformation;
 import org.recap.model.response.ItemInformationResponse;
@@ -10,8 +10,6 @@ import org.recap.model.jpa.*;
 import org.recap.repository.jpa.*;
 import org.recap.util.CommonUtil;
 import org.recap.util.SecurityUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -65,7 +63,7 @@ public class ItemRequestDBService {
 
     @Autowired
     private CommonUtil commonUtil;
-    
+
     private String errorNote = " with error note - ";
 
     /**
@@ -114,7 +112,7 @@ public class ItemRequestDBService {
             savedItemRequest = requestItemDetailsRepository.saveAndFlush(requestItemEntity);
             requestId = savedItemRequest.getId();
             commonUtil.saveItemChangeLogEntity(savedItemRequest.getId(), commonUtil.getUser(itemRequestInformation.getUsername()), ScsbConstants.REQUEST_ITEM_INSERT, savedItemRequest.getItemId() + " - " + savedItemRequest.getPatronId());
-        log.info("SCSB DB Update Successful");
+            log.info("SCSB DB Update Successful");
         } catch (ParseException e) {
             log.error(ScsbConstants.REQUEST_PARSE_EXCEPTION, e);
         } catch (Exception e) {

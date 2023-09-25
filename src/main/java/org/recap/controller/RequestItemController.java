@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.recap.PropertyKeyConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.ils.connector.factory.ILSProtocolConnectorFactory;
 import org.recap.model.AbstractResponseItem;
@@ -218,7 +218,7 @@ public class RequestItemController {
             itemCreateBibResponse = new ItemCreateBibResponse();
             itemCreateBibResponse.setSuccess(false);
             itemCreateBibResponse.setScreenMessage("Please check the Item Barcode provided");
-       }
+        }
         return itemCreateBibResponse;
     }
 

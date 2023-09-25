@@ -2,21 +2,17 @@ package org.recap.ils.connector;
 
 import com.pkrete.jsip2.connection.SIP2SocketConnection;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.recap.BaseTestCase;
-import org.recap.BaseTestCaseUT;
 import org.recap.PropertyKeyConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.model.ILSConfigProperties;
 import org.recap.model.request.ItemRequestInformation;
 import org.recap.util.PropertyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;

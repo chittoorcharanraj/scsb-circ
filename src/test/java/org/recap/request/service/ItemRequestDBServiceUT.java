@@ -1,18 +1,15 @@
 package org.recap.request.service;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.recap.BaseTestCaseUT;
 import org.recap.ScsbCommonConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.model.jpa.*;
 import org.recap.model.response.ItemInformationResponse;
 import org.recap.model.request.ItemRequestInformation;

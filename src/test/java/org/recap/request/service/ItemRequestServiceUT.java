@@ -17,7 +17,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.recap.BaseTestCaseUT;
 import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.controller.RequestItemController;
 import org.recap.ils.connector.AbstractProtocolConnector;
 import org.recap.ils.connector.factory.ILSProtocolConnectorFactory;

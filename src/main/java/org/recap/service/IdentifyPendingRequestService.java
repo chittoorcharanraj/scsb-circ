@@ -3,7 +3,7 @@ package org.recap.service;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
 import org.recap.PropertyKeyConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.camel.EmailPayLoad;
 import org.recap.model.jpa.PendingRequestEntity;
 import org.recap.model.jpa.RequestItemEntity;
@@ -73,7 +73,7 @@ public class IdentifyPendingRequestService {
 
     private PendingRequestEntity getPendingRequestEntityFromRequestEntity(RequestItemEntity requestItemEntity){
         PendingRequestEntity pendingRequestEntity = new PendingRequestEntity();
-       // pendingRequestEntity.setId(requestItemEntity.getId());
+        // pendingRequestEntity.setId(requestItemEntity.getId());
         pendingRequestEntity.setItemId(requestItemEntity.getItemId());
         pendingRequestEntity.setRequestId(requestItemEntity.getId());
         pendingRequestEntity.setRequestCreatedDate(new Date());

@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
 import org.apache.commons.collections.CollectionUtils;
 import org.recap.PropertyKeyConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.model.request.BulkRequestItem;
 import org.recap.model.jpa.BulkRequestItemEntity;
@@ -111,18 +111,18 @@ public class BulkItemRequestService {
      * @param bulkRequestId
      */
     private void updateStatusToBarcodes(List<BulkRequestItem> exceptionBulkRequestItems, Integer bulkRequestId) {
-       Optional<BulkRequestItemEntity> bulkRequestItemEntity = bulkRequestItemDetailsRepository.findById(bulkRequestId);
-       if(bulkRequestItemEntity.isPresent()) {
-           if (!ScsbConstants.PROCESSED.equals(bulkRequestItemEntity.get().getBulkRequestStatus())) {
-               StringBuilder csvFormatDataBuilder = new StringBuilder();
-               csvFormatDataBuilder.append("BARCODE,CUSTOMER CODE,REQUEST ID,REQUEST STATUS,STATUS");
-               itemRequestServiceUtil.buildCsvFormatData(exceptionBulkRequestItems, csvFormatDataBuilder);
-               bulkRequestItemEntity.get().setBulkRequestFileData(csvFormatDataBuilder.toString().getBytes());
-               bulkRequestItemDetailsRepository.save(bulkRequestItemEntity.get());
-           } else {
-               itemRequestServiceUtil.updateStatusToBarcodes(exceptionBulkRequestItems, bulkRequestItemEntity.get());
-           }
-       }
+        Optional<BulkRequestItemEntity> bulkRequestItemEntity = bulkRequestItemDetailsRepository.findById(bulkRequestId);
+        if(bulkRequestItemEntity.isPresent()) {
+            if (!ScsbConstants.PROCESSED.equals(bulkRequestItemEntity.get().getBulkRequestStatus())) {
+                StringBuilder csvFormatDataBuilder = new StringBuilder();
+                csvFormatDataBuilder.append("BARCODE,CUSTOMER CODE,REQUEST ID,REQUEST STATUS,STATUS");
+                itemRequestServiceUtil.buildCsvFormatData(exceptionBulkRequestItems, csvFormatDataBuilder);
+                bulkRequestItemEntity.get().setBulkRequestFileData(csvFormatDataBuilder.toString().getBytes());
+                bulkRequestItemDetailsRepository.save(bulkRequestItemEntity.get());
+            } else {
+                itemRequestServiceUtil.updateStatusToBarcodes(exceptionBulkRequestItems, bulkRequestItemEntity.get());
+            }
+        }
     }
 
     /**

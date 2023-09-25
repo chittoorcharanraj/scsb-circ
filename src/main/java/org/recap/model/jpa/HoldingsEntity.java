@@ -1,16 +1,16 @@
 package org.recap.model.jpa;
 
 import lombok.Data;
-import javax.persistence.AttributeOverride;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedNativeQuery;
-import javax.persistence.Table;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedNativeQuery;
+import jakarta.persistence.Table;
 import java.util.List;
 
 /**
@@ -20,13 +20,13 @@ import java.util.List;
 @Entity
 @Table(name = "holdings_t", catalog = "")
 @AttributeOverride(name = "id", column = @Column(name = "HOLDINGS_ID"))
-        @NamedNativeQuery(
-                name = "HoldingsEntity.getNonDeletedItemEntities",
-                query = "SELECT ITEM_T.* FROM ITEM_T, ITEM_HOLDINGS_T, HOLDINGS_T WHERE " +
-                        "HOLDINGS_T.HOLDINGS_ID = ITEM_HOLDINGS_T.HOLDINGS_ID AND ITEM_T.ITEM_ID = ITEM_HOLDINGS_T.ITEM_ID " +
-                        "AND ITEM_T.IS_DELETED = 0 AND " +
-                        "HOLDINGS_T.OWNING_INST_HOLDINGS_ID = :owningInstitutionHoldingsId AND HOLDINGS_T.OWNING__INST_ID = :owningInstitutionId",
-                resultClass = ItemEntity.class)
+@NamedNativeQuery(
+        name = "HoldingsEntity.getNonDeletedItemEntities",
+        query = "SELECT ITEM_T.* FROM ITEM_T, ITEM_HOLDINGS_T, HOLDINGS_T WHERE " +
+                "HOLDINGS_T.HOLDINGS_ID = ITEM_HOLDINGS_T.HOLDINGS_ID AND ITEM_T.ITEM_ID = ITEM_HOLDINGS_T.ITEM_ID " +
+                "AND ITEM_T.IS_DELETED = 0 AND " +
+                "HOLDINGS_T.OWNING_INST_HOLDINGS_ID = :owningInstitutionHoldingsId AND HOLDINGS_T.OWNING__INST_ID = :owningInstitutionId",
+        resultClass = ItemEntity.class)
 
 public class HoldingsEntity extends HoldingsAbstractEntity {
 

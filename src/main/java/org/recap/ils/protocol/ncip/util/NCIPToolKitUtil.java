@@ -11,7 +11,7 @@ import org.extensiblecatalog.ncip.v2.common.Translator;
 import org.extensiblecatalog.ncip.v2.common.TranslatorFactory;
 import org.extensiblecatalog.ncip.v2.service.ServiceContext;
 import org.extensiblecatalog.ncip.v2.service.ToolkitException;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 
 @Slf4j
 public class NCIPToolKitUtil {

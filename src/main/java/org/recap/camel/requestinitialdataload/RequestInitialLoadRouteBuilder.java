@@ -1,14 +1,12 @@
 package org.recap.camel.requestinitialdataload;
 
 import org.apache.camel.CamelContext;
-import org.apache.camel.Exchange;
 import org.apache.camel.Predicate;
-import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.model.dataformat.BindyType;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.camel.requestinitialdataload.processor.RequestInitialDataLoadProcessor;
 import org.recap.camel.route.StartRouteProcessor;
 import org.recap.camel.route.StopRouteProcessor;
@@ -54,18 +52,18 @@ public class RequestInitialLoadRouteBuilder extends RouteBuilder {
                 .routeId(ScsbConstants.REQUEST_INITIAL_LOAD_FTP_ROUTE+institution)
                 .noAutoStartup()
                 .choice()
-                    .when(gzipFile)
-                        .unmarshal()
-                        .gzipDeflater()
-                        .log(institution+" - Request Initial load S3 Route Unzip Complete")
-                        .process(new StartRouteProcessor(ScsbConstants.REQUEST_INITIAL_LOAD_DIRECT_ROUTE+institution))
-                        .to(ScsbConstants.DIRECT+ ScsbConstants.REQUEST_INITIAL_LOAD_DIRECT_ROUTE+institution)
-                    .when(body().isNull())
-                        .process(new StopRouteProcessor(ScsbConstants.REQUEST_INITIAL_LOAD_FTP_ROUTE+institution))
-                        .log("No File To Process "+institution+" Request Initial load")
-                    .otherwise()
-                        .process(new StartRouteProcessor(ScsbConstants.REQUEST_INITIAL_LOAD_DIRECT_ROUTE+institution))
-                        .to(ScsbConstants.DIRECT+ ScsbConstants.REQUEST_INITIAL_LOAD_DIRECT_ROUTE+institution)
+                .when(gzipFile)
+                .unmarshal()
+                .gzipDeflater()
+                .log(institution+" - Request Initial load S3 Route Unzip Complete")
+                .process(new StartRouteProcessor(ScsbConstants.REQUEST_INITIAL_LOAD_DIRECT_ROUTE+institution))
+                .to(ScsbConstants.DIRECT+ ScsbConstants.REQUEST_INITIAL_LOAD_DIRECT_ROUTE+institution)
+                .when(body().isNull())
+                .process(new StopRouteProcessor(ScsbConstants.REQUEST_INITIAL_LOAD_FTP_ROUTE+institution))
+                .log("No File To Process "+institution+" Request Initial load")
+                .otherwise()
+                .process(new StartRouteProcessor(ScsbConstants.REQUEST_INITIAL_LOAD_DIRECT_ROUTE+institution))
+                .to(ScsbConstants.DIRECT+ ScsbConstants.REQUEST_INITIAL_LOAD_DIRECT_ROUTE+institution)
                 .endChoice();
 
         from(ScsbConstants.DIRECT+ ScsbConstants.REQUEST_INITIAL_LOAD_DIRECT_ROUTE+institution)

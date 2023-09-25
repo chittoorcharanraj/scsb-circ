@@ -7,7 +7,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.ims.callable.LasHeartBeatCheckPollingCallable;
 import org.recap.ims.connector.factory.LASImsLocationConnectorFactory;
 import org.recap.ims.model.GFALasStatusCheckResponse;

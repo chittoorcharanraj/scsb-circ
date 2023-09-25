@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
 import org.extensiblecatalog.ncip.v2.service.*;
 import org.json.JSONObject;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 
 
 import java.util.HashMap;
@@ -162,7 +162,7 @@ public class AcceptItem extends ScsbNCIP {
         itemOptFields.setItemDescription(itemDescription);
         PickupLocation pickupLocation = new PickupLocation(itemPickupLocation);
 
-      //  Calendar cal = new GregorianCalendar();
+        //  Calendar cal = new GregorianCalendar();
        /* Date dueDate = DateUtils.addYears(new Date(), 1);
         cal.setTime(dueDate);*/
 
@@ -173,7 +173,7 @@ public class AcceptItem extends ScsbNCIP {
         acceptItemInitationData.setRequestId(requestIdentifier);
         acceptItemInitationData.setRequestedActionType(requestActionType);
         acceptItemInitationData.setItemOptionalFields(itemOptFields);
-     //   acceptItemInitationData.setDateForReturn((GregorianCalendar) cal);
+        //   acceptItemInitationData.setDateForReturn((GregorianCalendar) cal);
 
         return acceptItemInitationData;
 

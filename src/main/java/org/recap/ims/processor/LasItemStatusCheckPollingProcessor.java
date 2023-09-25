@@ -3,7 +3,7 @@ package org.recap.ims.processor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
 import org.recap.PropertyKeyConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.ims.callable.LasItemStatusCheckPollingCallable;
 import org.recap.ims.connector.factory.LASImsLocationConnectorFactory;
@@ -19,7 +19,7 @@ import java.util.concurrent.Future;
 @Component
 @Slf4j
 public class LasItemStatusCheckPollingProcessor {
-    
+
     @Autowired
     private LASImsLocationConnectorFactory lasImsLocationConnectorFactory;
 

@@ -7,7 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.model.jpa.*;
 import org.recap.repository.jpa.PendingRequestDetailsRespository;
 import org.recap.repository.jpa.RequestItemDetailsRepository;

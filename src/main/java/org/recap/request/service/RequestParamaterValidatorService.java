@@ -3,7 +3,7 @@ package org.recap.request.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.recap.PropertyKeyConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.controller.ItemController;
 import org.recap.model.request.ItemRequestInformation;
@@ -97,12 +97,12 @@ public class RequestParamaterValidatorService {
                     errorCount++;
                 }
             } else if ((itemRequestInformation.getRequestType().equalsIgnoreCase(ScsbCommonConstants.REQUEST_TYPE_RECALL) || itemRequestInformation.getRequestType().equalsIgnoreCase(ScsbCommonConstants.RETRIEVAL)) &&
-                 (StringUtils.isEmpty(itemRequestInformation.getDeliveryLocation()))) {
-                    errorMessageMap.put(errorCount, ScsbConstants.DELIVERY_LOCATION_REQUIRED);
-                    errorCount++;
-                }
+                    (StringUtils.isEmpty(itemRequestInformation.getDeliveryLocation()))) {
+                errorMessageMap.put(errorCount, ScsbConstants.DELIVERY_LOCATION_REQUIRED);
+                errorCount++;
             }
-       
+        }
+
         if (errorMessageMap.size() > 0) {
             return new ResponseEntity(buildErrorMessage(errorMessageMap), getHttpHeaders(), HttpStatus.BAD_REQUEST);
         }

@@ -5,7 +5,7 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
 import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.camel.route.StartRouteProcessor;
 import org.recap.ims.service.GFALasService;
 import org.recap.mqconsumer.RequestItemQueueConsumer;

@@ -3,7 +3,7 @@ package org.recap.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
 import org.recap.ScsbCommonConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.camel.requestinitialdataload.RequestInitialLoadRouteBuilder;
 import org.recap.repository.jpa.InstitutionDetailsRepository;
 import org.recap.util.CommonUtil;

@@ -12,7 +12,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCaseUT;
 import org.recap.ScsbCommonConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.ims.connector.AbstractLASImsLocationConnector;
 import org.recap.ims.service.GFALasService;
 import org.recap.ims.connector.factory.LASImsLocationConnectorFactory;

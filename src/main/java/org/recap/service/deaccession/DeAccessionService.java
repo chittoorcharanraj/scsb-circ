@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jettison.json.JSONException;
 import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.controller.RequestItemController;
 import org.recap.model.response.ItemHoldResponse;
 import org.recap.model.response.ItemInformationResponse;

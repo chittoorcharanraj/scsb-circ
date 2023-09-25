@@ -10,14 +10,12 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.recap.BaseTestCaseUT;
 import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.controller.ItemController;
 import org.recap.model.jpa.*;
 import org.recap.model.request.ItemRequestInformation;
 import org.recap.repository.jpa.*;
 import org.recap.util.PropertyUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 

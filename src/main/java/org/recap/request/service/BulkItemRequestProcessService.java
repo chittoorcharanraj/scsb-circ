@@ -3,7 +3,7 @@ package org.recap.request.service;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.controller.RequestItemController;
 import org.recap.model.response.ItemCheckoutResponse;
