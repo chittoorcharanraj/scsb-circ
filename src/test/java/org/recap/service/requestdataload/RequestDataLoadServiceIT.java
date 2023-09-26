@@ -2,7 +2,7 @@ package org.recap.service.requestdataload;
 
 import org.junit.Test;
 import org.recap.BaseTestCase;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.camel.requestinitialdataload.RequestDataLoadCSVRecord;
 import org.recap.model.jpa.BibliographicEntity;
 import org.recap.model.jpa.HoldingsEntity;

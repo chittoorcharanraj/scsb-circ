@@ -9,7 +9,7 @@ import org.extensiblecatalog.ncip.v2.service.RequestId;
 import org.extensiblecatalog.ncip.v2.service.RequestType;
 import org.extensiblecatalog.ncip.v2.service.UserId;
 import org.json.JSONObject;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 
 import java.util.HashMap;
 

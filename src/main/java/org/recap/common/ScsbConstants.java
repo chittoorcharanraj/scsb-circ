@@ -1,4 +1,6 @@
-package org.recap;
+package org.recap.common;
+
+import org.recap.ScsbCommonConstants;
 
 import java.util.Arrays;
 import java.util.List;

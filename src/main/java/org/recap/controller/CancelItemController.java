@@ -3,7 +3,7 @@ package org.recap.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.recap.PropertyKeyConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.model.response.ItemHoldResponse;
 import org.recap.model.response.ItemInformationResponse;

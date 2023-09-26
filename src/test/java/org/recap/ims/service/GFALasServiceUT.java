@@ -16,7 +16,7 @@ import org.mockito.*;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.recap.BaseTestCaseUT;
 import org.recap.ScsbCommonConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.model.request.ItemRequestInformation;
 import org.recap.model.response.ItemInformationResponse;
 import org.recap.ims.connector.AbstractLASImsLocationConnector;

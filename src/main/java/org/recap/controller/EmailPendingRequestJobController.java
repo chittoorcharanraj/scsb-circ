@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.ProducerTemplate;
 import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.camel.EmailPayLoad;
 import org.recap.service.ActiveMqQueuesInfo;
 import org.recap.util.CommonUtil;

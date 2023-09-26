@@ -14,7 +14,7 @@ import org.extensiblecatalog.ncip.v2.service.ToAgencyId;
 import org.extensiblecatalog.ncip.v2.service.ValidationException;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.ils.protocol.ncip.util.NCIPToolKitUtil;
 
 import java.io.IOException;
@@ -45,8 +45,8 @@ public class ScsbNCIP {
     public String getRequestBody(NCIPToolKitUtil ncipToolkitUtil, NCIPInitiationData ncipInitiationData) throws ServiceException, ValidationException, IOException
     {
         String requestBody = "";
-            InputStream requestMessageStream = ncipToolkitUtil.translator.createInitiationMessageStream(ncipToolkitUtil.serviceContext, ncipInitiationData);
-            requestBody = IOUtils.toString(requestMessageStream, StandardCharsets.UTF_8);
+        InputStream requestMessageStream = ncipToolkitUtil.translator.createInitiationMessageStream(ncipToolkitUtil.serviceContext, ncipInitiationData);
+        requestBody = IOUtils.toString(requestMessageStream, StandardCharsets.UTF_8);
         return requestBody;
     }
 

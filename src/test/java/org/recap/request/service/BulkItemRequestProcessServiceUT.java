@@ -6,7 +6,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCaseUT;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.controller.RequestItemController;
 import org.recap.model.request.ItemRequestInformation;
 import org.recap.model.response.ItemCheckoutResponse;

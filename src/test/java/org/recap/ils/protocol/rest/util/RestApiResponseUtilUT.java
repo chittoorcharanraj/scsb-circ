@@ -6,7 +6,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.recap.BaseTestCaseUT;
 import org.recap.PropertyKeyConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.ils.protocol.rest.model.*;
 import org.recap.ils.protocol.rest.model.response.*;
 import org.recap.model.jpa.InstitutionEntity;

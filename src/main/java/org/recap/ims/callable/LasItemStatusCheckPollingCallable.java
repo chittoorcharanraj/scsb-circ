@@ -1,7 +1,7 @@
 package org.recap.ims.callable;
 
 import lombok.extern.slf4j.Slf4j;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.ims.connector.factory.LASImsLocationConnectorFactory;
 import org.recap.ims.model.GFAItemStatus;
 import org.recap.ims.model.GFAItemStatusCheckRequest;

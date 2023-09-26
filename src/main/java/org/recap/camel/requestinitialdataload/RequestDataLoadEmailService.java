@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.recap.PropertyKeyConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.camel.EmailPayLoad;
 import org.recap.util.PropertyUtil;
 import org.springframework.beans.factory.annotation.Autowired;

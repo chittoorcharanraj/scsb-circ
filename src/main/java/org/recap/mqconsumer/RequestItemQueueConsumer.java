@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.Body;
 import org.apache.camel.Exchange;
 import org.apache.commons.lang3.StringUtils;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.model.response.ItemInformationResponse;
 import org.recap.model.request.ItemRequestInformation;

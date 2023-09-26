@@ -7,7 +7,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.model.request.ItemRequestInformation;
 import org.recap.model.jpa.*;
 import org.recap.repository.jpa.CollectionGroupDetailsRepository;
@@ -367,8 +367,8 @@ public class CommonUtil {
 
     public String formatResponse(String responseBody)
     {
-       String responseString = responseBody.replaceAll("<ns1:","<");
-       return responseString.replaceAll("</ns1:","</");
+        String responseString = responseBody.replaceAll("<ns1:","<");
+        return responseString.replaceAll("</ns1:","</");
     }
 
 }

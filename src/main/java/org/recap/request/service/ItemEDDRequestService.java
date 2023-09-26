@@ -5,7 +5,7 @@ import org.apache.camel.Exchange;
 import org.apache.commons.lang3.StringUtils;
 import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.controller.RequestItemController;
 import org.recap.model.response.ItemCheckoutResponse;
 import org.recap.model.response.ItemInformationResponse;

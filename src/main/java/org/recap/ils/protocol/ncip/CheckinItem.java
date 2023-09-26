@@ -10,7 +10,7 @@ import org.extensiblecatalog.ncip.v2.service.InitiationHeader;
 import org.extensiblecatalog.ncip.v2.service.ItemId;
 import org.extensiblecatalog.ncip.v2.service.OnBehalfOfAgency;
 import org.json.JSONObject;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.model.jpa.ItemEntity;
 
 import java.text.SimpleDateFormat;
@@ -28,12 +28,12 @@ public class CheckinItem extends ScsbNCIP {
         initiationHeader.setFromSystemId(fromSystemId);
         initiationHeader = getInitiationHeaderwithoutProfile(initiationHeader, ncipScheme, ncipAgencyId, ncipAgencyId);
         initiationHeader.setApplicationProfileType(new ApplicationProfileType(null, remoteProfileType));
-            if (imsLocation != null && imsLocation.equalsIgnoreCase(ScsbConstants.RECAP)) {
-                imsLocation = ScsbConstants.RECAP_DEPOSITORY;
-            }
-            if(itemEntity != null) {
-                behalfAgency = itemEntity.getItemLibrary() + "." + itemEntity.getItemLibrary() + "_" + imsLocation;
-            }
+        if (imsLocation != null && imsLocation.equalsIgnoreCase(ScsbConstants.RECAP)) {
+            imsLocation = ScsbConstants.RECAP_DEPOSITORY;
+        }
+        if(itemEntity != null) {
+            behalfAgency = itemEntity.getItemLibrary() + "." + itemEntity.getItemLibrary() + "_" + imsLocation;
+        }
         OnBehalfOfAgency onBehalfOfAgency = new OnBehalfOfAgency();
         onBehalfOfAgency.setAgencyId(new AgencyId(ncipScheme, behalfAgency));
         initiationHeader.setOnBehalfOfAgency(onBehalfOfAgency);
@@ -43,14 +43,14 @@ public class CheckinItem extends ScsbNCIP {
         checkinItemInitiationData.setItemId(itemId);
         return checkinItemInitiationData;
     }
-        public CheckInItemInitiationData getCheckInItemInitiationData(String itemIdentifier, String ncipAgencyId) {
-            CheckInItemInitiationData checkinItemInitiationData = new CheckInItemInitiationData();
-            InitiationHeader initiationHeader = new InitiationHeader();
-            initiationHeader = getInitiationHeaderwithoutScheme(initiationHeader, ScsbConstants.AGENCY_ID_SCSB, ncipAgencyId);
-            checkinItemInitiationData.setInitiationHeader(initiationHeader);
-            ItemId itemId = new ItemId();
-            itemId.setItemIdentifierValue(itemIdentifier);
-            checkinItemInitiationData.setItemId(itemId);
+    public CheckInItemInitiationData getCheckInItemInitiationData(String itemIdentifier, String ncipAgencyId) {
+        CheckInItemInitiationData checkinItemInitiationData = new CheckInItemInitiationData();
+        InitiationHeader initiationHeader = new InitiationHeader();
+        initiationHeader = getInitiationHeaderwithoutScheme(initiationHeader, ScsbConstants.AGENCY_ID_SCSB, ncipAgencyId);
+        checkinItemInitiationData.setInitiationHeader(initiationHeader);
+        ItemId itemId = new ItemId();
+        itemId.setItemIdentifierValue(itemIdentifier);
+        checkinItemInitiationData.setItemId(itemId);
         return checkinItemInitiationData;
     }
 
@@ -63,9 +63,9 @@ public class CheckinItem extends ScsbNCIP {
 
         String dueDateString = "";
         if(checkinItemResponse.getItemOptionalFields() != null && checkinItemResponse.getItemOptionalFields().getDateDue() != null) {
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                formatter.setCalendar(checkinItemResponse.getItemOptionalFields().getDateDue());
-                dueDateString = formatter.format(checkinItemResponse.getItemOptionalFields().getDateDue().getTime());
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            formatter.setCalendar(checkinItemResponse.getItemOptionalFields().getDateDue());
+            dueDateString = formatter.format(checkinItemResponse.getItemOptionalFields().getDateDue().getTime());
         }
         String itemId = checkinItemResponse.getItemId().getItemIdentifierValue();
         returnJson.put(ScsbConstants.ITEM_ID, itemId);

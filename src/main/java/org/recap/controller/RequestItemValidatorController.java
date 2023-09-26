@@ -2,13 +2,11 @@ package org.recap.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.recap.ScsbCommonConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.ils.connector.factory.ILSProtocolConnectorFactory;
 import org.recap.model.request.ItemRequestInformation;
 import org.recap.request.service.ItemValidatorService;
 import org.recap.request.service.RequestParamaterValidatorService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -62,8 +60,8 @@ public class RequestItemValidatorController {
         if (responseEntity == null) {
             responseEntity = itemValidatorService.itemValidation(itemRequestInformation);
             if (responseEntity.getStatusCode() == HttpStatus.OK && !ilsProtocolConnectorFactory.getIlsProtocolConnector(itemRequestInformation.getRequestingInstitution()).patronValidation(itemRequestInformation.getRequestingInstitution(), itemRequestInformation.getPatronBarcode())) {
-                    responseEntity = new ResponseEntity<>(ScsbConstants.INVALID_PATRON, requestParamaterValidatorService.getHttpHeaders(), HttpStatus.BAD_REQUEST);
-                }
+                responseEntity = new ResponseEntity<>(ScsbConstants.INVALID_PATRON, requestParamaterValidatorService.getHttpHeaders(), HttpStatus.BAD_REQUEST);
+            }
         }
         log.info(String.format("Request Validation: %s - %s",responseEntity.getStatusCode(), responseEntity.getBody()));
         return responseEntity;
@@ -89,7 +87,7 @@ public class RequestItemValidatorController {
         } catch (Exception e) {
             if(e instanceof SQLException)
                 return new ResponseEntity<>(ScsbConstants.SQL_EXCEPTION, getHttpHeaders(), HttpStatus.BAD_REQUEST);
-            else 
+            else
                 return responseEntity;
         }
 

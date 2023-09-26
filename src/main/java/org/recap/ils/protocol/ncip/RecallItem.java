@@ -6,7 +6,7 @@ import org.extensiblecatalog.ncip.v2.service.RecallItemInitiationData;
 import org.extensiblecatalog.ncip.v2.service.RecallItemResponseData;
 import org.extensiblecatalog.ncip.v2.service.UserId;
 import org.json.JSONObject;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 
 import java.text.SimpleDateFormat;
 

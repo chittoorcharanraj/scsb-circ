@@ -2,7 +2,7 @@ package org.recap.request.service;
 
 import org.apache.camel.ProducerTemplate;
 import org.recap.PropertyKeyConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.camel.EmailPayLoad;
 import org.recap.util.PropertyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,11 +83,11 @@ public class EmailService {
      * @return
      */
     private String emailLASIdTo(String institution) {
-            return propertyUtil.getPropertyByInstitutionAndKey(institution, PropertyKeyConstants.ILS.ILS_EMAIL_LAS_EXCEPTION_TO);
+        return propertyUtil.getPropertyByInstitutionAndKey(institution, PropertyKeyConstants.ILS.ILS_EMAIL_LAS_EXCEPTION_TO);
     }
 
     private String emailLASIdCC(String institution) {
-            return propertyUtil.getPropertyByInstitutionAndKey(institution, PropertyKeyConstants.ILS.ILS_EMAIL_LAS_EXCEPTION_CC);
+        return propertyUtil.getPropertyByInstitutionAndKey(institution, PropertyKeyConstants.ILS.ILS_EMAIL_LAS_EXCEPTION_CC);
     }
 
     private String emailIdCC(String institution, String imsLocationCode) {

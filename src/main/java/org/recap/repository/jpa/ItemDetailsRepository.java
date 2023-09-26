@@ -88,9 +88,8 @@ public interface ItemDetailsRepository extends BaseRepository<ItemEntity> {
      * @param barcodes the barcodes
      * @return the list
      */
-    @Query("select item from ItemEntity item where item.barcode in (:barcodes) and item.isDeleted = 0 and item.catalogingStatus='Complete'")
-    List<ItemEntity> findByBarcodeInAndComplete(@Param("barcodes") List<String> barcodes);
-
+    @Query("select item from ItemEntity item where item.barcode in (:barcodes) and item.isDeleted = :deleted and item.catalogingStatus='Complete'")
+    List<ItemEntity> findByBarcodeInAndComplete(@Param("barcodes") List<String> barcodes, @Param("deleted") boolean deleted);
     /**
      * Find by barcode list.
      *

@@ -40,7 +40,7 @@ public class ItemController {
     @GetMapping(value ="/findByBarcodeIn")
     public List<ItemEntity> findByBarcodeIn(String barcodes){
 
-        List<ItemEntity> itemEntityList = itemDetailsRepository.findByBarcodeInAndComplete(splitStringAndGetList(barcodes));
+        List<ItemEntity> itemEntityList = itemDetailsRepository.findByBarcodeInAndComplete(splitStringAndGetList(barcodes), Boolean.FALSE);
         for (ItemEntity itemEntity : itemEntityList) {
             for (BibliographicEntity bibliographicEntity : itemEntity.getBibliographicEntities()) {
                 bibliographicEntity.setItemEntities(null);

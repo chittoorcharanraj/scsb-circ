@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.recap.ScsbCommonConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.ils.protocol.rest.model.*;
 import org.recap.ils.protocol.rest.model.request.*;
 import org.recap.ils.protocol.rest.model.response.*;
@@ -31,16 +31,16 @@ import java.util.List;
 @Slf4j
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class RestProtocolConnector extends AbstractProtocolConnector {
-    
+
     @Autowired
     RestOauthTokenApiService restOauthTokenApiService;
-  
+
     @Autowired
     RestTemplate restTemplate;
 
     @Autowired
     RestApiResponseUtil restApiResponseUtil;
-   
+
     @Autowired
     RestProtocolJobResponsePollingProcessor restProtocolJobResponsePollingProcessor;
 

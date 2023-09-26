@@ -1,7 +1,7 @@
 package org.recap.ils.connector.factory;
 
 import lombok.extern.slf4j.Slf4j;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.ils.connector.AbstractProtocolConnector;
 import org.recap.ils.connector.NCIPProtocolConnector;
 import org.recap.ils.connector.RestProtocolConnector;

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.recap.ScsbCommonConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.ims.util.GFALasServiceUtil;
 import org.recap.ims.model.*;
 import org.recap.model.IMSConfigProperties;
@@ -63,7 +63,7 @@ public class GFALasImsLocationConnector extends AbstractLASImsLocationConnector 
 
     /**
      * Get GFA LAS Service Util class
-     * 
+     *
      * @return GFALasServiceUtil
      */
     public GFALasServiceUtil getGfaLasServiceUtil() {

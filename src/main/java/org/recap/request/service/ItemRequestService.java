@@ -10,7 +10,7 @@ import org.apache.camel.impl.engine.DefaultFluentProducerTemplate;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.recap.PropertyKeyConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.model.request.ItemRequestInformation;
 import org.recap.ims.service.GFALasService;
@@ -506,36 +506,36 @@ public class ItemRequestService {
                 itemRequestInfo.setBibId(itemEntity.getBibliographicEntities().get(0).getOwningInstitutionBibId());
             }
             SearchResultRow searchResultRow = searchRecords(itemEntity);
-                itemRequestInfo.setTitleIdentifier(removeDiacritical(searchResultRow.getTitle().replaceAll("[^\\x00-\\x7F]", "?")));
-                itemRequestInfo.setItemAuthor(removeDiacritical(searchResultRow.getAuthor()));
-                itemRequestInfo.setEmailAddress(securityUtil.getDecryptedValue(requestItemEntity.getEmailId()));
-                itemRequestInfo.setRequestType(ScsbConstants.EDD_REQUEST);
-                if (itemRequestInfo.isOwningInstitutionItem()) {
-                    itemRequestInfo.setPatronBarcode(itemEDDRequestService.getPatronIdForOwningInstitutionOnEdd(itemRequestInfo.getItemOwningInstitution()));
-                } else {
-                    itemRequestInfo.setPatronBarcode(itemRequestServiceUtil.getPatronIdBorrowingInstitution(itemRequestInfo.getRequestingInstitution(), itemRequestInfo.getItemOwningInstitution(), ScsbCommonConstants.REQUEST_TYPE_EDD));
-                }
-                setEddInformation(itemRequestInfo, eddNotesMap);
+            itemRequestInfo.setTitleIdentifier(removeDiacritical(searchResultRow.getTitle().replaceAll("[^\\x00-\\x7F]", "?")));
+            itemRequestInfo.setItemAuthor(removeDiacritical(searchResultRow.getAuthor()));
+            itemRequestInfo.setEmailAddress(securityUtil.getDecryptedValue(requestItemEntity.getEmailId()));
+            itemRequestInfo.setRequestType(ScsbConstants.EDD_REQUEST);
+            if (itemRequestInfo.isOwningInstitutionItem()) {
+                itemRequestInfo.setPatronBarcode(itemEDDRequestService.getPatronIdForOwningInstitutionOnEdd(itemRequestInfo.getItemOwningInstitution()));
+            } else {
+                itemRequestInfo.setPatronBarcode(itemRequestServiceUtil.getPatronIdBorrowingInstitution(itemRequestInfo.getRequestingInstitution(), itemRequestInfo.getItemOwningInstitution(), ScsbCommonConstants.REQUEST_TYPE_EDD));
             }
+            setEddInformation(itemRequestInfo, eddNotesMap);
+        }
         else{
-                itemRequestInfo.setRequestType(ScsbCommonConstants.RETRIEVAL);
-                if (null == requestItemEntity.getBulkRequestItemEntity()) {
-                    InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionCode(requestItemEntity.getInstitutionEntity().getInstitutionCode());
-                    DeliveryCodeEntity deliveryCodeEntity = deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(requestItemEntity.getStopCode(), institutionEntity.getId(), 'Y');
-                    DeliveryCodeTranslationEntity deliveryCodeTranslationEntity = deliveryCodeTranslationDetailsRepository.findByRequestingInstitutionandImsLocation(institutionEntity.getId(), deliveryCodeEntity.getId(), itemEntity.getImsLocationEntity().getId());
-                    if (deliveryCodeTranslationEntity != null && deliveryCodeTranslationEntity.getImsLocationDeliveryCode() != null) {
-                        log.info("Translation Code >>>> {} ", deliveryCodeTranslationEntity.getImsLocationDeliveryCode());
-                        itemRequestInfo.setTranslatedDeliveryLocation(deliveryCodeTranslationEntity.getImsLocationDeliveryCode());
-                    }
-                } else {
-                    itemRequestInfo.setTranslatedDeliveryLocation(requestItemEntity.getStopCode());
+            itemRequestInfo.setRequestType(ScsbCommonConstants.RETRIEVAL);
+            if (null == requestItemEntity.getBulkRequestItemEntity()) {
+                InstitutionEntity institutionEntity = institutionDetailsRepository.findByInstitutionCode(requestItemEntity.getInstitutionEntity().getInstitutionCode());
+                DeliveryCodeEntity deliveryCodeEntity = deliveryCodeDetailsRepository.findByDeliveryCodeAndOwningInstitutionIdAndActive(requestItemEntity.getStopCode(), institutionEntity.getId(), 'Y');
+                DeliveryCodeTranslationEntity deliveryCodeTranslationEntity = deliveryCodeTranslationDetailsRepository.findByRequestingInstitutionandImsLocation(institutionEntity.getId(), deliveryCodeEntity.getId(), itemEntity.getImsLocationEntity().getId());
+                if (deliveryCodeTranslationEntity != null && deliveryCodeTranslationEntity.getImsLocationDeliveryCode() != null) {
+                    log.info("Translation Code >>>> {} ", deliveryCodeTranslationEntity.getImsLocationDeliveryCode());
+                    itemRequestInfo.setTranslatedDeliveryLocation(deliveryCodeTranslationEntity.getImsLocationDeliveryCode());
                 }
+            } else {
+                itemRequestInfo.setTranslatedDeliveryLocation(requestItemEntity.getStopCode());
             }
-            itemRequestInfo.setRequestNotes(requestItemEntity.getNotes());
-            itemRequestInfo.setRequestId(requestItemEntity.getId());
-            itemRequestInfo.setUsername(requestItemEntity.getCreatedBy());
-            itemRequestInfo.setDeliveryLocation(requestItemEntity.getStopCode());
-            itemRequestInfo.setCustomerCode(itemEntity.getCustomerCode());
+        }
+        itemRequestInfo.setRequestNotes(requestItemEntity.getNotes());
+        itemRequestInfo.setRequestId(requestItemEntity.getId());
+        itemRequestInfo.setUsername(requestItemEntity.getCreatedBy());
+        itemRequestInfo.setDeliveryLocation(requestItemEntity.getStopCode());
+        itemRequestInfo.setCustomerCode(itemEntity.getCustomerCode());
     }
 
     private void setEddInformation(ItemRequestInformation itemRequestInfo, HashMap<String, String> eddNotesMap) {
@@ -655,13 +655,13 @@ public class ItemRequestService {
         ItemStatusEntity itemStatusEntity = itemStatusDetailsRepository.findByStatusCode(ScsbCommonConstants.NOT_AVAILABLE);
         for (ItemEntity itemEntity : itemEntities) {
             Optional<ItemEntity> optionalItemEntity = itemDetailsRepository.findById(itemEntity.getId());
-             if(optionalItemEntity.isPresent()) {
-                 ItemEntity itemEntityByItemId = optionalItemEntity.get();
-                 log.info("Item status : {}", itemEntityByItemId.getItemStatusEntity().getStatusCode());
-                 if (itemStatusEntity.getId().equals(itemEntityByItemId.getItemAvailabilityStatusId())) {  //Condition should be checked with equals not == ?
-                     return false;
-                 }
-             }
+            if(optionalItemEntity.isPresent()) {
+                ItemEntity itemEntityByItemId = optionalItemEntity.get();
+                log.info("Item status : {}", itemEntityByItemId.getItemStatusEntity().getStatusCode());
+                if (itemStatusEntity.getId().equals(itemEntityByItemId.getItemAvailabilityStatusId())) {  //Condition should be checked with equals not == ?
+                    return false;
+                }
+            }
         }
         itemRequestDBService.updateItemAvailabilityStatus(itemEntities, username);
         return true;
@@ -1004,7 +1004,7 @@ public class ItemRequestService {
         String isEmailOnlyInstitution = propertyUtil.getPropertyByInstitutionAndKey(itemRequestInfo.getRequestingInstitution(), PropertyKeyConstants.ILS.LAS_EXCEPTION_EMAIL_ONLY);
 
         if (Boolean.TRUE.toString().equalsIgnoreCase(isCheckinInstitution) && itemRequestInfo.isOwningInstitutionItem()) {
-        //DO NOTHING
+            //DO NOTHING
         }
         else if (Boolean.TRUE.toString().equalsIgnoreCase(isCheckinInstitution) && !itemRequestInfo.isOwningInstitutionItem()) {
             if(Boolean.FALSE.toString().equalsIgnoreCase(isEmailOnlyInstitution)) {
@@ -1050,7 +1050,7 @@ public class ItemRequestService {
         }
         log.info("Send LAS Status eMail");
         log.info("Send LAS Status eMail Done");
- }
+    }
 
     /**
      * Gets notes.
@@ -1123,7 +1123,7 @@ public class ItemRequestService {
         }
         else {
             return "";
-       }
+        }
     }
 
     /**

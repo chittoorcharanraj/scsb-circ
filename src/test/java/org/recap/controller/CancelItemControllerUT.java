@@ -7,7 +7,7 @@ import org.mockito.Mockito;
 import org.recap.BaseTestCaseUT;
 import org.recap.PropertyKeyConstants;
 import org.recap.ScsbCommonConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.model.request.ItemRequestInformation;
 import org.recap.model.response.ItemHoldResponse;
 import org.recap.model.response.ItemInformationResponse;

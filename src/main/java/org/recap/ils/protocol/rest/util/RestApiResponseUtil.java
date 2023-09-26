@@ -5,7 +5,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.recap.PropertyKeyConstants;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.ils.protocol.rest.model.CancelHoldData;
 import org.recap.ils.protocol.rest.model.CheckinData;
@@ -32,8 +32,6 @@ import org.recap.model.jpa.ItemEntity;
 import org.recap.model.response.ItemRefileResponse;
 import org.recap.repository.jpa.ItemDetailsRepository;
 import org.recap.util.PropertyUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -308,7 +306,7 @@ public class RestApiResponseUtil {
         }
         return institutionCode;
     }
-    
+
     private String requiredFormattedDate(String sipDate, SimpleDateFormat sipFormat, SimpleDateFormat requiredFormat)
     {
         String reformattedStr = "";

@@ -1,6 +1,6 @@
 package org.recap.controller;
 
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.ScsbCommonConstants;
 import org.recap.service.IdentifyPendingRequestService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,7 +2,7 @@ package org.recap.repository;
 
 import org.junit.Test;
 import org.recap.BaseTestCase;
-import org.recap.ScsbConstants;
+import org.recap.common.ScsbConstants;
 import org.recap.model.jpa.AccessionEntity;
 import org.recap.repository.jpa.AccessionDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
