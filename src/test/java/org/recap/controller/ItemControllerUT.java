@@ -34,7 +34,7 @@ public class ItemControllerUT extends BaseTestCaseUT {
         itemEntities.add(itemEntity);
         String barcodes ="244467";
         ItemController itemController = new ItemController(itemDetailsRepository);
-        Mockito.when(itemDetailsRepository.findByBarcodeInAndComplete(any())).thenReturn(itemEntities);
+        Mockito.when(itemDetailsRepository.findByBarcodeInAndComplete(any(), Mockito.anyBoolean())).thenReturn(itemEntities);
         List<ItemEntity> itemEntityList = itemController.findByBarcodeIn(barcodes);
         assertNotNull(itemEntityList);
     }

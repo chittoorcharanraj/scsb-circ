@@ -3,7 +3,7 @@ package org.recap.consumer;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.recap.BaseTestCaseUT;
-import javax.jms.*;
+import jakarta.jms.*;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.nio.charset.StandardCharsets;
@@ -51,7 +51,7 @@ public class TopicConsumerUT extends BaseTestCaseUT {
                     // start the connection
                     topicConnection.start();
                     // create a topic subscriber
-                    javax.jms.TopicSubscriber topicSubscriber = topicSession.createSubscriber(topic);
+                    TopicSubscriber topicSubscriber = topicSession.createSubscriber(topic);
                     TestMessageListener messageListener = new TestMessageListener();
                     topicSubscriber.setMessageListener(messageListener);
                     Thread.sleep(5000);
