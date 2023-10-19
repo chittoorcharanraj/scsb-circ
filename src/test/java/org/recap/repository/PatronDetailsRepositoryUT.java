@@ -1,6 +1,7 @@
 package org.recap.repository;
 
 import org.junit.Test;
+import org.recap.BaseTestCase;
 import org.recap.BaseTestCaseUT;
 import org.recap.model.jpa.*;
 
@@ -11,7 +12,7 @@ import java.util.Random;
 /**
  * Created by sudhishk on 9/12/16.
  */
-public class PatronDetailsRepositoryUT extends BaseTestCaseUT {
+public class PatronDetailsRepositoryUT extends BaseTestCase {
 
 
     @Test

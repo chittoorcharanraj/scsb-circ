@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.recap.ScsbCommonConstants;
 import org.recap.common.ScsbConstants;
 import org.recap.model.jpa.*;
@@ -24,7 +25,7 @@ import java.util.Optional;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 public class BulkItemRequestServiceUT {
     @InjectMocks
     BulkItemRequestService bulkItemRequestService;

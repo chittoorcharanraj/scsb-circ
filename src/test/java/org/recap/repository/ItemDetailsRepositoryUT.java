@@ -10,8 +10,8 @@ import org.recap.repository.jpa.BibliographicDetailsRepository;
 import org.recap.repository.jpa.ItemDetailsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -46,7 +46,7 @@ public class ItemDetailsRepositoryUT extends BaseTestCase {
     public void testfindByBarcodeInIsDeletedFalseCatalogingStatusComplete() throws Exception {
         saveMultipleItem();
         List<String> lstBarcode = Arrays.asList("100000999", "100009999");
-        List<ItemEntity> itemEntities = itemDetailsRepository.findByBarcodeInAndComplete(lstBarcode);
+        List<ItemEntity> itemEntities = itemDetailsRepository.findByBarcodeInAndComplete(lstBarcode, true);
         assertNotNull(itemEntities);
     }
 
