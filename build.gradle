@@ -92,7 +92,7 @@ dependencies {
 	implementation group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
 
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
-	implementation group: 'mysql', name: 'mysql-connector-java', version: '8.0.33'
+	implementation group: 'com.mysql', name: 'mysql-connector-j', version: '8.0.33'
 	implementation 'jakarta.mail:jakarta.mail-api:2.1.2'
 	implementation 'com.sun.mail:smtp:2.0.1'
 	implementation 'com.sun.mail:jakarta.mail:2.0.1'
