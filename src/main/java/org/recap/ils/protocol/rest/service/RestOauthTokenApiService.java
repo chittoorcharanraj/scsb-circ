@@ -4,7 +4,7 @@ import org.codehaus.jettison.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Base64Utils;
+import java.util.Base64;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -17,7 +17,7 @@ public class RestOauthTokenApiService {
     RestTemplate restTemplate;
 
     public String generateAccessTokenForRestApi(String oauthTokenApiUrl, String operatorUserId, String operatorPassword) throws Exception {
-        String authorization = "Basic " + new String(Base64Utils.encode((operatorUserId + ":" + operatorPassword).getBytes()));
+        String authorization = "Basic " + new String(Base64.getEncoder().encode((operatorUserId + ":" + operatorPassword).getBytes()));
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.set("Authorization", authorization);
