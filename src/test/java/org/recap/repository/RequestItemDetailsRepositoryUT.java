@@ -27,7 +27,6 @@ import static org.junit.Assert.assertTrue;
  * Created by sudhishk on 20/1/17.
  */
 @Slf4j
-@Ignore
 public class RequestItemDetailsRepositoryUT extends BaseTestCase {
 
 
