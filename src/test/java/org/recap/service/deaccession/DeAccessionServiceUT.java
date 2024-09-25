@@ -640,7 +640,7 @@ public class DeAccessionServiceUT extends BaseTestCaseUT {
         deAccessionService.deAccessionItemsInDB(barcodeAndStopCodeMap, deAccessionDBResponseEntities, username);
     }
 
-    @Ignore
+    @Test
     public void deAccessionItemsInDBException() {
         Map<String, String> barcodeAndStopCodeMap = new HashMap<>();
         Set<String> itemBarcodeList = barcodeAndStopCodeMap.keySet();
