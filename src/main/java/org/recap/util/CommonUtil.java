@@ -362,6 +362,7 @@ public class CommonUtil {
         tempRequest = tempRequest.replaceAll(ScsbConstants.REGEX_VERSION,ScsbConstants.VERSION);
         tempRequest = tempRequest.replaceAll(ScsbConstants.REGEX_SCHEME,ScsbConstants.SCHEME);
         tempRequest = tempRequest.replaceAll(ScsbConstants.REGEX_XMLNS,ScsbConstants.XMLNS);
+        tempRequest = tempRequest.replaceAll(ScsbConstants.DUPLICATE_SCHEME,ScsbConstants.REPLACE_SCHEME);
         return tempRequest;
     }
 
