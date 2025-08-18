@@ -466,6 +466,8 @@ public final class ScsbConstants {
     public static final String REGEX_VERSION = "ns"+"[0-9]"+":version";
     public static final String REGEX_SCHEME = "ns"+"[0-9]"+":Scheme";
     public static final String REGEX_XMLNS = "xmlns:ns"+"[0-9]";
+    public static final String DUPLICATE_SCHEME = "ns1:ns1:";
+    public static final String REPLACE_SCHEME = "ns1:";
 
     public static final String VERSION = "ns1:version";
     public static final String SCHEME = "ns1:Scheme";
