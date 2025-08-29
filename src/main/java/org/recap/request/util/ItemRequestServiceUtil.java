@@ -63,14 +63,21 @@ public class ItemRequestServiceUtil {
      * @param itemEntity the item entity
      */
     public void updateSolrIndex(ItemEntity itemEntity) {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpEntity requestEntity = new HttpEntity<>(getRestHeaderService().getHttpHeaders());
         try {
-            RestTemplate restTemplate = new RestTemplate();
-            HttpEntity requestEntity = new HttpEntity<>(getRestHeaderService().getHttpHeaders());
             UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(scsbSolrClientUrl + ScsbConstants.UPDATE_ITEM_STATUS_SOLR).queryParam(ScsbConstants.UPDATE_ITEM_STATUS_SOLR_PARAM_ITEM_ID, itemEntity.getBarcode());
             ResponseEntity<String> responseEntity = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, String.class);
             log.info(responseEntity.getBody());
         } catch (Exception e) {
-            log.error(ScsbCommonConstants.REQUEST_EXCEPTION, e);
+            try {
+                UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(scsbSolrClientUrl + ScsbConstants.UPDATE_ITEM_STATUS_SOLR).queryParam(ScsbConstants.UPDATE_ITEM_STATUS_SOLR_PARAM_ITEM_ID, itemEntity.getBarcode());
+                ResponseEntity<String> responseEntity = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, String.class);
+                log.info(responseEntity.getBody());
+            }
+            catch (Exception ex) {
+                log.error(ScsbCommonConstants.SCSB_SOLR_CLIENT_SERVICE_UNAVAILABLE, ex);
+            }
         }
     }
 
