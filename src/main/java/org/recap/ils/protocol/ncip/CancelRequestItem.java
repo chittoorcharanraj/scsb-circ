@@ -7,6 +7,8 @@ import org.extensiblecatalog.ncip.v2.service.CancelRequestItemResponseData;
 import org.extensiblecatalog.ncip.v2.service.InitiationHeader;
 import org.extensiblecatalog.ncip.v2.service.RequestId;
 import org.extensiblecatalog.ncip.v2.service.RequestType;
+import org.extensiblecatalog.ncip.v2.service.ProblemType;
+import org.extensiblecatalog.ncip.v2.service.Problem;
 import org.extensiblecatalog.ncip.v2.service.UserId;
 import org.json.JSONObject;
 import org.recap.common.ScsbConstants;
@@ -135,7 +137,8 @@ public class CancelRequestItem extends ScsbNCIP {
 
         JSONObject returnJson = new JSONObject();
 
-        if (!cancelRequestItemResponseData.getProblems().isEmpty()) {
+        if (cancelRequestItemResponseData != null) {
+            if (!cancelRequestItemResponseData.getProblems().isEmpty()) {
             return generateNcipProblems(cancelRequestItemResponseData);
         }
 
@@ -143,6 +146,14 @@ public class CancelRequestItem extends ScsbNCIP {
         String requestId = cancelRequestItemResponseData.getRequestId().getRequestIdentifierValue();
         returnJson.put(ScsbConstants.ITEM_ID, itemId);
         returnJson.put(ScsbConstants.REQUEST_ID, requestId);
+        return returnJson;
+    }
+       else {
+        Problem ncipProblem = new Problem();
+        ncipProblem.setProblemType(new ProblemType(ScsbConstants.REQUEST_ILS_EXCEPTION));
+        ncipProblem.setProblemValue(ScsbConstants.REQUEST_ILS_NO_RESPONSE_EXCEPTION);
+        returnJson.put(ncipProblem.getProblemType().toString(),ncipProblem.getProblemValue());
+    }
         return returnJson;
     }
 }

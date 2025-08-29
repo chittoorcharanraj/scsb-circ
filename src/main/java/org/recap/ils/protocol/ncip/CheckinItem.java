@@ -9,6 +9,8 @@ import org.extensiblecatalog.ncip.v2.service.FromSystemId;
 import org.extensiblecatalog.ncip.v2.service.InitiationHeader;
 import org.extensiblecatalog.ncip.v2.service.ItemId;
 import org.extensiblecatalog.ncip.v2.service.OnBehalfOfAgency;
+import org.extensiblecatalog.ncip.v2.service.ProblemType;
+import org.extensiblecatalog.ncip.v2.service.Problem;
 import org.json.JSONObject;
 import org.recap.common.ScsbConstants;
 import org.recap.model.jpa.ItemEntity;
@@ -57,12 +59,14 @@ public class CheckinItem extends ScsbNCIP {
     public JSONObject getCheckInResponse(CheckInItemResponseData checkinItemResponse) {
 
         JSONObject returnJson = new JSONObject();
+        if (checkinItemResponse != null) {
+
         if (!checkinItemResponse.getProblems().isEmpty()) {
             return generateNcipProblems(checkinItemResponse);
         }
 
         String dueDateString = "";
-        if(checkinItemResponse.getItemOptionalFields() != null && checkinItemResponse.getItemOptionalFields().getDateDue() != null) {
+        if (checkinItemResponse.getItemOptionalFields() != null && checkinItemResponse.getItemOptionalFields().getDateDue() != null) {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
             formatter.setCalendar(checkinItemResponse.getItemOptionalFields().getDateDue());
             dueDateString = formatter.format(checkinItemResponse.getItemOptionalFields().getDateDue().getTime());
@@ -71,5 +75,13 @@ public class CheckinItem extends ScsbNCIP {
         returnJson.put(ScsbConstants.ITEM_ID, itemId);
         returnJson.put(ScsbConstants.DUE_DATE, dueDateString);
         return returnJson;
+    }
+    else {
+            Problem ncipProblem = new Problem();
+            ncipProblem.setProblemType(new ProblemType(ScsbConstants.REQUEST_ILS_EXCEPTION));
+            ncipProblem.setProblemValue(ScsbConstants.REQUEST_ILS_NO_RESPONSE_EXCEPTION);
+            returnJson.put(ncipProblem.getProblemType().toString(),ncipProblem.getProblemValue());
+        }
+    return returnJson;
     }
 }

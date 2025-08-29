@@ -5,10 +5,14 @@ import org.extensiblecatalog.ncip.v2.service.ItemId;
 import org.extensiblecatalog.ncip.v2.service.RecallItemInitiationData;
 import org.extensiblecatalog.ncip.v2.service.RecallItemResponseData;
 import org.extensiblecatalog.ncip.v2.service.UserId;
+import org.extensiblecatalog.ncip.v2.service.ProblemType;
+import org.extensiblecatalog.ncip.v2.service.Problem;
 import org.json.JSONObject;
 import org.recap.common.ScsbConstants;
 
 import java.text.SimpleDateFormat;
+
+import static org.recap.common.ScsbConstants.REQUEST_ILS_EXCEPTION;
 
 public class RecallItem extends ScsbNCIP {
 
@@ -30,22 +34,29 @@ public class RecallItem extends ScsbNCIP {
 
     public JSONObject getRecallItemResponse(RecallItemResponseData recallItemResponseData) {
         JSONObject returnJson = new JSONObject();
+        if (recallItemResponseData != null) {
+            if (!recallItemResponseData.getProblems().isEmpty()) {
+                return generateNcipProblems(recallItemResponseData);
+            }
 
-        if (!recallItemResponseData.getProblems().isEmpty()) {
-            return generateNcipProblems(recallItemResponseData);
+            String dueDateString = "";
+            if (recallItemResponseData.getDateDue() != null) {
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                formatter.setCalendar(recallItemResponseData.getDateDue());
+                dueDateString = formatter.format(recallItemResponseData.getDateDue().getTime());
+            }
+
+            returnJson.put(ScsbConstants.ITEM_ID, recallItemResponseData.getItemId().getItemIdentifierValue());
+            returnJson.put("userId", recallItemResponseData.getUserId());
+            returnJson.put("expirationDate", dueDateString);
+            return returnJson;
         }
-
-        String dueDateString = "";
-        if (recallItemResponseData.getDateDue() != null) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-            formatter.setCalendar(recallItemResponseData.getDateDue());
-            dueDateString = formatter.format(recallItemResponseData.getDateDue().getTime());
+        else {
+            Problem ncipProblem = new Problem();
+            ncipProblem.setProblemType(new ProblemType(REQUEST_ILS_EXCEPTION));
+            ncipProblem.setProblemValue(ScsbConstants.REQUEST_ILS_NO_RESPONSE_EXCEPTION);
+            returnJson.put(ncipProblem.getProblemType().toString(),ncipProblem.getProblemValue());
         }
-
-        returnJson.put(ScsbConstants.ITEM_ID, recallItemResponseData.getItemId().getItemIdentifierValue());
-        returnJson.put("userId", recallItemResponseData.getUserId());
-        returnJson.put("expirationDate", dueDateString);
-        return  returnJson;
+        return returnJson;
     }
-
 }
