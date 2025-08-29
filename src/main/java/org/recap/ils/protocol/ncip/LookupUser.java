@@ -10,13 +10,18 @@ import org.extensiblecatalog.ncip.v2.service.StructuredAddress;
 import org.extensiblecatalog.ncip.v2.service.UserAddressInformation;
 import org.extensiblecatalog.ncip.v2.service.UserId;
 import org.extensiblecatalog.ncip.v2.service.UserPrivilege;
+import org.extensiblecatalog.ncip.v2.service.Problem;
+import org.extensiblecatalog.ncip.v2.service.ProblemType;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.recap.ScsbCommonConstants;
+import org.recap.common.ScsbConstants;
 
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.recap.common.ScsbConstants.REQUEST_ILS_EXCEPTION;
 
 @Slf4j
 public class LookupUser extends ScsbNCIP {
@@ -48,21 +53,31 @@ public class LookupUser extends ScsbNCIP {
     }
 
     public JSONObject getLookupUserResponse(NCIPResponseData responseData) {
-        if (!responseData.getProblems().isEmpty()) {
-            return generateNcipProblems(responseData);
-        }
-
-        LookupUserResponseData lookupUserResponse = (LookupUserResponseData)responseData;
         JSONObject returnJson = new JSONObject();
         JSONObject returnJsonName = new JSONObject();
 
-        gatherName(lookupUserResponse,returnJsonName);
-        gatherPhysicalAddress(lookupUserResponse);
-      //  returnJson.put("name",returnJsonName.get("firstName") != null ? returnJsonName.get("firstName") : "" +" "+returnJsonName.get("lastName") != null ? returnJsonName.get("lastName"):"");
-        returnJson.put("userId", getUserIdString(lookupUserResponse));
-        returnJson.put("privileges", getPrivileges(lookupUserResponse));
-        returnJson.put("electronicAddresses", gatherElectronicAddress(lookupUserResponse));
+        if (responseData != null) {
+            if (!responseData.getProblems().isEmpty()) {
+                return generateNcipProblems(responseData);
+            }
 
+            LookupUserResponseData lookupUserResponse = (LookupUserResponseData) responseData;
+
+            gatherName(lookupUserResponse, returnJsonName);
+            gatherPhysicalAddress(lookupUserResponse);
+            //  returnJson.put("name",returnJsonName.get("firstName") != null ? returnJsonName.get("firstName") : "" +" "+returnJsonName.get("lastName") != null ? returnJsonName.get("lastName"):"");
+            returnJson.put("userId", getUserIdString(lookupUserResponse));
+            returnJson.put("privileges", getPrivileges(lookupUserResponse));
+            returnJson.put("electronicAddresses", gatherElectronicAddress(lookupUserResponse));
+
+            return returnJson;
+        }
+        else {
+            Problem ncipProblem = new Problem();
+            ncipProblem.setProblemType(new ProblemType(REQUEST_ILS_EXCEPTION));
+            ncipProblem.setProblemValue(ScsbConstants.REQUEST_ILS_NO_RESPONSE_EXCEPTION);
+            returnJson.put(ncipProblem.getProblemType().toString(),ncipProblem.getProblemValue());
+        }
         return returnJson;
     }
 

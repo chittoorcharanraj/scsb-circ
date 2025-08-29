@@ -477,4 +477,5 @@ public final class ScsbConstants {
     public static final String INVALID_PATRON_CODE = "Invalid Patron Barcode";
     public static final Integer PATRON_CODE_MAX_LENGTH = 45;
 
+    public static final String REQUEST_ILS_NO_RESPONSE_EXCEPTION = "No Response from ILS Server";
 }

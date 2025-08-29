@@ -4,9 +4,25 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
-import org.extensiblecatalog.ncip.v2.service.*;
+import org.extensiblecatalog.ncip.v2.service.ApplicationProfileType;
+import org.extensiblecatalog.ncip.v2.service.AcceptItemInitiationData;
+import org.extensiblecatalog.ncip.v2.service.AcceptItemResponseData;
+import org.extensiblecatalog.ncip.v2.service.BibliographicDescription;
+import org.extensiblecatalog.ncip.v2.service.InitiationHeader;
+import org.extensiblecatalog.ncip.v2.service.ItemDescription;
+import org.extensiblecatalog.ncip.v2.service.ItemId;
+import org.extensiblecatalog.ncip.v2.service.ItemOptionalFields;
+import org.extensiblecatalog.ncip.v2.service.PickupLocation;
+import org.extensiblecatalog.ncip.v2.service.RequestId;
+import org.extensiblecatalog.ncip.v2.service.RequestedActionType;
+import org.extensiblecatalog.ncip.v2.service.UserId;
+import org.extensiblecatalog.ncip.v2.service.ProblemType;
+import org.extensiblecatalog.ncip.v2.service.Problem;
+
+
 import org.json.JSONObject;
 import org.recap.common.ScsbConstants;
+
 
 
 import java.util.HashMap;
@@ -183,17 +199,24 @@ public class AcceptItem extends ScsbNCIP {
         JSONObject returnJson = new JSONObject();
 
         // DEAL W/PROBLEMS IN THE RESPONSE
-        if (!acceptItem.getProblems().isEmpty()) {
-            return generateNcipProblems(acceptItem);
+        if (acceptItem != null) {
+            if (!acceptItem.getProblems().isEmpty()) {
+                return generateNcipProblems(acceptItem);
+            }
+
+            String itemId = acceptItem.getItemId().getItemIdentifierValue();
+            String requestId = acceptItem.getRequestId().getRequestIdentifierValue();
+
+            returnJson.put("itemId", itemId);
+            returnJson.put("requestId", requestId);
+            return returnJson;
         }
-
-        String itemId = acceptItem.getItemId().getItemIdentifierValue();
-        String requestId = acceptItem.getRequestId().getRequestIdentifierValue();
-
-        returnJson.put("itemId", itemId);
-        returnJson.put("requestId", requestId);
+        else {
+            Problem ncipProblem = new Problem();
+            ncipProblem.setProblemType(new ProblemType(ScsbConstants.REQUEST_ILS_EXCEPTION));
+            ncipProblem.setProblemValue(ScsbConstants.REQUEST_ILS_NO_RESPONSE_EXCEPTION);
+            returnJson.put(ncipProblem.getProblemType().toString(),ncipProblem.getProblemValue());
+        }
         return returnJson;
     }
-
-
 }
