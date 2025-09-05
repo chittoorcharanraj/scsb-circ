@@ -11,19 +11,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.extensiblecatalog.ncip.v2.service.AcceptItemInitiationData;
-import org.extensiblecatalog.ncip.v2.service.AcceptItemResponseData;
-import org.extensiblecatalog.ncip.v2.service.CheckInItemInitiationData;
-import org.extensiblecatalog.ncip.v2.service.CheckInItemResponseData;
-import org.extensiblecatalog.ncip.v2.service.CheckOutItemInitiationData;
-import org.extensiblecatalog.ncip.v2.service.CheckOutItemResponseData;
-import org.extensiblecatalog.ncip.v2.service.LookupUserInitiationData;
-import org.extensiblecatalog.ncip.v2.service.LookupUserResponseData;
-import org.extensiblecatalog.ncip.v2.service.NCIPResponseData;
-import org.extensiblecatalog.ncip.v2.service.RecallItemInitiationData;
-import org.extensiblecatalog.ncip.v2.service.RecallItemResponseData;
-import org.extensiblecatalog.ncip.v2.service.Problem;
-import org.extensiblecatalog.ncip.v2.service.RequestItemInitiationData;
+import org.extensiblecatalog.ncip.v2.service.*;
 import org.json.JSONObject;
 
 import org.recap.PropertyKeyConstants;
@@ -72,6 +60,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.recap.common.ScsbConstants.REQUEST_ILS_EXCEPTION;
 
 @Service
 @Slf4j
@@ -493,12 +483,11 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
             HttpResponse response = executeRequest(requestMessageStream);
             NCIPResponseData responseData = null;
             responseString = null;
-            if(response != null) {
+            if (response != null) {
                 int responseCode = response.getStatusLine().getStatusCode();
                 if (responseCode > 399) {
                     throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, httpCallTo + "ILS Server" + returnedResponseCode + responseCode + responseBody + responseString);
-                }
-                else {
+                } else {
                     responseData = getResponseString(response, ncipToolkitUtil, responseData);
                 }
             }
@@ -507,33 +496,43 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
             //transforms the  NCIP Objects into a JSON response object
             LookupUserResponseData lookupUserResponseData = (LookupUserResponseData) responseData;
 
-            responseObject = lookupUser.getLookupUserResponse(lookupUserResponseData);
+            if (lookupUserResponseData != null) {
+                responseObject = lookupUser.getLookupUserResponse(lookupUserResponseData);
 
-            if (!lookupUserResponseData.getProblems().isEmpty()) {
-                patronInformationResponse.setSuccess(Boolean.FALSE);
-                patronInformationResponse.setScreenMessage(failureReason + lookupUserResponseData.getProblems());
-                log.error("patronInformation Response >>> " + lookupUserResponseData.getProblems());
-                log.error("patronInformation Response message >>> " + patronInformationResponse.getScreenMessage());
+                if (!lookupUserResponseData.getProblems().isEmpty()) {
+                    patronInformationResponse.setSuccess(Boolean.FALSE);
+                    patronInformationResponse.setScreenMessage(failureReason + lookupUserResponseData.getProblems());
+                    log.error("patronInformation Response >>> " + lookupUserResponseData.getProblems());
+                    log.error("patronInformation Response message >>> " + patronInformationResponse.getScreenMessage());
 
-                return patronInformationResponse;
-            } else {
-                patronInformationResponse.setPatronName(lookupUserResponseData.getUserOptionalFields().getNameInformation().getPersonalNameInformation().getStructuredPersonalUserName().getGivenName()
-                        + lookupUserResponseData.getUserOptionalFields().getNameInformation().getPersonalNameInformation().getStructuredPersonalUserName().getSurname()
-                );
-                patronInformationResponse.setSuccess(Boolean.TRUE);
-                patronInformationResponse.setScreenMessage(ScsbCommonConstants.SUCCESS);
-                patronInformationResponse.setPatronIdentifier(patronIdentifier);
-                log.info("patronInformation Response >>> " + lookupUserResponseData);
-                log.info("patronInformation Response message >>> " + patronInformationResponse.getScreenMessage());
+                    return patronInformationResponse;
+                } else {
+                    patronInformationResponse.setPatronName(lookupUserResponseData.getUserOptionalFields().getNameInformation().getPersonalNameInformation().getStructuredPersonalUserName().getGivenName()
+                            + lookupUserResponseData.getUserOptionalFields().getNameInformation().getPersonalNameInformation().getStructuredPersonalUserName().getSurname()
+                    );
+                    patronInformationResponse.setSuccess(Boolean.TRUE);
+                    patronInformationResponse.setScreenMessage(ScsbCommonConstants.SUCCESS);
+                    patronInformationResponse.setPatronIdentifier(patronIdentifier);
+                    log.info("patronInformation Response >>> " + lookupUserResponseData);
+                    log.info("patronInformation Response message >>> " + patronInformationResponse.getScreenMessage());
 
-                return patronInformationResponse;
+                    return patronInformationResponse;
+                }
             }
-        }  catch (Exception e) {
-            log.error(ScsbCommonConstants.LOG_ERROR, e);
-            patronInformationResponse.setSuccess(false);
-            patronInformationResponse.setScreenMessage(e.getMessage());
-            log.error("patronInformation Response message >>> " + patronInformationResponse.getScreenMessage());
-        }
+            else {
+                Problem ncipProblem = new Problem();
+                ncipProblem.setProblemType(new ProblemType(REQUEST_ILS_EXCEPTION));
+                ncipProblem.setProblemValue(ScsbConstants.REQUEST_ILS_NO_RESPONSE_EXCEPTION);
+                patronInformationResponse.setSuccess(Boolean.FALSE);
+                patronInformationResponse.setScreenMessage(failureReason + ncipProblem);
+            }
+                }  catch(Exception e){
+                log.error(ScsbCommonConstants.LOG_ERROR, e);
+                patronInformationResponse.setSuccess(false);
+                patronInformationResponse.setScreenMessage(e.getMessage());
+                log.error("patronInformation Response message >>> " + patronInformationResponse.getScreenMessage());
+            }
+
         return patronInformationResponse;
     }
 
