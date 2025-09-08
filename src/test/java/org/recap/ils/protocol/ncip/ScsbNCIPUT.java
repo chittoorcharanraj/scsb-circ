@@ -1,31 +1,124 @@
 package org.recap.ils.protocol.ncip;
 
 import org.extensiblecatalog.ncip.v2.service.AcceptItemResponseData;
+import org.extensiblecatalog.ncip.v2.service.AgencyId;
+import org.extensiblecatalog.ncip.v2.service.ApplicationProfileType;
+import org.extensiblecatalog.ncip.v2.service.FromAgencyId;
+import org.extensiblecatalog.ncip.v2.service.InitiationHeader;
 import org.extensiblecatalog.ncip.v2.service.ItemId;
 import org.extensiblecatalog.ncip.v2.service.NCIPResponseData;
 import org.extensiblecatalog.ncip.v2.service.Problem;
 import org.extensiblecatalog.ncip.v2.service.ProblemType;
 import org.extensiblecatalog.ncip.v2.service.RequestId;
+import org.extensiblecatalog.ncip.v2.service.ToAgencyId;
+import org.json.JSONArray;
 import org.json.JSONObject;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.recap.BaseTestCaseUT;
-import org.recap.ils.protocol.ncip.ScsbNCIP;
+import org.mockito.Spy;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
-public class ScsbNCIPUT extends BaseTestCaseUT {
+
+@RunWith(MockitoJUnitRunner.class)
+public class ScsbNCIPUT {
 
     @InjectMocks
-    ScsbNCIP scsbNCIP;
+    private ScsbNCIP scsbNCIP;
+
+    @Before
+    public void setup() {
+        assertNotNull(scsbNCIP);
+    }
 
     @Test
     public void generateProblem() {
         NCIPResponseData ncipResponseData = getAcceptItemResponseData();
         JSONObject returnJson = scsbNCIP.generateNcipProblems(ncipResponseData);
-        assertNotNull(returnJson);
+
+        assertNotNull("Returned JSON must not be null", returnJson);
+        assertTrue(returnJson.has("problems"));
+        JSONArray problemsArray = returnJson.getJSONArray("problems");
+        assertEquals("There must be exactly one problem in the array", 1, problemsArray.length());
+
+        JSONObject problemJson = problemsArray.getJSONObject(0);
+        assertEquals("43656", problemJson.getString("type"));
+        assertEquals("Bad Request", problemJson.getString("detail"));
+        assertEquals("Error", problemJson.getString("element"));
+        assertEquals("43656", problemJson.getString("value"));
+    }
+
+    @Test
+    public void testGetApplicationProfileType_and_headersWithoutScheme() {
+        ApplicationProfileType profile = scsbNCIP.getApplicationProfileType();
+        assertNotNull("ApplicationProfileType must not be null", profile);
+        InitiationHeader header = new InitiationHeader();
+        String from = "FROM-A";
+        String to = "TO-B";
+
+        InitiationHeader returned = scsbNCIP.getInitiationHeaderwithoutScheme(header, from, to);
+        assertNotNull(returned.getFromAgencyId());
+        assertNotNull(returned.getToAgencyId());
+        FromAgencyId fromAid = returned.getFromAgencyId();
+        ToAgencyId toAid = returned.getToAgencyId();
+
+        AgencyId fa = fromAid.getAgencyId();
+        AgencyId ta = toAid.getAgencyId();
+        assertEquals("Test", from, fa.getValue());
+        assertEquals("Test", to, ta.getValue());
+
+        assertNotNull("Test", returned.getApplicationProfileType());
+    }
+
+    @Test
+    public void testGetInitiationHeaderWithScheme() {
+        InitiationHeader header = new InitiationHeader();
+        String scheme = "urn:myncip";
+        String from = "F-A";
+        String to = "T-B";
+
+        InitiationHeader returned = scsbNCIP.getInitiationHeaderwithScheme(header, scheme, from, to);
+        assertNotNull(returned.getFromAgencyId());
+        assertNotNull(returned.getToAgencyId());
+
+        AgencyId fa = returned.getFromAgencyId().getAgencyId();
+        AgencyId ta = returned.getToAgencyId().getAgencyId();
+
+        assertEquals("Scheme must match the provided scheme", scheme, fa.getScheme());
+        assertEquals("From agency value must match", from, fa.getValue());
+
+        assertEquals("Scheme must match the provided scheme", scheme, ta.getScheme());
+        assertEquals("To agency value must match", to, ta.getValue());
+
+        ApplicationProfileType profile = returned.getApplicationProfileType();
+        assertNotNull("Application profile must be set", profile);
+
+    }
+
+    @Test
+    public void testGetInitiationHeaderWithoutProfile() {
+        InitiationHeader header = new InitiationHeader();
+        String scheme = "urn:sch";
+        String from = "FA";
+        String to = "TB";
+
+        InitiationHeader returned = scsbNCIP.getInitiationHeaderwithoutProfile(header, scheme, from, to);
+        assertNull("Application profile should be null for header returned by getInitiationHeaderwithoutProfile",
+                returned.getApplicationProfileType());
+
+        AgencyId fa = returned.getFromAgencyId().getAgencyId();
+        AgencyId ta = returned.getToAgencyId().getAgencyId();
+
+        assertEquals("From agency scheme mismatch", scheme, fa.getScheme());
+        assertEquals("From agency value mismatch", from, fa.getValue());
+
+        assertEquals("To agency scheme mismatch", scheme, ta.getScheme());
+        assertEquals("To agency value mismatch", to, ta.getValue());
     }
 
     private AcceptItemResponseData getAcceptItemResponseData() {
