@@ -698,20 +698,21 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
                         }
                     }
                 }
-
-            itemHoldResponse.setItemOwningInstitution(itemInstitutionId);
-            itemHoldResponse.setItemBarcode(acceptItemResponse.getItemId().getItemIdentifierValue());
-            itemHoldResponse.setPatronIdentifier(patronIdentifier);
-            itemHoldResponse.setSuccess(Boolean.TRUE);
-            itemHoldResponse.setScreenMessage(ScsbCommonConstants.SUCCESS);
-            itemHoldResponse.setTitleIdentifier(acceptItemResponse.getItemId().getItemIdentifierValue());
-            itemHoldResponse.setPickupLocation(pickupLocation);
-            itemHoldResponse.setInstitutionID(getInstitution());
-            itemHoldResponse.setCreatedDate(new Date().toString());
-            itemHoldResponse.setUpdatedDate(new Date().toString());
-            Date expirationDateforHold = DateUtils.addYears(new Date(), 1);
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ScsbConstants.DATE_FORMAT);
-            itemHoldResponse.setExpirationDate(simpleDateFormat.format(expirationDateforHold));
+                else {
+                    itemHoldResponse.setItemOwningInstitution(itemInstitutionId);
+                    itemHoldResponse.setItemBarcode(acceptItemResponse.getItemId().getItemIdentifierValue());
+                    itemHoldResponse.setPatronIdentifier(patronIdentifier);
+                    itemHoldResponse.setSuccess(Boolean.TRUE);
+                    itemHoldResponse.setScreenMessage(ScsbCommonConstants.SUCCESS);
+                    itemHoldResponse.setTitleIdentifier(acceptItemResponse.getItemId().getItemIdentifierValue());
+                    itemHoldResponse.setPickupLocation(pickupLocation);
+                    itemHoldResponse.setInstitutionID(getInstitution());
+                    itemHoldResponse.setCreatedDate(new Date().toString());
+                    itemHoldResponse.setUpdatedDate(new Date().toString());
+                    Date expirationDateforHold = DateUtils.addYears(new Date(), 1);
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ScsbConstants.DATE_FORMAT);
+                    itemHoldResponse.setExpirationDate(simpleDateFormat.format(expirationDateforHold));
+                }
         } catch (HttpClientErrorException httpException) {
             log.error(ScsbCommonConstants.LOG_ERROR, httpException);
             itemHoldResponse.setSuccess(false);
