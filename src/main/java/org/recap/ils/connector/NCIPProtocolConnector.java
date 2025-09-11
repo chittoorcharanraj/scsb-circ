@@ -387,8 +387,7 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
             if (callInstitutionId.equalsIgnoreCase(itemInstitutionId)) {
                 String allowHoldonOwnItem = propertyUtil.getPropertyByInstitutionAndKey(callInstitutionId, PropertyKeyConstants.ILS.ILS_ALLOW_HOLD_ON_OWN_ITEM_REQUEST);
                 if (Boolean.TRUE.toString().equalsIgnoreCase(allowHoldonOwnItem)) {
-                    itemHoldResponse = requestItem(itemIdentifier, requestId, patronIdentifier, callInstitutionId, itemInstitutionId, pickupLocation, bibId, title, author, callNumber);
-
+                    itemHoldResponse = requestItem(itemIdentifier, requestId, patronIdentifier, callInstitutionId, itemInstitutionId, pickupLocation, title, author, callNumber);
                 }
                 else {
                 itemHoldResponse.setSuccess(Boolean.TRUE);
@@ -677,12 +676,28 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
             AcceptItemResponseData acceptItemResponse = (AcceptItemResponseData) responseData;
             responseObject = acceptItem.getAcceptItemResponse(acceptItemResponse);
             log.info(responseObject.toString());
-
-            if (!acceptItemResponse.getProblems().isEmpty()) {
-                itemHoldResponse.setSuccess(Boolean.FALSE);
-                itemHoldResponse.setScreenMessage(failureReason + acceptItemResponse.getProblems());
-                return itemHoldResponse;
-            }
+                if (!acceptItemResponse.getProblems().isEmpty()) {
+                    List<Problem> problemList = acceptItemResponse.getProblems();
+                    for (Problem problem : problemList) {
+                        if (problem.getProblemDetail().contains(ScsbConstants.UNIQUE_BARCODE)) {
+                            String allowHoldonOwnItem = propertyUtil.getPropertyByInstitutionAndKey(callInstitutionId, PropertyKeyConstants.ILS.ILS_ALLOW_HOLD_ON_OWN_ITEM_REQUEST);
+                            if (Boolean.TRUE.toString().equalsIgnoreCase(allowHoldonOwnItem)) {
+                                log.info("Barcode must be unique Error. Creating Request with Request Type Page {}", itemIdentifier);
+                                {
+                                    itemHoldResponse = requestItem(itemIdentifier, requestId, patronIdentifier, callInstitutionId, itemInstitutionId, pickupLocation, title, author, callNumber);
+                                }
+                            } else {
+                                itemHoldResponse.setSuccess(Boolean.FALSE);
+                                itemHoldResponse.setScreenMessage(failureReason + acceptItemResponse.getProblems());
+                                return itemHoldResponse;
+                            }
+                        } else {
+                            itemHoldResponse.setSuccess(Boolean.FALSE);
+                            itemHoldResponse.setScreenMessage(failureReason + acceptItemResponse.getProblems());
+                            return itemHoldResponse;
+                        }
+                    }
+                }
 
             itemHoldResponse.setItemOwningInstitution(itemInstitutionId);
             itemHoldResponse.setItemBarcode(acceptItemResponse.getItemId().getItemIdentifierValue());
@@ -746,76 +761,76 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
         }
         return responseData;
     }
-            private ItemHoldResponse requestItem(String itemIdentifier, Integer requestId, String patronIdentifier, String callInstitutionId, String itemInstitutionId,  String pickupLocation, String bibId, String title, String author, String callNumber) {
-                RequestItem requestItem = new RequestItem();
-                ItemHoldResponse itemHoldResponse = new ItemHoldResponse();
-                String responseString = null;
-                String itemAgencyId = null;
-                JSONObject responseObject;
-                try {
-                    RequestItemInitiationData requestItemInitiationData = new RequestItemInitiationData();
-                    List<ItemEntity> itemEntities = itemDetailsRepository.findByBarcode(itemIdentifier);
-                    ItemEntity itemEntity = !itemEntities.isEmpty() ? itemEntities.get(0) : null;
-                    String owningInstItemId = itemEntity != null ? itemEntity.getOwningInstitutionItemId() : null;
-                    String useRestrictions = itemEntity != null ? itemEntity.getUseRestrictions() : null;
-                    if(useRestrictions != null && useRestrictions.trim().length() > 0) {
-                        itemAgencyId = propertyUtil.getPropertyByInstitutionAndKey(callInstitutionId, PropertyKeyConstants.ILS.ILS_RESTRICTED_ACCEPT_ITEM_AGENCY_ID);
-                        requestItemInitiationData = requestItem.getRequestItemInitiationData(itemIdentifier, requestId, patronIdentifier, owningInstItemId, title, author, pickupLocation, callNumber, getNcipAgencyId(), getNcipScheme(), itemAgencyId);
-                    }
-                    else {
-                        itemAgencyId = propertyUtil.getPropertyByInstitutionAndKey(callInstitutionId, PropertyKeyConstants.ILS.ILS_UNRESTRICTED_ACCEPT_ITEM_AGENCY_ID);
-                        requestItemInitiationData = requestItem.getRequestItemInitiationData(itemIdentifier, requestId, patronIdentifier, owningInstItemId, title, author, pickupLocation, callNumber, getNcipAgencyId(), getNcipScheme(), itemAgencyId);
-                    }
+    private ItemHoldResponse requestItem(String itemIdentifier, Integer requestId, String patronIdentifier, String callInstitutionId, String itemInstitutionId,  String pickupLocation, String title, String author, String callNumber) {
+        RequestItem requestItem = new RequestItem();
+        ItemHoldResponse itemHoldResponse = new ItemHoldResponse();
+        String responseString = null;
+        String itemAgencyId = null;
+        JSONObject responseObject;
+        try {
+            RequestItemInitiationData requestItemInitiationData = new RequestItemInitiationData();
+            List<ItemEntity> itemEntities = itemDetailsRepository.findByBarcode(itemIdentifier);
+            ItemEntity itemEntity = !itemEntities.isEmpty() ? itemEntities.get(0) : null;
+            String owningInstItemId = itemEntity != null ? itemEntity.getOwningInstitutionItemId() : null;
+            String useRestrictions = itemEntity != null ? itemEntity.getUseRestrictions() : null;
+            if(useRestrictions != null && useRestrictions.trim().length() > 0) {
+                itemAgencyId = propertyUtil.getPropertyByInstitutionAndKey(callInstitutionId, PropertyKeyConstants.ILS.ILS_RESTRICTED_ACCEPT_ITEM_AGENCY_ID);
+                requestItemInitiationData = requestItem.getRequestItemInitiationData(itemIdentifier, requestId, patronIdentifier, owningInstItemId, title, author, pickupLocation, callNumber, getNcipAgencyId(), getNcipScheme(), itemAgencyId);
+            }
+            else {
+                itemAgencyId = propertyUtil.getPropertyByInstitutionAndKey(callInstitutionId, PropertyKeyConstants.ILS.ILS_UNRESTRICTED_ACCEPT_ITEM_AGENCY_ID);
+                requestItemInitiationData = requestItem.getRequestItemInitiationData(itemIdentifier, requestId, patronIdentifier, owningInstItemId, title, author, pickupLocation, callNumber, getNcipAgencyId(), getNcipScheme(), itemAgencyId);
+            }
 
-                    NCIPToolKitUtil ncipToolkitUtil = NCIPToolKitUtil.getInstance();
-                    InputStream requestMessageStream = ncipToolkitUtil.translator.createInitiationMessageStream(ncipToolkitUtil.serviceContext, requestItemInitiationData);
-                    HttpResponse response = executeRequest(requestMessageStream);
-                    NCIPResponseData responseData = null;
-                    if(response != null) {
-                        int responseCode = response.getStatusLine().getStatusCode();
-                        if (responseCode > 399) {
-                            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "ILS Server" + returnedResponseCode + responseCode + responseBody + responseString);
-                        }
-                        else {
-                            responseData = getResponseString(response, ncipToolkitUtil, responseData);
-                        }
-                    }
-
-                    //transforms the  NCIP Objects into a JSON response object
-                    NCIPResponseData requestItemResponse = (NCIPResponseData) responseData;
-                    responseObject = requestItem.getRequestItemResponse(requestItemResponse);
-
-                    log.info(responseObject.toString());
-
-                    if (!requestItemResponse.getProblems().isEmpty()) {
-                        itemHoldResponse.setSuccess(Boolean.FALSE);
-                        itemHoldResponse.setScreenMessage(failureReason + requestItemResponse.getProblems());
-                        return itemHoldResponse;
-                    }
-
-                    itemHoldResponse.setItemOwningInstitution(itemInstitutionId);
-                    //  itemHoldResponse.setItemBarcode(requestItemResponse.getItemId().getItemIdentifierValue());
-                    itemHoldResponse.setPatronIdentifier(patronIdentifier);
-                    itemHoldResponse.setSuccess(Boolean.TRUE);
-                    itemHoldResponse.setScreenMessage(ScsbCommonConstants.SUCCESS);
-                    //itemHoldResponse.setTitleIdentifier(requestItemResponse.getItemId().getItemIdentifierValue());
-                    itemHoldResponse.setPickupLocation(pickupLocation);
-                    itemHoldResponse.setInstitutionID(getInstitution());
-                    itemHoldResponse.setCreatedDate(new Date().toString());
-                    itemHoldResponse.setUpdatedDate(new Date().toString());
-                    Date expirationDateforHold = DateUtils.addYears(new Date(), 1);
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ScsbConstants.DATE_FORMAT);
-                    itemHoldResponse.setExpirationDate(simpleDateFormat.format(expirationDateforHold));
-                } catch (HttpClientErrorException httpException) {
-                    log.error(ScsbCommonConstants.LOG_ERROR, httpException);
-                    itemHoldResponse.setSuccess(false);
-                    itemHoldResponse.setScreenMessage(httpException.getStatusText());
-                } catch (Exception e) {
-                    log.error(ScsbCommonConstants.LOG_ERROR, e);
-                    itemHoldResponse.setSuccess(false);
-                    itemHoldResponse.setScreenMessage(e.getMessage());
+            NCIPToolKitUtil ncipToolkitUtil = NCIPToolKitUtil.getInstance();
+            InputStream requestMessageStream = ncipToolkitUtil.translator.createInitiationMessageStream(ncipToolkitUtil.serviceContext, requestItemInitiationData);
+            HttpResponse response = executeRequest(requestMessageStream);
+            NCIPResponseData responseData = null;
+            if(response != null) {
+                int responseCode = response.getStatusLine().getStatusCode();
+                if (responseCode > 399) {
+                    throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "ILS Server" + returnedResponseCode + responseCode + responseBody + responseString);
                 }
+                else {
+                    responseData = getResponseString(response, ncipToolkitUtil, responseData);
+                }
+            }
+
+            //transforms the  NCIP Objects into a JSON response object
+            NCIPResponseData requestItemResponse = (NCIPResponseData) responseData;
+            responseObject = requestItem.getRequestItemResponse(requestItemResponse);
+
+            log.info(responseObject.toString());
+
+            if (!requestItemResponse.getProblems().isEmpty()) {
+                itemHoldResponse.setSuccess(Boolean.FALSE);
+                itemHoldResponse.setScreenMessage(failureReason + requestItemResponse.getProblems());
                 return itemHoldResponse;
             }
 
+            itemHoldResponse.setItemOwningInstitution(itemInstitutionId);
+            //  itemHoldResponse.setItemBarcode(requestItemResponse.getItemId().getItemIdentifierValue());
+            itemHoldResponse.setPatronIdentifier(patronIdentifier);
+            itemHoldResponse.setSuccess(Boolean.TRUE);
+            itemHoldResponse.setScreenMessage(ScsbCommonConstants.SUCCESS);
+            //itemHoldResponse.setTitleIdentifier(requestItemResponse.getItemId().getItemIdentifierValue());
+            itemHoldResponse.setPickupLocation(pickupLocation);
+            itemHoldResponse.setInstitutionID(getInstitution());
+            itemHoldResponse.setCreatedDate(new Date().toString());
+            itemHoldResponse.setUpdatedDate(new Date().toString());
+            Date expirationDateforHold = DateUtils.addYears(new Date(), 1);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat(ScsbConstants.DATE_FORMAT);
+            itemHoldResponse.setExpirationDate(simpleDateFormat.format(expirationDateforHold));
+        } catch (HttpClientErrorException httpException) {
+            log.error(ScsbCommonConstants.LOG_ERROR, httpException);
+            itemHoldResponse.setSuccess(false);
+            itemHoldResponse.setScreenMessage(httpException.getStatusText());
+        } catch (Exception e) {
+            log.error(ScsbCommonConstants.LOG_ERROR, e);
+            itemHoldResponse.setSuccess(false);
+            itemHoldResponse.setScreenMessage(e.getMessage());
         }
+        return itemHoldResponse;
+    }
+
+}
