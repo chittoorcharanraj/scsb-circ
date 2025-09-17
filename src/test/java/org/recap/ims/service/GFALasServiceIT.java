@@ -3,25 +3,21 @@ package org.recap.ims.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.recap.ScsbCircApplication;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.recap.ims.model.*;
 import org.recap.model.IMSConfigProperties;
 import org.recap.model.gfa.GFAItemStatusCheckResponse;
 import org.recap.model.jpa.ImsLocationEntity;
 import org.recap.repository.jpa.ImsLocationDetailsRepository;
 import org.recap.util.PropertyUtil;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -34,11 +30,9 @@ import static org.junit.Assert.assertNotNull;
 /**
  * Created by rajeshbabuk on 25/Nov/2020
  */
-@TestPropertySource("classpath:application.properties")
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = ScsbCircApplication.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 @Slf4j
-@Ignore
+
 public class GFALasServiceIT {
 
     @Mock
