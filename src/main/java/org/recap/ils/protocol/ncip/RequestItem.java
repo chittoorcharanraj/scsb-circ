@@ -158,7 +158,7 @@ public class RequestItem extends ScsbNCIP {
         RequestType requestType = new RequestType(null,"Page");
         BibliographicId bibliographicId = new BibliographicId();
         BibliographicRecordId bibliographicRecordId = new BibliographicRecordId();
-        bibliographicRecordId.setBibliographicRecordIdentifier(owningInstItemId);
+        bibliographicRecordId.setBibliographicRecordIdentifier("");
         bibliographicId.setBibliographicRecordId(bibliographicRecordId);
         List<BibliographicId> bibliographicIds = new ArrayList<BibliographicId>();
         bibliographicIds.add(bibliographicId);
