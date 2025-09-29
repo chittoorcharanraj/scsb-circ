@@ -614,6 +614,7 @@ public class NCIPProtocolConnector extends AbstractProtocolConnector {
     }
 
     public String getEndPointUrl() {
+        log.info("End point >>>>> " + ilsConfigProperties.getHost());
         String useApiKey = ilsConfigProperties.getIlsUseApiKey();
         if(Boolean.TRUE.toString().equals(useApiKey)) {
             return ilsConfigProperties.getHost() + "/" + ilsConfigProperties.getIlsApiKey();
