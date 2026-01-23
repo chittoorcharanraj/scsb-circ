@@ -66,7 +66,7 @@ public class ItemRequestServiceUtil {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity requestEntity = new HttpEntity<>(getRestHeaderService().getHttpHeaders());
         try {
-            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(scsbSolrClientUrl + ScsbConstants.UPDATE_ITEM_STATUS_SOLR).queryParam(ScsbConstants.UPDATE_ITEM_STATUS_SOLR_PARAM_ITEM_ID, itemEntity.getBarcode());
+            UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(scsbSolrClientUrl + ScsbConstants.UPDATE_ITEM_STATUS_SOLR).queryParam(ScsbConstants.UPDATE_ITEM_STATUS_SOLR_PARAM_ITEM_ID, itemEntity.getBarcode());
             ResponseEntity<String> responseEntity = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, String.class);
             log.info(responseEntity.getBody());
         } catch (Exception e) {

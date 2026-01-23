@@ -934,7 +934,7 @@ public class ItemRequestService {
         SearchResultRow searchResultRow = null;
         try {
             HttpEntity requestEntity = new HttpEntity<>(getRestHeaderService().getHttpHeaders());
-            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(scsbSolrClientUrl + ScsbConstants.SEARCH_RECORDS_SOLR)
+            UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(scsbSolrClientUrl + ScsbConstants.SEARCH_RECORDS_SOLR)
                     .queryParam(ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_NAME, ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_NAME_VALUE)
                     .queryParam(ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_VALUE, itemEntity.getBarcode());
             ResponseEntity<List<SearchResultRow>> responseEntity = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, new ParameterizedTypeReference<List<SearchResultRow>>() {});
