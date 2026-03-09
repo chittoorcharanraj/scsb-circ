@@ -6,21 +6,17 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedConstruction;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
-
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(MockitoJUnitRunner.Silent.class)
 public class RequestItemTest {
 
     @Spy
@@ -32,7 +28,6 @@ public class RequestItemTest {
 
     @Test
     public void ctor_initializesOptionalMaps_andFluentSettersWork() {
-
         RequestItem r = new RequestItem()
                 .setRequestActionType("Page")
                 .setRequestedActionTypeString("Hold")
@@ -74,48 +69,102 @@ public class RequestItemTest {
 
     @Test
     public void getRequestItemInitiationData_populatesFields_usingSpyForHeaderHelper() {
-        doAnswer(invocation -> {
-            InitiationHeader header = invocation.getArgument(0);
-            String scheme = invocation.getArgument(1);
-            String fromAgency = invocation.getArgument(2);
-            String toAgency = invocation.getArgument(3);
+        RequestItem requestItem = spy(new RequestItem());
 
-            FromAgencyId from = new FromAgencyId();
-            from.setAgencyId(new AgencyId(fromAgency));
-            ToAgencyId to = new ToAgencyId();
-            to.setAgencyId(new AgencyId(toAgency));
-            header.setFromAgencyId(from);
-            header.setToAgencyId(to);
-            return header;
-        }).when(requestItem).getInitiationHeaderwithoutProfile(any(InitiationHeader.class), anyString(), anyString(), anyString());
-
-        String itemIdentifier = "ITEM-123";
-        Integer requestId = 42;
-        String patronId = "PATRON-999";
+        String itemIdentifier   = "ITEM-123";
+        Integer requestId       = 42;
+        String patronId         = "PATRON-999";
         String owningInstItemId = "OWN-ABC";
-        String title = "Some Title";
-        String author = "Some Author";
-        String pickup = "MAIN-CIRC";
-        String callNumber = "QA10";
-        String ncipAgencyId = "REQ-AGENCY";
-        String ncipScheme = "Test";
-        String itemAgencyId = "OWN-AGENCY";
+        String title            = "Some Title";
+        String author           = "Some Author";
+        String pickup           = "MAIN-CIRC";
+        String callNumber       = "QA10";
+        String ncipAgencyId     = "REQ-AGENCY";
+        String ncipScheme       = "Test";
+        String itemAgencyId     = "OWN-AGENCY";
 
-        RequestItemInitiationData data = requestItem.getRequestItemInitiationData(
-                itemIdentifier, requestId, patronId, owningInstItemId, title, author,
-                pickup, callNumber, ncipAgencyId, ncipScheme, itemAgencyId);
+        InitiationHeader stubHeader = new InitiationHeader();
+        doReturn(stubHeader)
+                .when(requestItem)
+                .getInitiationHeaderwithoutProfile(
+                        any(InitiationHeader.class),
+                        eq(ncipScheme),
+                        eq(itemAgencyId),
+                        eq(ncipAgencyId));
 
-        assertNotNull(data);
-        assertEquals(itemAgencyId, data.getInitiationHeader().getApplicationProfileType().getValue());
+        try (MockedConstruction<RequestScopeType> scopeMock =
+                     mockConstruction(RequestScopeType.class,
+                             (mock, ctx) -> {
+                                 doReturn("Item").when(mock).toString();
+                                 doReturn("Item").when(mock).getValue();
+                             });
+             MockedConstruction<RequestType> typeMock =
+                     mockConstruction(RequestType.class,
+                             (mock, ctx) -> {
+                                 doReturn("Page").when(mock).toString();
+                                 doReturn("Page").when(mock).getValue();
+                             });
+             MockedConstruction<PickupLocation> pickupMock =
+                     mockConstruction(PickupLocation.class,
+                             (mock, ctx) -> {
+                                 doReturn(pickup).when(mock).toString();
+                                 doReturn(pickup).when(mock).getValue();
+                             });
+             MockedConstruction<BibliographicId> bibIdMock =
+                     mockConstruction(BibliographicId.class,
+                             (mock, ctx) -> {
+                                 BibliographicRecordId recId = mock(BibliographicRecordId.class);
+                                 doReturn("").when(recId).getBibliographicRecordIdentifier();
+                                 doNothing().when(recId).setBibliographicRecordIdentifier(any());
+                                 doReturn(recId).when(mock).getBibliographicRecordId();
+                                 doNothing().when(mock).setBibliographicRecordId(any());
+                             });
+             MockedConstruction<BibliographicRecordId> bibRecordIdMock =
+                     mockConstruction(BibliographicRecordId.class,
+                             (mock, ctx) -> {
+                                 doReturn("").when(mock).getBibliographicRecordIdentifier();
+                                 doNothing().when(mock).setBibliographicRecordIdentifier(any());
+                             })) {
 
-        assertEquals("barcode", data.getUserId().getUserIdentifierType().getValue());
-        assertEquals(patronId, data.getUserId().getUserIdentifierValue());
-        assertEquals("Page", data.getRequestType().getValue());
-        assertEquals("Item", data.getRequestScopeType().getValue());
-        assertEquals(pickup, data.getPickupLocation().getValue());
+            RequestItemInitiationData data = requestItem.getRequestItemInitiationData(
+                    itemIdentifier, requestId, patronId, owningInstItemId,
+                    title, author, pickup, callNumber,
+                    ncipAgencyId, ncipScheme, itemAgencyId);
 
-        assertEquals(itemIdentifier, data.getRequestId().getRequestIdentifierValue());
-        assertEquals(owningInstItemId, data.getBibliographicIds().get(0).getBibliographicRecordId().getBibliographicRecordIdentifier());
+            assertNotNull(data);
+            assertNotNull(data.getInitiationHeader());
+            assertNotNull(data.getInitiationHeader().getApplicationProfileType());
+            assertEquals(itemAgencyId,
+                    data.getInitiationHeader().getApplicationProfileType().getValue());
+
+            assertNotNull(data.getUserId());
+            assertEquals("barcode",
+                    data.getUserId().getUserIdentifierType().getValue());
+            assertEquals(patronId,
+                    data.getUserId().getUserIdentifierValue());
+
+            assertNotNull(data.getRequestId());
+            assertEquals(itemIdentifier,
+                    data.getRequestId().getRequestIdentifierValue());
+
+            assertNotNull(data.getBibliographicIds());
+            assertEquals(1, data.getBibliographicIds().size());
+            assertNotNull(data.getBibliographicIds().get(0).getBibliographicRecordId());
+            assertEquals("",
+                    data.getBibliographicIds()
+                            .get(0)
+                            .getBibliographicRecordId()
+                            .getBibliographicRecordIdentifier());
+
+            assertNotNull(data.getRequestType());
+            assertEquals("Page", data.getRequestType().getValue());
+
+            assertNotNull(data.getRequestScopeType());
+            assertEquals("Item", data.getRequestScopeType().getValue());
+
+            assertNotNull(data.getPickupLocation());
+            assertEquals(pickup, data.getPickupLocation().getValue());
+        }
     }
 
     @Test

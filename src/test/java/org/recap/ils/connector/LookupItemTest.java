@@ -21,13 +21,6 @@ import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-/**
- * Fixed LookupItemTest using Mockito's MockedConstruction (mockito-inline).
- * Fixes:
- * - stubbed getCirculationStatus() to avoid NPE
- * - matched "Login Failed" casing in assertion
- * - ensured send() is stubbed in every scenario
- */
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class LookupItemTest {
 
@@ -136,7 +129,7 @@ public class LookupItemTest {
 
             assertNotNull(result);
             assertFalse("Expected success false on InvalidSIP2ResponseException", result.isSuccess());
-            assertEquals(org.recap.ScsbConstants.INVALID_NO_RESPONSE_FROM_ILS, result.getScreenMessage());
+            assertEquals(org.recap.common.ScsbConstants.INVALID_NO_RESPONSE_FROM_ILS, result.getScreenMessage());
 
             assertEquals(1, mocked.constructed().size());
             verify(mocked.constructed().get(0), times(1)).connect();
@@ -158,7 +151,7 @@ public class LookupItemTest {
 
             assertNotNull(result);
             assertFalse("Expected success false on InvalidSIP2ResponseValueException", result.isSuccess());
-            assertEquals(org.recap.ScsbConstants.SCREEN_MESSAGE_ITEM_BARCODE_NOT_FOUND, result.getScreenMessage());
+            assertEquals(org.recap.common.ScsbConstants.SCREEN_MESSAGE_ITEM_BARCODE_NOT_FOUND, result.getScreenMessage());
 
             assertEquals(1, mocked.constructed().size());
             verify(mocked.constructed().get(0), times(1)).connect();
@@ -174,7 +167,7 @@ public class LookupItemTest {
 
                     SIP2LoginResponse loginResponse = mock(SIP2LoginResponse.class);
                     when(loginResponse.isOk()).thenReturn(false);
-                    when(loginResponse.getScreenMessage()).thenReturn(Collections.singletonList(org.recap.ScsbConstants.ILS_LOGIN_FAILED));
+                    when(loginResponse.getScreenMessage()).thenReturn(Collections.singletonList(org.recap.common.ScsbConstants.ILS_LOGIN_FAILED));
                     when(mockConn.send(any())).thenReturn(loginResponse);
 
                     when(mockConn.connect()).thenReturn(false);
@@ -185,7 +178,7 @@ public class LookupItemTest {
 
             assertNotNull(result);
             assertFalse("Expected success false when connection fails", result.isSuccess());
-            assertEquals(org.recap.ScsbConstants.ILS_LOGIN_FAILED, result.getScreenMessage());
+            assertEquals(org.recap.common.ScsbConstants.ILS_LOGIN_FAILED, result.getScreenMessage());
 
             assertEquals(1, mocked.constructed().size());
             verify(mocked.constructed().get(0), times(1)).connect();

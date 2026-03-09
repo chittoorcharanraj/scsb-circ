@@ -121,7 +121,7 @@ public class CheckoutItemTest {
 
             assertNotNull(resp);
             assertFalse(resp.isSuccess());
-            assertEquals(org.recap.ScsbConstants.ILS_LOGIN_FAILED, resp.getScreenMessage());
+            assertEquals(org.recap.common.ScsbConstants.ILS_LOGIN_FAILED, resp.getScreenMessage());
 
             SIP2SocketConnection constructed = mocked.constructed().get(0);
             verify(constructed, times(1)).close();
@@ -189,7 +189,7 @@ public class CheckoutItemTest {
                 (mockConn, ctx) -> {
                     SIP2LoginResponse lr = mock(SIP2LoginResponse.class);
                     when(lr.isOk()).thenReturn(false);
-                    when(lr.getScreenMessage()).thenReturn(Collections.singletonList(org.recap.ScsbConstants.ILS_LOGIN_FAILED));
+                    when(lr.getScreenMessage()).thenReturn(Collections.singletonList(org.recap.common.ScsbConstants.ILS_LOGIN_FAILED));
                     when(mockConn.send(any())).thenReturn(lr);
 
                     when(mockConn.connect()).thenReturn(false);

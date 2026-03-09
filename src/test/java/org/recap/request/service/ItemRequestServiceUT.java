@@ -186,7 +186,7 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
         DeliveryCodeEntity deliveryCodeEntity = getDeliveryCodeEntity();
         HttpEntity requestEntity = new HttpEntity<>(restHeaderService.getHttpHeaders());
         ResponseEntity<List<SearchResultRow>> responseEntity = new ResponseEntity<List<SearchResultRow>>(Arrays.asList(searchResultRow), HttpStatus.OK);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(scsbSolrClientUrl + ScsbConstants.SEARCH_RECORDS_SOLR)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(scsbSolrClientUrl + ScsbConstants.SEARCH_RECORDS_SOLR)
                 .queryParam(ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_NAME, ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_NAME_VALUE)
                 .queryParam(ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_VALUE, itemEntity.getBarcode());
         Mockito.when(restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, new ParameterizedTypeReference<List<SearchResultRow>>() {
@@ -247,7 +247,7 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
         itemHoldResponse.setSuccess(true);
         HttpEntity requestEntity = new HttpEntity<>(restHeaderService.getHttpHeaders());
         ResponseEntity<List<SearchResultRow>> responseEntity = new ResponseEntity<List<SearchResultRow>>(Arrays.asList(searchResultRow), HttpStatus.OK);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(scsbSolrClientUrl + ScsbConstants.SEARCH_RECORDS_SOLR)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(scsbSolrClientUrl + ScsbConstants.SEARCH_RECORDS_SOLR)
                 .queryParam(ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_NAME, ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_NAME_VALUE)
                 .queryParam(ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_VALUE, itemEntity.getBarcode());
         Mockito.when(restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, new ParameterizedTypeReference<List<SearchResultRow>>() {
@@ -295,7 +295,7 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
         Mockito.when(deliveryCodeTranslationDetailsRepository.findByRequestingInstitutionandImsLocation(any(),any(), any())).thenReturn(deliveryCodeTranslationEntity);
         HttpEntity requestEntity = new HttpEntity<>(restHeaderService.getHttpHeaders());
         ResponseEntity<List<SearchResultRow>> responseEntity = new ResponseEntity<List<SearchResultRow>>(Arrays.asList(searchResultRow), HttpStatus.OK);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(scsbSolrClientUrl + ScsbConstants.SEARCH_RECORDS_SOLR)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(scsbSolrClientUrl + ScsbConstants.SEARCH_RECORDS_SOLR)
                 .queryParam(ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_NAME, ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_NAME_VALUE)
                 .queryParam(ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_VALUE, itemEntity.getBarcode());
         Mockito.when(restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, new ParameterizedTypeReference<List<SearchResultRow>>() {
@@ -358,7 +358,7 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
         Mockito.when(deliveryCodeTranslationDetailsRepository.findByRequestingInstitutionandImsLocation(any(),any(), any())).thenReturn(deliveryCodeTranslationEntity);
         HttpEntity requestEntity = new HttpEntity<>(restHeaderService.getHttpHeaders());
         ResponseEntity<List<SearchResultRow>> responseEntity = new ResponseEntity<List<SearchResultRow>>(Arrays.asList(searchResultRow), HttpStatus.OK);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(scsbSolrClientUrl + ScsbConstants.SEARCH_RECORDS_SOLR)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(scsbSolrClientUrl + ScsbConstants.SEARCH_RECORDS_SOLR)
                 .queryParam(ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_NAME, ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_NAME_VALUE)
                 .queryParam(ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_VALUE, itemEntity.getBarcode());
         ItemInformationResponse itemInformationResponse = mockedItemRequestService.requestItem(itemRequestInfo, exchange);
@@ -398,7 +398,7 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
         itemCreateBibResponse.setSuccess(false);
         HttpEntity requestEntity = new HttpEntity<>(restHeaderService.getHttpHeaders());
         ResponseEntity<List<SearchResultRow>> responseEntity = new ResponseEntity<List<SearchResultRow>>(Arrays.asList(searchResultRow), HttpStatus.OK);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(scsbSolrClientUrl + ScsbConstants.SEARCH_RECORDS_SOLR)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(scsbSolrClientUrl + ScsbConstants.SEARCH_RECORDS_SOLR)
                 .queryParam(ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_NAME, ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_NAME_VALUE)
                 .queryParam(ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_VALUE, itemEntity.getBarcode());
         DeliveryCodeTranslationEntity deliveryCodeTranslationEntity = getDeliveryCodeTranslationEntity();
@@ -625,7 +625,7 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
         searchResultRow.setTitle("TEST");
         HttpEntity requestEntity = new HttpEntity<>(restHeaderService.getHttpHeaders());
         ResponseEntity<List<SearchResultRow>> responseEntity = new ResponseEntity<List<SearchResultRow>>(Arrays.asList(searchResultRow), HttpStatus.OK);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(scsbSolrClientUrl + ScsbConstants.SEARCH_RECORDS_SOLR)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(scsbSolrClientUrl + ScsbConstants.SEARCH_RECORDS_SOLR)
                 .queryParam(ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_NAME, ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_NAME_VALUE)
                 .queryParam(ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_VALUE, itemEntity.getBarcode());
         Mockito.when(restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, new ParameterizedTypeReference<List<SearchResultRow>>() {
@@ -1153,7 +1153,7 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
         ownerCodeEntity.setInstitutionId(1);
         ItemRecallResponse itemRecallResponse = getItemRecallResponse();
         ResponseEntity<List<SearchResultRow>> responseEntity = new ResponseEntity<List<SearchResultRow>>(Arrays.asList(searchResultRow), HttpStatus.OK);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(scsbSolrClientUrl + ScsbConstants.SEARCH_RECORDS_SOLR)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(scsbSolrClientUrl + ScsbConstants.SEARCH_RECORDS_SOLR)
                 .queryParam(ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_NAME, ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_NAME_VALUE)
                 .queryParam(ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_VALUE, itemEntity.getBarcode());
         Mockito.when(restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, new ParameterizedTypeReference<List<SearchResultRow>>() {
@@ -1230,7 +1230,7 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
         itemHoldResponse.setScreenMessage("Success");
         ItemCreateBibResponse itemCreateBibResponse = getItemCreateBibResponse();
         ResponseEntity<List<SearchResultRow>> responseEntity = new ResponseEntity<List<SearchResultRow>>(Arrays.asList(searchResultRow), HttpStatus.OK);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(scsbSolrClientUrl + ScsbConstants.SEARCH_RECORDS_SOLR)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(scsbSolrClientUrl + ScsbConstants.SEARCH_RECORDS_SOLR)
                 .queryParam(ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_NAME, ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_NAME_VALUE)
                 .queryParam(ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_VALUE, itemEntity.getBarcode());
         Mockito.when(restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, new ParameterizedTypeReference<List<SearchResultRow>>() {
@@ -1281,7 +1281,7 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
         itemHoldResponse.setScreenMessage("Success");
         ItemCreateBibResponse itemCreateBibResponse = getItemCreateBibResponse();
         ResponseEntity<List<SearchResultRow>> responseEntity = new ResponseEntity<List<SearchResultRow>>(Arrays.asList(searchResultRow), HttpStatus.OK);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(scsbSolrClientUrl + ScsbConstants.SEARCH_RECORDS_SOLR)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(scsbSolrClientUrl + ScsbConstants.SEARCH_RECORDS_SOLR)
                 .queryParam(ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_NAME, ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_NAME_VALUE)
                 .queryParam(ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_VALUE, itemEntity.getBarcode());
         Mockito.when(institutionDetailsRepository.findByInstitutionCode(anyString())).thenReturn(createRequestItem().getInstitutionEntity());
@@ -1409,7 +1409,7 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
         ItemEntity itemEntity = getItemEntity();
         HttpEntity requestEntity = new HttpEntity<>(restHeaderService.getHttpHeaders());
         ResponseEntity<List<SearchResultRow>> responseEntity = new ResponseEntity<List<SearchResultRow>>(Arrays.asList(searchResultRow), HttpStatus.OK);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(scsbSolrClientUrl + ScsbConstants.SEARCH_RECORDS_SOLR)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(scsbSolrClientUrl + ScsbConstants.SEARCH_RECORDS_SOLR)
                 .queryParam(ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_NAME, ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_NAME_VALUE)
                 .queryParam(ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_VALUE, itemEntity.getBarcode());
         Mockito.when(restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, new ParameterizedTypeReference<List<SearchResultRow>>() {
@@ -1551,7 +1551,7 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
         requestItemEntity.setRequestTypeEntity(requestTypeEntity);
         HttpEntity requestEntity = new HttpEntity<>(restHeaderService.getHttpHeaders());
         ResponseEntity<List<SearchResultRow>> responseEntity = new ResponseEntity<List<SearchResultRow>>(Arrays.asList(searchResultRow), HttpStatus.OK);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(scsbSolrClientUrl + ScsbConstants.SEARCH_RECORDS_SOLR)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(scsbSolrClientUrl + ScsbConstants.SEARCH_RECORDS_SOLR)
                 .queryParam(ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_NAME, ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_NAME_VALUE)
                 .queryParam(ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_VALUE, itemEntity.getBarcode());
         Mockito.when(restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, new ParameterizedTypeReference<List<SearchResultRow>>() {
@@ -1600,7 +1600,7 @@ public class ItemRequestServiceUT extends BaseTestCaseUT {
         searchResultRow.setTitle("test");
         HttpEntity requestEntity = new HttpEntity<>(restHeaderService.getHttpHeaders());
         ResponseEntity<List<SearchResultRow>> responseEntity = new ResponseEntity<List<SearchResultRow>>(Arrays.asList(searchResultRow), HttpStatus.OK);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(scsbSolrClientUrl + ScsbConstants.SEARCH_RECORDS_SOLR)
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(scsbSolrClientUrl + ScsbConstants.SEARCH_RECORDS_SOLR)
                 .queryParam(ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_NAME, ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_NAME_VALUE)
                 .queryParam(ScsbConstants.SEARCH_RECORDS_SOLR_PARAM_FIELD_VALUE, itemEntity.getBarcode());
         Mockito.when(restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, new ParameterizedTypeReference<List<SearchResultRow>>() {
