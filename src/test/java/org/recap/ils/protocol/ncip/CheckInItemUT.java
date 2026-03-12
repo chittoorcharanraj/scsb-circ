@@ -7,9 +7,10 @@ import org.extensiblecatalog.ncip.v2.service.Problem;
 import org.extensiblecatalog.ncip.v2.service.ProblemType;
 import org.json.JSONObject;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.InjectMocks;
+import org.mockito.MockitoAnnotations;
 import org.recap.BaseTestCaseUT;
-import org.recap.ils.protocol.ncip.CheckinItem;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,6 +22,11 @@ public class CheckInItemUT extends BaseTestCaseUT {
 
     @InjectMocks
     CheckinItem checkinItem;
+
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     @Test
     public void getCheckInResponse() {

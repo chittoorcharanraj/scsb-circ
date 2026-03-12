@@ -71,7 +71,7 @@ public class GFALasServiceIT {
         try {
             RestTemplate restTemplate = new RestTemplate();
             HttpEntity requestEntity = new HttpEntity<>(new HttpHeaders());
-            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(imsConfigProperties.getImsItemStatusEndpoint()).queryParam("filter", filterParamValue);
+            UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(imsConfigProperties.getImsItemStatusEndpoint()).queryParam("filter", filterParamValue);
             ResponseEntity<GFAItemStatusCheckResponse> responseEntity = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, GFAItemStatusCheckResponse.class);
             GFAItemStatusCheckResponse gfaItemStatusCheckResponse = responseEntity.getBody();
             String response = objectMapper.writeValueAsString(gfaItemStatusCheckResponse);
@@ -98,7 +98,7 @@ public class GFALasServiceIT {
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity requestEntity = new HttpEntity<>(new HttpHeaders());
         try {
-            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(imsConfigProperties.getImsServerStatusEndpoint()).queryParam("filter", filterParamValue);
+            UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(imsConfigProperties.getImsServerStatusEndpoint()).queryParam("filter", filterParamValue);
             ResponseEntity<GFALasStatusCheckResponse> responseEntity = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, GFALasStatusCheckResponse.class);
             GFALasStatusCheckResponse gfaLasStatusCheckResponse = responseEntity.getBody();
             String response = objectMapper.writeValueAsString(gfaLasStatusCheckResponse);

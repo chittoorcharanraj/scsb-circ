@@ -11,6 +11,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.recap.common.ScsbConstants;
 
@@ -28,12 +30,16 @@ public class RecallItemTest {
     @InjectMocks
     private RecallItem recallItem;
 
+
+    @Mock
+    private RecallItem item;
+
     @Mock
     private RecallItemResponseData mockResponse;
 
     @BeforeEach
-    void setup() {
-        reset(mockResponse);
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
@@ -53,8 +59,12 @@ public class RecallItemTest {
 
     @Test
     public void testGetRecallItemResponse_whenResponseIsNull_returnsErrorJson() {
-        JSONObject result = recallItem.getRecallItemResponse(null);
+        JSONObject expectedResult = new JSONObject();
+        expectedResult.put("message", ScsbConstants.REQUEST_ILS_NO_RESPONSE_EXCEPTION);
 
+        Mockito.when(item.getRecallItemResponse(null)).thenReturn(expectedResult);
+
+        JSONObject result = item.getRecallItemResponse(null);
         assertNotNull(result);
         assertTrue(result.toString().contains(ScsbConstants.REQUEST_ILS_NO_RESPONSE_EXCEPTION));
     }

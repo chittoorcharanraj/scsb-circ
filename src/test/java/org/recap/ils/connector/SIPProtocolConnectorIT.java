@@ -2,10 +2,8 @@ package org.recap.ils.connector;
 
 import com.pkrete.jsip2.connection.SIP2SocketConnection;
 import org.junit.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.Spy;
+import org.junit.jupiter.api.BeforeEach;
+import org.mockito.*;
 import org.recap.BaseTestCase;
 import org.recap.PropertyKeyConstants;
 import org.recap.common.ScsbConstants;
@@ -34,6 +32,12 @@ public class SIPProtocolConnectorIT extends BaseTestCase {
 
     @Autowired
     PropertyUtil propertyUtil;
+
+
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     @Test
     public void supports() {

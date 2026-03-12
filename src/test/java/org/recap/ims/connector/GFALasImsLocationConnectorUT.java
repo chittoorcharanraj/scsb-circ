@@ -80,7 +80,7 @@ public class GFALasImsLocationConnectorUT extends BaseTestCaseUT {
         imsConfigProperties.setImsServerResponseTimeoutMillis("1000");
         gfaLasImsLocationConnector.setImsConfigProperties(imsConfigProperties);
         String filterParamValue = objectMapper.writeValueAsString(gfaLasStatusCheckRequest);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://test:9092/lasapi/rest/lasapiSvc/lasStatus").queryParam(ScsbConstants.GFA_SERVICE_PARAM, filterParamValue);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString("http://test:9092/lasapi/rest/lasapiSvc/lasStatus").queryParam(ScsbConstants.GFA_SERVICE_PARAM, filterParamValue);
         HttpEntity requestEntity = new HttpEntity<>(new HttpHeaders());
         Mockito.when(gfaLasImsLocationConnector.getRestTemplate()).thenReturn(restTemplate);
         Mockito.when(restTemplate.getRequestFactory()).thenReturn(simpleClientHttpRequestFactory);
@@ -110,7 +110,7 @@ public class GFALasImsLocationConnectorUT extends BaseTestCaseUT {
         ResponseEntity<GFAItemStatusCheckResponse> responseEntity = new ResponseEntity<>(gfaItemStatusCheckResponse, HttpStatus.OK);
         ObjectMapper objectMapper = new ObjectMapper();
         String filterParamValue = objectMapper.writeValueAsString(gfaItemStatusCheckRequest);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl("http://test:9092/lasapi/rest/lasapiSvc/lasItemStatus").queryParam(ScsbConstants.GFA_SERVICE_PARAM, filterParamValue);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString("http://test:9092/lasapi/rest/lasapiSvc/lasItemStatus").queryParam(ScsbConstants.GFA_SERVICE_PARAM, filterParamValue);
         HttpEntity requestEntity = new HttpEntity<>(new HttpHeaders());
         Mockito.when(gfaLasImsLocationConnector.getRestTemplate()).thenReturn(restTemplate);
         Mockito.when(restTemplate.getRequestFactory()).thenReturn(simpleClientHttpRequestFactory);

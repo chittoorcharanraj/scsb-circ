@@ -90,7 +90,7 @@ public class GFALasImsLocationConnector extends AbstractLASImsLocationConnector 
 
             RestTemplate restTemplate = getRestTemplate();
             HttpEntity<HttpHeaders> requestEntity = new HttpEntity<>(new HttpHeaders());
-            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(this.imsConfigProperties.getImsServerStatusEndpoint()).queryParam(ScsbConstants.GFA_SERVICE_PARAM, filterParamValue);
+            UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(this.imsConfigProperties.getImsServerStatusEndpoint()).queryParam(ScsbConstants.GFA_SERVICE_PARAM, filterParamValue);
             ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setConnectTimeout(Integer.parseInt(this.imsConfigProperties.getImsServerResponseTimeoutMillis()));
             ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setReadTimeout(Integer.parseInt(this.imsConfigProperties.getImsServerResponseTimeoutMillis()));
             ResponseEntity<GFALasStatusCheckResponse> responseEntity = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, GFALasStatusCheckResponse.class);
@@ -123,7 +123,7 @@ public class GFALasImsLocationConnector extends AbstractLASImsLocationConnector 
 
             RestTemplate restTemplate = getRestTemplate();
             HttpEntity<HttpHeaders> requestEntity = new HttpEntity<>(new HttpHeaders());
-            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(this.imsConfigProperties.getImsItemStatusEndpoint()).queryParam(ScsbConstants.GFA_SERVICE_PARAM, filterParamValue);
+            UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(this.imsConfigProperties.getImsItemStatusEndpoint()).queryParam(ScsbConstants.GFA_SERVICE_PARAM, filterParamValue);
             ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setConnectTimeout(Integer.parseInt(this.imsConfigProperties.getImsServerResponseTimeoutMillis()));
             ((SimpleClientHttpRequestFactory) restTemplate.getRequestFactory()).setReadTimeout(Integer.parseInt(this.imsConfigProperties.getImsServerResponseTimeoutMillis()));
             ResponseEntity<GFAItemStatusCheckResponse> responseEntity = restTemplate.exchange(builder.build().encode().toUri(), HttpMethod.GET, requestEntity, GFAItemStatusCheckResponse.class);
